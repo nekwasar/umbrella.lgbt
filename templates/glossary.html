@@ -1,0 +1,28 @@
+{{#seeded}}
+<div class="glossary">
+  <span class="glossary-category">{{category}}</span>
+  <h1>{{title}}</h1>
+  <div class="glossary-content">
+    {{content}}
+  </div>
+  {{#relatedTerms}}
+  <section class="glossary-related">
+    <h3>Related Terms</h3>
+    <ul>
+      {{relatedTerms}}
+    </ul>
+  </section>
+  {{/relatedTerms}}
+  {{crossLinks}}
+</div>
+{{/seeded}}
+{{^seeded}}
+<div class="glossary">
+  <span class="glossary-category">{{category}}</span>
+  <h1>{{title}}</h1>
+  <div class="glossary-placeholder">
+    <p>Definition coming soon &mdash; join the waitlist to know when Umbrella.lgbt launches.</p>
+    <a href="/waitlist">Coming {{launchYear}}</a>
+  </div>
+</div>
+{{/seeded}}

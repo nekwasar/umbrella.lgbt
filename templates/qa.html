@@ -1,0 +1,28 @@
+{{#seeded}}
+<div class="qa">
+  <span class="qa-topic">{{topic}}</span>
+  <h1>{{title}}</h1>
+  <div class="qa-content">
+    {{content}}
+  </div>
+  {{#relatedQA}}
+  <section class="qa-related">
+    <h3>More Questions Like This</h3>
+    <ul>
+      {{relatedQA}}
+    </ul>
+  </section>
+  {{/relatedQA}}
+  {{crossLinks}}
+</div>
+{{/seeded}}
+{{^seeded}}
+<div class="qa">
+  <span class="qa-topic">{{topic}}</span>
+  <h1>{{title}}</h1>
+  <div class="qa-placeholder">
+    <p>Answers coming soon &mdash; join the waitlist to know when Umbrella.lgbt launches.</p>
+    <a href="/waitlist">Coming {{launchYear}}</a>
+  </div>
+</div>
+{{/seeded}}

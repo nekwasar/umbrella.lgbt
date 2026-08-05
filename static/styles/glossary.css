@@ -1,0 +1,116 @@
+.glossary {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.glossary-category {
+  display: inline-block;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 0.25rem 0.75rem;
+  font-size: 0.8rem;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  text-transform: lowercase;
+  margin-bottom: 1rem;
+}
+
+.glossary h1 {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--border);
+}
+
+.glossary-content {
+  line-height: 1.7;
+}
+
+.glossary-content h2 {
+  font-size: 1.3rem;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.glossary-content p {
+  margin-bottom: 1.25rem;
+}
+
+.glossary-content a {
+  color: var(--pink);
+}
+
+.glossary-content ul, .glossary-content ol {
+  margin-bottom: 1.25rem;
+  padding-left: 1.5rem;
+}
+
+.glossary-content li {
+  margin-bottom: 0.5rem;
+}
+
+.glossary-related {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.glossary-related h3 {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+.glossary-related ul {
+  list-style: none;
+  padding: 0;
+}
+
+.glossary-related li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.glossary-related a {
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
+.glossary-related a:hover {
+  color: var(--pink);
+}
+
+.glossary-placeholder {
+  background: var(--surface);
+  border: 2px dashed var(--border);
+  padding: 2rem;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.glossary-placeholder p {
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+  font-style: italic;
+}
+
+.glossary-placeholder a {
+  display: inline-block;
+  background: var(--button);
+  color: var(--button-text);
+  text-decoration: none;
+  padding: 0.6rem 2rem;
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  border: 2px solid var(--button);
+}
+
+.glossary-placeholder a:hover {
+  background: var(--pink);
+  border-color: var(--pink);
+  color: var(--text);
+}
+
+@media (max-width: 768px) {
+  .glossary h1 { font-size: 1.5rem; }
+}

@@ -1,0 +1,138 @@
+.home-desktop { display: none; }
+
+.home-mobile {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.hm-hero {
+  text-align: center;
+  padding: 3rem 0 2rem;
+}
+
+.hm-logo {
+  font-family: var(--font-heading);
+  font-size: 2.5rem;
+  letter-spacing: 0.1em;
+  margin-bottom: 1rem;
+  line-height: 1.2;
+}
+
+.hm-tagline {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  margin-bottom: 0.25rem;
+}
+
+.hm-sub {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+}
+
+.hm-cta {
+  display: inline-block;
+  background: var(--button);
+  color: var(--button-text);
+  text-decoration: none;
+  padding: 0.8rem 2.5rem;
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  border: 2px solid var(--button);
+  letter-spacing: 0.05em;
+  transition: all 0.15s;
+}
+
+.hm-cta:hover {
+  background: var(--pink);
+  border-color: var(--pink);
+  color: var(--text);
+}
+
+.hm-features {
+  margin-bottom: 2rem;
+}
+
+.hm-feature {
+  padding: 1.25rem 0;
+  border-top: 1px solid var(--border);
+}
+
+.hm-feature:last-child {
+  border-bottom: 1px solid var(--border);
+}
+
+.hm-star {
+  color: var(--pink);
+  font-size: 1rem;
+  margin-right: 0.3rem;
+  user-select: none;
+}
+
+.hm-feature h3 {
+  display: inline;
+  font-size: 1.05rem;
+  font-family: var(--font-heading);
+}
+
+.hm-feature p {
+  margin-top: 0.35rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  padding-left: 1.5rem;
+  margin-bottom: 0;
+}
+
+.hm-outro {
+  text-align: center;
+  padding: 2rem 0;
+  font-size: 0.95rem;
+}
+
+.hm-outro > p:first-child {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+}
+
+.hm-contact {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.hm-contact a {
+  color: var(--text-muted);
+}
+
+.hm-social a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+}
+
+.hm-social a:hover {
+  color: var(--text);
+}
+
+.hm-footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 1.25rem;
+  padding-bottom: 2rem;
+  font-size: 0.85rem;
+}
+
+.hm-footer-links a {
+  color: var(--text-muted);
+  text-decoration: none;
+}
+
+.hm-footer-links a:hover {
+  color: var(--text);
+  text-decoration: underline;
+}
+
+@media (min-width: 1024px) {
+  .home-mobile { display: none; }
+  .home-desktop { display: block; }
+}

@@ -1,0 +1,104 @@
+.city {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.city h1 {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--border);
+}
+
+.city-content {
+  line-height: 1.7;
+}
+
+.city-content h2 {
+  font-size: 1.3rem;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.city-content p {
+  margin-bottom: 1.25rem;
+}
+
+.city-content a {
+  color: var(--pink);
+}
+
+.city-content ul, .city-content ol {
+  margin-bottom: 1.25rem;
+  padding-left: 1.5rem;
+}
+
+.city-content li {
+  margin-bottom: 0.5rem;
+}
+
+.city-others {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.city-others h3 {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+.city-others ul {
+  list-style: none;
+  padding: 0;
+}
+
+.city-others li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.city-others a {
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
+.city-others a:hover {
+  color: var(--pink);
+}
+
+.city-placeholder {
+  background: var(--surface);
+  border: 2px dashed var(--border);
+  padding: 2rem;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.city-placeholder p {
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+  font-style: italic;
+}
+
+.city-placeholder a {
+  display: inline-block;
+  background: var(--button);
+  color: var(--button-text);
+  text-decoration: none;
+  padding: 0.6rem 2rem;
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  border: 2px solid var(--button);
+}
+
+.city-placeholder a:hover {
+  background: var(--pink);
+  border-color: var(--pink);
+  color: var(--text);
+}
+
+@media (max-width: 768px) {
+  .city h1 { font-size: 1.5rem; }
+}

@@ -1,0 +1,25 @@
+{{#seeded}}
+<div class="resource">
+  <h1>{{title}}</h1>
+  <div class="resource-content">
+    {{content}}
+  </div>
+  {{#otherResources}}
+  <section class="resource-others">
+    <h3>Other Countries</h3>
+    <ul>
+      {{otherResources}}
+    </ul>
+  </section>
+  {{/otherResources}}
+</div>
+{{/seeded}}
+{{^seeded}}
+<div class="resource">
+  <h1>{{title}}</h1>
+  <div class="resource-placeholder">
+    <p>Directory coming soon &mdash; join the waitlist to know when Umbrella.lgbt launches.</p>
+    <a href="/waitlist">Coming {{launchYear}}</a>
+  </div>
+</div>
+{{/seeded}}

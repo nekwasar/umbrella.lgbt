@@ -1,0 +1,116 @@
+.blog {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.blog h1 {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.blog-meta {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.blog-meta time,
+.blog-meta .blog-reading-time {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  margin-right: 1rem;
+}
+
+.blog-content {
+  margin-top: 1.5rem;
+}
+
+.blog-content h2 {
+  font-size: 1.3rem;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.blog-content p {
+  line-height: 1.7;
+  margin-bottom: 1.25rem;
+}
+
+.blog-content a {
+  color: var(--pink);
+}
+
+.blog-content ul, .blog-content ol {
+  margin-bottom: 1.25rem;
+  padding-left: 1.5rem;
+}
+
+.blog-content li {
+  margin-bottom: 0.5rem;
+}
+
+.blog-related {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.blog-related h3 {
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+}
+
+.blog-related ul {
+  list-style: none;
+  padding: 0;
+}
+
+.blog-related li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.blog-related a {
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
+.blog-related a:hover {
+  color: var(--pink);
+}
+
+.blog-placeholder {
+  background: var(--surface);
+  border: 2px dashed var(--border);
+  padding: 2rem;
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.blog-placeholder p {
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+  font-style: italic;
+}
+
+.blog-placeholder a {
+  display: inline-block;
+  background: var(--button);
+  color: var(--button-text);
+  text-decoration: none;
+  padding: 0.6rem 2rem;
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  border: 2px solid var(--button);
+}
+
+.blog-placeholder a:hover {
+  background: var(--pink);
+  border-color: var(--pink);
+  color: var(--text);
+}
+
+@media (max-width: 768px) {
+  .blog h1 { font-size: 1.5rem; }
+}

@@ -1,0 +1,25 @@
+{{#seeded}}
+<div class="city">
+  <h1>{{title}}</h1>
+  <div class="city-content">
+    {{content}}
+  </div>
+  {{#otherCities}}
+  <section class="city-others">
+    <h3>More City Guides</h3>
+    <ul>
+      {{otherCities}}
+    </ul>
+  </section>
+  {{/otherCities}}
+</div>
+{{/seeded}}
+{{^seeded}}
+<div class="city">
+  <h1>{{title}}</h1>
+  <div class="city-placeholder">
+    <p>Guide coming soon &mdash; join the waitlist to know when Umbrella.lgbt launches.</p>
+    <a href="/waitlist">Coming {{launchYear}}</a>
+  </div>
+</div>
+{{/seeded}}

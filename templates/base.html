@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{title}}</title>
+  <meta name="description" content="{{description}}">
+  <meta name="robots" content="{{robots}}">
+  <link rel="canonical" href="{{canonical}}">
+  <meta property="og:title" content="{{ogTitle}}">
+  <meta property="og:description" content="{{description}}">
+  <meta property="og:image" content="https://umbrella.lgbt/assets/og-image.svg">
+  <meta property="og:url" content="{{canonical}}">
+  <meta property="og:type" content="{{ogType}}">
+  <meta name="twitter:card" content="summary_large_image">
+  {{schema}}
+  <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="stylesheet" href="/styles/base.css">
+  <link rel="stylesheet" href="/styles/retro.css">
+  {{extraCSS}}
+</head>
+<body>
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">
+        <span class="r">U</span><span class="r">m</span><span class="r">b</span><span class="r">r</span><span class="r">e</span><span class="g">l</span><span class="b">l</span><span class="b">a</span>
+      </a>
+      <div class="nav-actions">
+        <button class="theme-toggle" aria-label="Toggle dark mode" id="themeToggle">
+          <span class="theme-icon-light">&#9788;</span>
+          <span class="theme-icon-dark">&#9790;</span>
+        </button>
+        <button class="nav-toggle" aria-label="Toggle menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+      <div class="nav-links">
+        <a href="/about">About</a>
+        <a href="/features">Features</a>
+        <a href="/blog">Blog</a>
+        <a href="/glossary">Glossary</a>
+        <a href="/qa">Q&amp;A</a>
+        <a href="/city">Cities</a>
+        <a href="/resources">Resources</a>
+        <a href="/press">Press</a>
+        <a href="/contact">Contact</a>
+        <a href="https://x.com/cocortech" class="nav-icon" aria-label="X (Twitter)">
+          {{xIcon}}
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  {{breadcrumbs}}
+
+  <main>
+    {{content}}
+  </main>
+
+  <footer class="footer">
+    <div class="pixel-divider" aria-hidden="true"></div>
+    <div class="footer-inner">
+      <div class="footer-links">
+        <a href="/about">About</a>
+        <span>&middot;</span>
+        <a href="/features">Features</a>
+        <span>&middot;</span>
+        <a href="/blog">Blog</a>
+        <span>&middot;</span>
+        <a href="/glossary">Glossary</a>
+        <span>&middot;</span>
+        <a href="/city">City Guides</a>
+        <span>&middot;</span>
+        <a href="/press">Press</a>
+        <span>&middot;</span>
+        <a href="/contact">Contact</a>
+        <span>&middot;</span>
+        <a href="/privacy">Privacy</a>
+      </div>
+      <div class="footer-bottom">
+        <a href="mailto:hello@umbrella.lgbt">hello@umbrella.lgbt</a>
+        <a href="https://x.com/cocortech" class="nav-icon" aria-label="X (Twitter)">
+          {{xIcon}}
+        </a>
+        <span>&copy; 2026 Umbrella.lgbt</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/scripts/main.js"></script>
+</body>
+</html>

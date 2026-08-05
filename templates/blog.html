@@ -1,0 +1,30 @@
+{{#seeded}}
+<article class="blog">
+  <h1>{{title}}</h1>
+  <div class="blog-meta">
+    <time datetime="{{date}}">{{date}}</time>
+    <span class="blog-reading-time">{{readingTime}} min read</span>
+  </div>
+  <div class="blog-content">
+    {{content}}
+  </div>
+  {{#relatedPosts}}
+  <section class="blog-related">
+    <h3>Related Posts</h3>
+    <ul>
+      {{relatedPosts}}
+    </ul>
+  </section>
+  {{/relatedPosts}}
+  {{crossLinks}}
+</article>
+{{/seeded}}
+{{^seeded}}
+<article class="blog">
+  <h1>{{title}}</h1>
+  <div class="blog-placeholder">
+    <p>Post coming soon &mdash; join the waitlist to know when Umbrella.lgbt launches.</p>
+    <a href="/waitlist">Coming {{launchYear}}</a>
+  </div>
+</article>
+{{/seeded}}

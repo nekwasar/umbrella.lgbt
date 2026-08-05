@@ -66,49 +66,49 @@
       "slug": "am-i-trans",
       "title": "Am I trans?",
       "topic": "gender-identity",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "qa",
       "slug": "what-is-pansexual",
       "title": "What does pansexual mean?",
       "topic": "sexuality",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "qa",
       "slug": "non-binary-pronouns",
       "title": "What pronouns do non-binary people use?",
       "topic": "gender-identity",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "qa",
       "slug": "finding-queer-friends",
       "title": "How do I find queer friends?",
       "topic": "community",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "qa",
       "slug": "coming-out-at-work",
       "title": "How do I come out at work?",
       "topic": "coming-out",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "qa",
       "slug": "queer-mental-health",
       "title": "Mental health resources for queer people",
       "topic": "health",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "qa",
       "slug": "bisexual-erasure",
       "title": "What is bisexual erasure?",
       "topic": "sexuality",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "qa",
@@ -122,49 +122,49 @@
       "slug": "how-to-support-trans-friend",
       "title": "How do I support a trans friend?",
       "topic": "gender-identity",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "qa",
       "slug": "queerplatonic-relationships",
       "title": "What is a queerplatonic relationship?",
       "topic": "relationships",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "qa",
       "slug": "trans-healthcare-guide",
       "title": "How do I access trans healthcare?",
       "topic": "health",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "qa",
       "slug": "pride-flags-explained",
       "title": "What do all the pride flags mean?",
       "topic": "culture",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "qa",
       "slug": "intersex-explained",
       "title": "What does intersex mean?",
       "topic": "sexuality",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "qa",
       "slug": "what-is-two-spirit",
       "title": "What does two-spirit mean?",
       "topic": "culture",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "qa",
       "slug": "queer-safe-spaces",
       "title": "How do I find safe queer spaces?",
       "topic": "community",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "qa",
@@ -178,7 +178,7 @@
       "slug": "how-to-change-name",
       "title": "How do I legally change my name and gender marker?",
       "topic": "legal",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "qa",
@@ -192,210 +192,210 @@
       "slug": "binding-safely",
       "title": "How do I bind safely?",
       "topic": "health",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "qa",
       "slug": "what-is-prep",
       "title": "What is PrEP and how does it work?",
       "topic": "health",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "qa",
       "slug": "u-equals-u",
       "title": "What does U=U mean?",
       "topic": "health",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "qa",
       "slug": "coming-out-to-religious-parents",
       "title": "How do I come out to religious parents?",
       "topic": "coming-out",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "qa",
       "slug": "dealing-with-family-rejection",
       "title": "What do I do if my family rejects me for being queer?",
       "topic": "coming-out",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "qa",
       "slug": "queer-youth-homelessness",
       "title": "Resources for queer youth facing homelessness",
       "topic": "resources",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "qa",
       "slug": "what-is-drag",
       "title": "What is drag?",
       "topic": "culture",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "qa",
       "slug": "ballroom-culture",
       "title": "What is ballroom culture?",
       "topic": "culture",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "qa",
       "slug": "queer-activism",
       "title": "How do I get involved in queer activism?",
       "topic": "community",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "qa",
       "slug": "finding-queer-roommates",
       "title": "How do I find queer-friendly roommates or housing?",
       "topic": "community",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "qa",
       "slug": "queer-travel-safety",
       "title": "Is it safe to travel as a visibly queer person?",
       "topic": "safety",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "qa",
       "slug": "non-binary-fashion",
       "title": "Fashion tips for non-binary people",
       "topic": "gender-identity",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "qa",
       "slug": "what-is-deadnaming",
       "title": "What is deadnaming and why is it harmful?",
       "topic": "gender-identity",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "qa",
       "slug": "how-to-use-pronouns",
       "title": "How do I use someone's pronouns correctly?",
       "topic": "gender-identity",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "qa",
       "slug": "what-is-misgendering",
       "title": "What is misgendering?",
       "topic": "gender-identity",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "qa",
       "slug": "queer-inclusivity-at-work",
       "title": "How can workplaces be more queer-inclusive?",
       "topic": "community",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "qa",
       "slug": "what-is-gender-affirming-care",
       "title": "What is gender-affirming care?",
       "topic": "health",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "qa",
       "slug": "what-is-gender-euphoria",
       "title": "What is gender euphoria?",
       "topic": "gender-identity",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "qa",
       "slug": "what-is-comphet",
       "title": "What is compulsory heterosexuality?",
       "topic": "sexuality",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "qa",
       "slug": "am-i-non-binary",
       "title": "How do I know if I'm non-binary?",
       "topic": "gender-identity",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "qa",
       "slug": "am-i-asexual",
       "title": "How do I know if I'm asexual?",
       "topic": "sexuality",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "qa",
       "slug": "queer-book-recommendations",
       "title": "What are the best queer books to read?",
       "topic": "culture",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "qa",
       "slug": "queer-movie-recommendations",
       "title": "What are the best queer movies and shows?",
       "topic": "culture",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "qa",
       "slug": "what-is-sapphic",
       "title": "What does sapphic mean?",
       "topic": "sexuality",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "qa",
       "slug": "what-is-achillean",
       "title": "What does achillean mean?",
       "topic": "sexuality",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "qa",
       "slug": "how-to-find-lgbtq-therapist",
       "title": "How do I find an LGBTQ+ affirming therapist?",
       "topic": "health",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "qa",
       "slug": "queer-sex-ed",
       "title": "Sex education for queer people",
       "topic": "health",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "qa",
       "slug": "what-is-aromantic",
       "title": "What does aromantic mean?",
       "topic": "sexuality",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "qa",
       "slug": "what-is-demisexual",
       "title": "What does demisexual mean?",
       "topic": "sexuality",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "qa",
       "slug": "what-is-agender",
       "title": "What does agender mean?",
       "topic": "gender-identity",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "glossary",
@@ -458,28 +458,28 @@
       "slug": "aromantic",
       "title": "Aromantic",
       "category": "sexuality",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "glossary",
       "slug": "pansexual",
       "title": "Pansexual",
       "category": "sexuality",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "glossary",
       "slug": "intersex",
       "title": "Intersex",
       "category": "basics",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "glossary",
       "slug": "two-spirit",
       "title": "Two-Spirit",
       "category": "culture",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "glossary",
@@ -493,49 +493,49 @@
       "slug": "genderfluid",
       "title": "Genderfluid",
       "category": "gender",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "glossary",
       "slug": "demisexual",
       "title": "Demisexual",
       "category": "sexuality",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "glossary",
       "slug": "agender",
       "title": "Agender",
       "category": "gender",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "glossary",
       "slug": "gender-dysphoria",
       "title": "Gender Dysphoria",
       "category": "gender",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "glossary",
       "slug": "gender-euphoria",
       "title": "Gender Euphoria",
       "category": "gender",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "glossary",
       "slug": "deadname",
       "title": "Deadname",
       "category": "gender",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "glossary",
       "slug": "misgender",
       "title": "Misgender",
       "category": "gender",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "glossary",
@@ -549,203 +549,203 @@
       "slug": "neopronouns",
       "title": "Neopronouns",
       "category": "gender",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "glossary",
       "slug": "coming-out",
       "title": "Coming Out",
       "category": "basics",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "glossary",
       "slug": "closeted",
       "title": "Closeted",
       "category": "basics",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "glossary",
       "slug": "passing",
       "title": "Passing",
       "category": "gender",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "glossary",
       "slug": "binding",
       "title": "Binding",
       "category": "health",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "glossary",
       "slug": "tucking",
       "title": "Tucking",
       "category": "health",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "glossary",
       "slug": "hrt",
       "title": "HRT (Hormone Replacement Therapy)",
       "category": "health",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "glossary",
       "slug": "prep",
       "title": "PrEP",
       "category": "health",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "glossary",
       "slug": "pep",
       "title": "PEP",
       "category": "health",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "glossary",
       "slug": "undetectable",
       "title": "Undetectable",
       "category": "health",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "glossary",
       "slug": "u-equals-u",
       "title": "U=U (Undetectable = Untransmittable)",
       "category": "health",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "glossary",
       "slug": "terf",
       "title": "TERF",
       "category": "issues",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "glossary",
       "slug": "biphobia",
       "title": "Biphobia",
       "category": "issues",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "glossary",
       "slug": "transphobia",
       "title": "Transphobia",
       "category": "issues",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "glossary",
       "slug": "homophobia",
       "title": "Homophobia",
       "category": "issues",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "glossary",
       "slug": "heteronormativity",
       "title": "Heteronormativity",
       "category": "issues",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "glossary",
       "slug": "comphet",
       "title": "Compulsory Heterosexuality (CompHet)",
       "category": "sexuality",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "glossary",
       "slug": "queerplatonic",
       "title": "Queerplatonic Relationship",
       "category": "relationships",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "glossary",
       "slug": "polyamory",
       "title": "Polyamory",
       "category": "relationships",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "glossary",
       "slug": "sapphic",
       "title": "Sapphic",
       "category": "sexuality",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "glossary",
       "slug": "achillean",
       "title": "Achillean",
       "category": "sexuality",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "glossary",
       "slug": "wlw",
       "title": "WLW (Women Loving Women)",
       "category": "sexuality",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "glossary",
       "slug": "mlm",
       "title": "MLM (Men Loving Men)",
       "category": "sexuality",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "glossary",
       "slug": "msm",
       "title": "MSM (Men who have Sex with Men)",
       "category": "health",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "glossary",
       "slug": "drag",
       "title": "Drag",
       "category": "culture",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "glossary",
       "slug": "ballroom",
       "title": "Ballroom Culture",
       "category": "culture",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "glossary",
       "slug": "top-surgery",
       "title": "Top Surgery",
       "category": "health",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "glossary",
       "slug": "bottom-surgery",
       "title": "Bottom Surgery",
       "category": "health",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "glossary",
       "slug": "gender-affirming-care",
       "title": "Gender-Affirming Care",
       "category": "health",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "city",
@@ -763,109 +763,109 @@
       "type": "city",
       "slug": "london",
       "title": "Queer London Guide",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "city",
       "slug": "san-francisco",
       "title": "Queer San Francisco Guide",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "city",
       "slug": "los-angeles",
       "title": "Queer Los Angeles Guide",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "city",
       "slug": "chicago",
       "title": "Queer Chicago Guide",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "city",
       "slug": "toronto",
       "title": "Queer Toronto Guide",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "city",
       "slug": "amsterdam",
       "title": "Queer Amsterdam Guide",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "city",
       "slug": "barcelona",
       "title": "Queer Barcelona Guide",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "city",
       "slug": "paris",
       "title": "Queer Paris Guide",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "city",
       "slug": "tokyo",
       "title": "Queer Tokyo Guide",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "city",
       "slug": "sydney",
       "title": "Queer Sydney Guide",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "city",
       "slug": "melbourne",
       "title": "Queer Melbourne Guide",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "city",
       "slug": "portland",
       "title": "Queer Portland Guide",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "city",
       "slug": "seattle",
       "title": "Queer Seattle Guide",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "city",
       "slug": "manchester",
       "title": "Queer Manchester Guide",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "city",
       "slug": "brighton",
       "title": "Queer Brighton Guide",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "city",
       "slug": "stockholm",
       "title": "Queer Stockholm Guide",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "city",
       "slug": "copenhagen",
       "title": "Queer Copenhagen Guide",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "city",
       "slug": "madrid",
       "title": "Queer Madrid Guide",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "resources",
@@ -883,49 +883,49 @@
       "type": "resources",
       "slug": "canada",
       "title": "LGBTQ+ Resources — Canada",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "resources",
       "slug": "australia",
       "title": "LGBTQ+ Resources — Australia",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "resources",
       "slug": "germany",
       "title": "LGBTQ+ Resources — Germany",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "resources",
       "slug": "netherlands",
       "title": "LGBTQ+ Resources — Netherlands",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "resources",
       "slug": "spain",
       "title": "LGBTQ+ Resources — Spain",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "resources",
       "slug": "india",
       "title": "LGBTQ+ Resources — India",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "resources",
       "slug": "brazil",
       "title": "LGBTQ+ Resources — Brazil",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "resources",
       "slug": "mexico",
       "title": "LGBTQ+ Resources — Mexico",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "blog",
@@ -939,126 +939,126 @@
       "slug": "finding-queer-community",
       "title": "Finding Queer Community: Where to Start",
       "date": "2026-08-01",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "blog",
       "slug": "non-binary-explained",
       "title": "Non-Binary Identities Explained",
       "date": "2026-08-01",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "blog",
       "slug": "queer-housing-guide",
       "title": "Finding Queer-Friendly Housing and Roommates",
       "date": "2026-08-01",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "blog",
       "slug": "trans-healthcare-resources",
       "title": "Trans Healthcare: Finding Affirming Care",
       "date": "2026-08-01",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "blog",
       "slug": "asexual-aromantic-explained",
       "title": "Asexual and Aromantic: The A in LGBTQIA+",
       "date": "2026-08-01",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "blog",
       "slug": "queer-travel-safety",
       "title": "Queer Travel Safety: A Country-by-Country Guide",
       "date": "2026-08-01",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "blog",
       "slug": "bisexual-erasure",
       "title": "Bisexual Erasure: Why It Matters",
       "date": "2026-08-01",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "blog",
       "slug": "supporting-trans-friend",
       "title": "How to Support a Trans Friend or Partner",
       "date": "2026-08-01",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "blog",
       "slug": "queer-mental-health",
       "title": "Queer Mental Health: Resources and Support",
       "date": "2026-08-01",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "blog",
       "slug": "pride-history",
       "title": "Pride History: From Stonewall to Today",
       "date": "2026-08-01",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "blog",
       "slug": "queer-books-must-read",
       "title": "Queer Books Everyone Should Read",
       "date": "2026-08-01",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "blog",
       "slug": "finding-youth-groups",
       "title": "Finding LGBTQ+ Youth Groups Near You",
       "date": "2026-08-01",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "blog",
       "slug": "prep-hiv-prevention",
       "title": "PrEP and HIV Prevention: What You Need to Know",
       "date": "2026-08-01",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "blog",
       "slug": "queerplatonic-relationships",
       "title": "Queerplatonic Relationships Explained",
       "date": "2026-08-01",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "blog",
       "slug": "name-gender-marker-change",
       "title": "How to Change Your Name and Gender Marker",
       "date": "2026-08-01",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "blog",
       "slug": "safe-queer-spaces-online",
       "title": "Safe Queer Spaces Online (That Aren't Dating Apps)",
       "date": "2026-08-01",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "blog",
       "slug": "family-rejection-what-to-do",
       "title": "What to Do If Your Family Rejects You",
       "date": "2026-08-01",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "blog",
       "slug": "queer-cities-ranked",
       "title": "The Most Queer-Friendly Cities in the World",
       "date": "2026-08-01",
-      "seeded": false
+      "seeded": true
     },
     {
       "type": "blog",

@@ -4,7 +4,9 @@
   "description": "The everything queer app — pre-launch site",
   "private": true,
   "scripts": {
-    "build": "node build.js"
+    "build": "node build.js",
+    "seed:status": "node scripts/seed-status.js",
+    "check:links": "node scripts/check-links.js"
   },
   "dependencies": {
     "marked": "^14.0.0"

@@ -1,7 +1,6 @@
 # M8 — Post-Launch Runbook (Deploy → Indexing → Monitoring)
 
-Status: **BLOCKED at Step 1 — needs your Vercel login** (no credentials in this environment).
-Everything after Step 1 is copy-paste ready.
+Status: **DEPLOYED — live at https://um-six.vercel.app.** Custom domain pending one DNS change at Spaceship (see Step 1c).
 
 ---
 
@@ -12,22 +11,35 @@ Everything after Step 1 is copy-paste ready.
 | Repo on GitHub | ✓ `nekwasar/umbrella.lgbt` |
 | CI (build + output check) | ✓ passing |
 | X account @cocortech | ✓ exists (verified HTTP 200) |
-| 33 indexable URLs generated | ✓ `docs/urls-to-index.md` |
+| Vercel production deploy | ✓ LIVE at https://um-six.vercel.app |
+| GitHub ↔ Vercel auto-deploy | ✓ connected (pushes to main deploy automatically) |
+| Domain umbrella.lgbt | ✓ added to Vercel — **DNS pending** |
 
 ---
 
-## Step 1 — Deploy to Vercel (15 min, needs you)
+## Step 1 — Deploy to Vercel ✅ DONE
 
-```bash
-npm i -g vercel
-vercel login          # browser auth — your Vercel account
-cd /root/um
-vercel --prod         # reads vercel.json: build node build.js, output public
+Production deployment is live. All pages, assets, sitemap, and robots.txt verified (HTTP 200).
+
+## Step 1c — Custom Domain (needs you, 5 min at Spaceship)
+
+Domain is added to Vercel but the nameservers are still at Spaceship (`launch1/launch2.spaceship.net`). Do ONE of:
+
+**Option A (recommended)** — At Spaceship, add this DNS record:
+```
+Type: A      Name: @ (or umbrella.lgbt)      Value: 76.76.21.21
+Type: CNAME  Name: www                        Value: cname.vercel-dns.com
 ```
 
-Or dashboard: **vercel.com/new → Import `nekwasar/umbrella.lgbt`** → Deploy (settings auto-detected from `vercel.json`).
+**Option B** — Change nameservers at Spaceship to:
+```
+ns1.vercel-dns.com
+ns2.vercel-dns.com
+```
 
-**Then add the domain:**
+Vercel verifies automatically (check the email / dashboard). Once verified, the site is live at **https://umbrella.lgbt** and `robots.txt` + `sitemap.xml` point at the right domain automatically.
+
+Then continue to indexing steps below.
 1. Vercel → Project → **Settings → Domains** → Add `umbrella.lgbt`
 2. Follow Vercel's DNS instructions at your registrar (CNAME `cname.vercel-dns.com` or nameserver swap)
 3. SSL is provisioned automatically (wait up to a few hours for the cert)
@@ -40,9 +52,9 @@ Or dashboard: **vercel.com/new → Import `nekwasar/umbrella.lgbt`** → Deploy 
 
 1. Go to **search.google.com/search-console** → sign in (use a Google account that will own the domain long-term).
 2. Add property: **URL prefix** → `https://umbrella.lgbt`.
-3. Verification method: choose **DNS** (CNAME `google-site-verification=...` at registrar) — or HTML file (download, place in `static/`, run `npm run build`, push — Vercel deploys, then click Verify).
-4. Once verified: **Sitemaps** → submit `sitemap.xml` → Google shows 33 discovered URLs.
-5. **URL Inspection** tool → paste each URL from `docs/urls-to-index.md` (start with Priority 1) → **Request Indexing**.
+3. Verification method: choose **DNS** (CNAME `google-site-verification=...` at Spaceship) — or HTML file (download, place in `static/`, run `npm run build`, push — Vercel deploys, then click Verify).
+4. Once verified: **Sitemaps** → submit `sitemap.xml` → Google shows **162 URLs** (all pages are now seeded and indexable).
+5. **URL Inspection** tool → paste URLs from `docs/urls-to-index.md` (now 162 URLs — regenerate with `grep -oP '<loc>\K[^<]+' public/sitemap.xml`) → **Request Indexing**.
 6. Enable **Email notifications** (Settings → Preferences) so you see crawl errors.
 
 **Checklist after 1 week:** Search Console → Coverage → all URLs indexed; Performance → first queries appearing.

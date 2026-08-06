@@ -141,12 +141,12 @@ function breadcrumbParts(page) {
 
 function breadcrumbsHTML(page) {
   const parts = breadcrumbParts(page);
-  let html = '<nav class="breadcrumbs" aria-label="Breadcrumb"><ol>';
+  let html = '<nav class="max-w-content mx-auto px-4 sm:px-6 pt-4 text-xs text-faint" aria-label="Breadcrumb"><ol class="flex gap-2 flex-wrap list-none">';
   for (let i = 0; i < parts.length; i++) {
     if (i === parts.length - 1) {
-      html += `<li aria-current="page">${parts[i].label}</li>`;
+      html += `<li aria-current="page" class="text-muted">${parts[i].label}</li>`;
     } else {
-      html += `<li><a href="${parts[i].url}">${parts[i].label}</a></li>`;
+      html += `<li><a href="${parts[i].url}" class="hover:text-pink transition">${parts[i].label}</a></li><li>/</li>`;
     }
   }
   html += '</ol></nav>';
@@ -270,6 +270,9 @@ function generateHomeSchema() {
   return [schemaOrganization(), schemaWebSite(site.url)].join('\n');
 }
 
+const relatedItem = (url, title) =>
+  `<li class="rounded-card border border-line bg-surface p-4 transition hover:border-pink hover:-translate-y-0.5 hover:shadow-card"><a class="block font-medium text-ink hover:text-pink" href="${url}">${title}</a></li>`;
+
 function buildPage(page) {
   let mdContent = '';
   const isContentType = ['qa', 'glossary', 'city', 'resources', 'blog'].includes(page.type);
@@ -303,45 +306,45 @@ function buildPage(page) {
 
   if (page.type === 'qa' && page.seeded) {
     const related = findRelated(page, pages, 'qa', 5);
-    templateVars.relatedQA = related.map(r => `<li><a href="/qa/${r.slug}">${r.title}</a></li>`).join('');
+    templateVars.relatedQA = related.map(r => relatedItem(`/qa/${r.slug}`, r.title)).join('');
     const crossGlossary = findCrossTypeLinks(page, pages, ['glossary'], 3);
     templateVars.crossLinks = crossGlossary.length > 0
-      ? '<section class="qa-related"><h3>Related Glossary Terms</h3><ul>'
-        + crossGlossary.map(r => `<li><a href="/glossary/${r.slug}">${r.title}</a></li>`).join('')
+      ? '<section class="mt-14 pt-8 border-t-2 border-line"><h3 class="text-xs uppercase tracking-widest text-faint font-semibold mb-5">Related Glossary Terms</h3><ul class="grid sm:grid-cols-2 gap-3">'
+        + crossGlossary.map(r => relatedItem(`/glossary/${r.slug}`, r.title)).join('')
         + '</ul></section>'
       : '';
   }
 
   if (page.type === 'glossary' && page.seeded) {
     const related = findRelated(page, pages, 'glossary', 5);
-    templateVars.relatedTerms = related.map(r => `<li><a href="/glossary/${r.slug}">${r.title}</a></li>`).join('');
+    templateVars.relatedTerms = related.map(r => relatedItem(`/glossary/${r.slug}`, r.title)).join('');
     const crossQA = findCrossTypeLinks(page, pages, ['qa'], 3);
     templateVars.crossLinks = crossQA.length > 0
-      ? '<section class="glossary-related"><h3>Related Questions</h3><ul>'
-        + crossQA.map(r => `<li><a href="/qa/${r.slug}">${r.title}</a></li>`).join('')
+      ? '<section class="mt-14 pt-8 border-t-2 border-line"><h3 class="text-xs uppercase tracking-widest text-faint font-semibold mb-5">Related Questions</h3><ul class="grid sm:grid-cols-2 gap-3">'
+        + crossQA.map(r => relatedItem(`/qa/${r.slug}`, r.title)).join('')
         + '</ul></section>'
       : '';
   }
 
   if (page.type === 'city' && page.seeded) {
     const other = findRelated(page, pages, 'city', 10);
-    templateVars.otherCities = other.map(r => `<li><a href="/city/${r.slug}">${r.title}</a></li>`).join('');
+    templateVars.otherCities = other.map(r => relatedItem(`/city/${r.slug}`, r.title)).join('');
   }
 
   if (page.type === 'resources' && page.seeded) {
     const other = findRelated(page, pages, 'resources', 5);
-    templateVars.otherResources = other.map(r => `<li><a href="/resources/${r.slug}">${r.title}</a></li>`).join('');
+    templateVars.otherResources = other.map(r => relatedItem(`/resources/${r.slug}`, r.title)).join('');
   }
 
   if (page.type === 'blog' && page.seeded) {
     const related = findRelated(page, pages, 'blog', 3);
-    templateVars.relatedPosts = related.map(r => `<li><a href="/blog/${r.slug}">${r.title}</a></li>`).join('');
+    templateVars.relatedPosts = related.map(r => relatedItem(`/blog/${r.slug}`, r.title)).join('');
     const crossQA = findCrossTypeLinks(page, pages, ['qa'], 2);
     const crossGloss = findCrossTypeLinks(page, pages, ['glossary'], 2);
-    templateVars.crossLinks = (crossQA.length > 0 || crossGloss.length > 0)
-      ? '<section class="blog-related"><h3>Related Q&A + Glossary</h3><ul>'
-        + crossQA.map(r => `<li><a href="/qa/${r.slug}">${r.title}</a></li>`).join('')
-        + crossGloss.map(r => `<li><a href="/glossary/${r.slug}">${r.title}</a></li>`).join('')
+    const combined = [...crossQA, ...crossGloss];
+    templateVars.crossLinks = combined.length > 0
+      ? '<section class="mt-14 pt-8 border-t-2 border-line"><h3 class="text-xs uppercase tracking-widest text-faint font-semibold mb-5">Related Q&amp;A + Glossary</h3><ul class="grid sm:grid-cols-2 gap-3">'
+        + combined.map(r => relatedItem(`/${r.type}/${r.slug}`, r.title)).join('')
         + '</ul></section>'
       : '';
   }
@@ -353,7 +356,7 @@ function buildPage(page) {
   contentHTML = render(typeTemplate, templateVars);
 
   const url = `${site.url}${pageURL(page)}`;
-  const extraCSS = page.type !== 'core' ? `<link rel="stylesheet" href="/styles/${page.type === 'resources' ? 'blog' : page.type}.css">` : '';
+  const extraCSS = '';
 
   const baseVars = {
     title: fullTitle(page),
@@ -388,32 +391,36 @@ function buildHome() {
   let blogPreview = '';
   if (seededBlogs.length > 0) {
     blogPreview = seededBlogs.map(b => `
-      <div class="hd-preview-card">
-        <a href="/blog/${b.slug}">${b.title}</a>
-        <time>${b.date || ''}</time>
+      <div class="py-3 border-b border-line last:border-0">
+        <a href="/blog/${b.slug}" class="flex items-center justify-between gap-3 font-medium text-ink hover:text-pink transition group">
+          <span>${b.title}</span><span class="text-pink opacity-0 group-hover:opacity-100 transition -translate-x-1 group-hover:translate-x-0">→</span>
+        </a>
+        <time class="block text-xs text-faint mt-1">${b.date || ''}</time>
       </div>`).join('');
   } else {
-    blogPreview = '<p class="hd-empty">Blog posts coming soon.</p>';
+    blogPreview = '<p class="text-faint italic text-sm">Blog posts coming soon.</p>';
   }
 
   let qaPreview = '';
   if (seededQAs.length > 0) {
     qaPreview = seededQAs.map(q => `
-      <div class="hd-preview-card">
-        <a href="/qa/${q.slug}">${q.title}</a>
+      <div class="py-3 border-b border-line last:border-0">
+        <a href="/qa/${q.slug}" class="flex items-center justify-between gap-3 font-medium text-ink hover:text-pink transition group">
+          <span>${q.title}</span><span class="text-pink opacity-0 group-hover:opacity-100 transition -translate-x-1 group-hover:translate-x-0">→</span>
+        </a>
       </div>`).join('');
   } else {
-    qaPreview = '<p class="hd-empty">Q&amp;A coming soon.</p>';
+    qaPreview = '<p class="text-faint italic text-sm">Q&amp;A coming soon.</p>';
   }
 
   let cityPreview = '';
   if (seededCities.length > 0) {
     cityPreview = seededCities.map(c => `
-      <div class="hd-city-card">
-        <a href="/city/${c.slug}">${c.title.replace('Queer ', '').replace(' Guide', '')}</a>
-      </div>`).join('');
+      <a href="/city/${c.slug}" class="rounded-card border border-line bg-surface px-5 py-4 font-semibold text-ink hover:border-blue hover:text-blue transition group flex items-center justify-between">
+        <span>${c.title.replace('Queer ', '').replace(' Guide', '')}</span><span class="text-blue opacity-0 group-hover:opacity-100 transition">→</span>
+      </a>`).join('');
   } else {
-    cityPreview = '<p class="hd-empty">City guides coming soon.</p>';
+    cityPreview = '<p class="text-faint italic text-sm">City guides coming soon.</p>';
   }
 
   const homeVars = {
@@ -434,7 +441,7 @@ function buildHome() {
     ogTitle: site.name + ' — ' + site.tagline,
     ogType: 'website',
     schema: generateHomeSchema(),
-    extraCSS: '<link rel="stylesheet" href="/styles/home-mobile.css"><link rel="stylesheet" href="/styles/home-desktop.css">',
+    extraCSS: '',
     xIcon: X_ICON,
     breadcrumbs: '',
     content: homeContent,
@@ -453,14 +460,16 @@ function buildIndexPages() {
     const typePages = pages.filter(p => p.type === type);
     const seeded = typePages.filter(p => p.seeded);
 
-    let listHTML = `<h1>${labels[type]}</h1>`;
+    let listHTML = `<h1 class="font-bold text-3xl sm:text-4xl tracking-tight mb-8">${labels[type]}</h1>`;
     if (seeded.length > 0) {
-      listHTML += '<ul class="index-list">';
-      listHTML += seeded.map(p => `<li><a href="/${type}/${p.slug}">${p.title}</a></li>`).join('');
+      listHTML += '<ul class="divide-y divide-line border-y border-line">';
+      listHTML += seeded.map(p =>
+        `<li><a class="group flex items-center justify-between gap-3 py-4 text-ink font-medium hover:text-pink transition" href="/${type}/${p.slug}"><span>${p.title}</span><span class="text-pink opacity-0 group-hover:opacity-100 transition -translate-x-1 group-hover:translate-x-0">→</span></a></li>`
+      ).join('');
       listHTML += '</ul>';
     }
     if (typePages.filter(p => !p.seeded).length > 0) {
-      listHTML += `<p class="index-coming">More coming soon &mdash; <a href="/waitlist">join the waitlist</a>.</p>`;
+      listHTML += `<p class="mt-6 text-sm text-faint italic">More coming soon &mdash; <a href="/waitlist" class="text-pink hover:underline">join the waitlist</a>.</p>`;
     }
 
     const idxUrl = `${site.url}/${type}`;
@@ -486,10 +495,10 @@ function buildIndexPages() {
           { "@type": "ListItem", "position": 2, "name": labels[type], "item": idxUrl }
         ]
       }),
-      extraCSS: `<link rel="stylesheet" href="/styles/pages.css">`,
+      extraCSS: '',
       xIcon: X_ICON,
-      breadcrumbs: `<nav class="breadcrumbs" aria-label="Breadcrumb"><ol><li><a href="/">${site.name}</a></li><li aria-current="page">${labels[type]}</li></ol></nav>`,
-      content: `<div class="page">${listHTML}</div>`,
+      breadcrumbs: `<nav class="max-w-content mx-auto px-4 sm:px-6 pt-4 text-xs text-faint" aria-label="Breadcrumb"><ol class="flex gap-2 flex-wrap list-none"><li><a href="/" class="hover:text-pink">${site.name}</a></li><li class="text-faint">/</li><li aria-current="page">${labels[type]}</li></ol></nav>`,
+      content: `<div class="max-w-read mx-auto">${listHTML}</div>`,
       launchYear: site.launchYear
     };
 
@@ -543,10 +552,10 @@ function build404() {
     ogTitle: '404 | Umbrella.lgbt',
     ogType: 'website',
     schema: '',
-    extraCSS: '<link rel="stylesheet" href="/styles/pages.css">',
+    extraCSS: '',
     xIcon: X_ICON,
     breadcrumbs: '',
-    content: `<div class="page"><h1>404</h1><p>This page doesn't exist yet.</p><p><a href="/">Go home</a></p></div>`,
+    content: `<div class="text-center py-20"><h1 class="font-retro text-6xl mb-4"><span class="r">4</span><span class="g">0</span><span class="b">4</span></h1><p class="text-muted mb-8">This page doesn't exist yet.</p><a href="/" class="btn-retro">Go home</a></div>`,
     launchYear: site.launchYear
   };
 

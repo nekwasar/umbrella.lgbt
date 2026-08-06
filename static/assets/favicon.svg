@@ -1,6 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <rect width="32" height="32" rx="4" fill="#FAF5EF"/>
-  <text x="16" y="14" text-anchor="middle" font-size="7" font-family="serif" fill="#E8A0BF" font-weight="bold">U</text>
-  <text x="16" y="21" text-anchor="middle" font-size="7" font-family="serif" fill="#B8A9C9" font-weight="bold">m</text>
-  <text x="16" y="28" text-anchor="middle" font-size="7" font-family="serif" fill="#A0C4D8" font-weight="bold">b</text>
+  <defs>
+    <linearGradient id="rainbow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#E8A0BF"/>
+      <stop offset="35%" stop-color="#E8A0BF"/>
+      <stop offset="55%" stop-color="#B8A9C9"/>
+      <stop offset="75%" stop-color="#A0C4D8"/>
+      <stop offset="100%" stop-color="#A0C4D8"/>
+    </linearGradient>
+  </defs>
+  <rect width="32" height="32" rx="7" fill="#FAF5EF"/>
+  <path d="M10 26 C10 16, 22 16, 22 26" stroke="url(#rainbow)" stroke-width="6" stroke-linecap="round" fill="none"/>
 </svg>

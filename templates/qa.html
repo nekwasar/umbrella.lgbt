@@ -1,13 +1,15 @@
 {{#seeded}}
 <article class="max-w-read mx-auto prose-q">
-  <span class="inline-flex items-center gap-1 rounded-full bg-pinksoft/20 px-3 py-1 text-xs font-semibold lowercase text-ink mb-6">{{topic}}</span>
-  <h1 class="font-bold text-3xl sm:text-4xl tracking-tight leading-tight mb-6 pb-6 border-b-2 border-line">{{title}}</h1>
-  <div class="text-base sm:text-lg leading-relaxed">
+  <div class="flex items-center gap-2 mb-7">
+    <span class="inline-flex items-center rounded-full bg-pinksoft/15 px-3 py-1 text-[0.7rem] font-bold uppercase tracking-[0.08em] text-pink border border-pinksoft/25">{{topic}}</span>
+  </div>
+  <h1 class="type-h1 mb-6 pb-7 border-b border-line">{{title}}</h1>
+  <div class="mt-9">
     {{content}}
   </div>
   {{#relatedQA}}
-  <section class="mt-14 pt-8 border-t-2 border-line">
-    <h3 class="text-xs uppercase tracking-widest text-faint font-semibold mb-5">More Questions Like This</h3>
+  <section class="mt-16 pt-9 border-t border-line">
+    <h2 class="text-xs font-bold uppercase tracking-[0.08em] text-faint mb-6">More Questions Like This</h2>
     <ul class="grid sm:grid-cols-2 gap-3">
       {{relatedQA}}
     </ul>
@@ -18,9 +20,11 @@
 {{/seeded}}
 {{^seeded}}
 <article class="max-w-read mx-auto">
-  <span class="inline-flex items-center gap-1 rounded-full bg-pinksoft/20 px-3 py-1 text-xs font-semibold lowercase text-ink mb-6">{{topic}}</span>
-  <h1 class="font-bold text-3xl sm:text-4xl tracking-tight leading-tight mb-6 pb-6 border-b-2 border-line">{{title}}</h1>
-  <div class="rounded-card border border-dashed border-linetrong bg-soft p-10 text-center mt-2">
+  <div class="flex items-center gap-2 mb-7">
+    <span class="inline-flex items-center rounded-full bg-pinksoft/15 px-3 py-1 text-[0.7rem] font-bold uppercase tracking-[0.08em] text-pink border border-pinksoft/25">{{topic}}</span>
+  </div>
+  <h1 class="type-h1 mb-8 pb-7 border-b border-line">{{title}}</h1>
+  <div class="rounded-card border border-dashed border-linetrong bg-soft p-10 text-center mt-6">
     <p class="text-muted mb-4">Answers coming soon &mdash; join the waitlist to know when Umbrella.lgbt launches.</p>
     <a href="/waitlist" class="btn-retro">Coming {{launchYear}}</a>
   </div>

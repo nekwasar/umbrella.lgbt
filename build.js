@@ -271,7 +271,7 @@ function generateHomeSchema() {
 }
 
 const relatedItem = (url, title) =>
-  `<li class="rounded-card border border-line bg-surface p-4 transition hover:border-pink hover:-translate-y-0.5 hover:shadow-card"><a class="block font-medium text-ink hover:text-pink" href="${url}">${title}</a></li>`;
+  `<li class="rounded-card border border-line bg-surface p-4 transition hover:border-pink hover:-translate-y-0.5 hover:shadow-card"><a class="group flex items-center justify-between gap-3 font-semibold text-ink hover:text-pink" href="${url}"><span>${title}</span><span class="text-pink opacity-0 group-hover:opacity-100 transition -translate-x-1 group-hover:translate-x-0">→</span></a></li>`;
 
 function buildPage(page) {
   let mdContent = '';
@@ -460,11 +460,11 @@ function buildIndexPages() {
     const typePages = pages.filter(p => p.type === type);
     const seeded = typePages.filter(p => p.seeded);
 
-    let listHTML = `<h1 class="font-bold text-3xl sm:text-4xl tracking-tight mb-8">${labels[type]}</h1>`;
+    let listHTML = `<h1 class="type-h1 mb-8">${labels[type]}</h1>`;
     if (seeded.length > 0) {
       listHTML += '<ul class="divide-y divide-line border-y border-line">';
       listHTML += seeded.map(p =>
-        `<li><a class="group flex items-center justify-between gap-3 py-4 text-ink font-medium hover:text-pink transition" href="/${type}/${p.slug}"><span>${p.title}</span><span class="text-pink opacity-0 group-hover:opacity-100 transition -translate-x-1 group-hover:translate-x-0">→</span></a></li>`
+        `<li><a class="group flex items-center justify-between gap-3 py-4 text-ink font-semibold hover:text-pink transition" href="/${type}/${p.slug}"><span>${p.title}</span><span class="text-pink opacity-0 group-hover:opacity-100 transition -translate-x-1 group-hover:translate-x-0">→</span></a></li>`
       ).join('');
       listHTML += '</ul>';
     }

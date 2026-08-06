@@ -1,28 +1,28 @@
 {{#seeded}}
-<div class="qa">
-  <span class="qa-topic">{{topic}}</span>
-  <h1>{{title}}</h1>
-  <div class="qa-content">
+<article class="max-w-read mx-auto prose-q">
+  <span class="inline-flex items-center gap-1 rounded-full bg-pinksoft/20 px-3 py-1 text-xs font-semibold lowercase text-ink mb-6">{{topic}}</span>
+  <h1 class="font-bold text-3xl sm:text-4xl tracking-tight leading-tight mb-6 pb-6 border-b-2 border-line">{{title}}</h1>
+  <div class="text-base sm:text-lg leading-relaxed">
     {{content}}
   </div>
   {{#relatedQA}}
-  <section class="qa-related">
-    <h3>More Questions Like This</h3>
-    <ul>
+  <section class="mt-14 pt-8 border-t-2 border-line">
+    <h3 class="text-xs uppercase tracking-widest text-faint font-semibold mb-5">More Questions Like This</h3>
+    <ul class="grid sm:grid-cols-2 gap-3">
       {{relatedQA}}
     </ul>
   </section>
   {{/relatedQA}}
   {{crossLinks}}
-</div>
+</article>
 {{/seeded}}
 {{^seeded}}
-<div class="qa">
-  <span class="qa-topic">{{topic}}</span>
-  <h1>{{title}}</h1>
-  <div class="qa-placeholder">
-    <p>Answers coming soon &mdash; join the waitlist to know when Umbrella.lgbt launches.</p>
-    <a href="/waitlist">Coming {{launchYear}}</a>
+<article class="max-w-read mx-auto">
+  <span class="inline-flex items-center gap-1 rounded-full bg-pinksoft/20 px-3 py-1 text-xs font-semibold lowercase text-ink mb-6">{{topic}}</span>
+  <h1 class="font-bold text-3xl sm:text-4xl tracking-tight leading-tight mb-6 pb-6 border-b-2 border-line">{{title}}</h1>
+  <div class="rounded-card border border-dashed border-linetrong bg-soft p-10 text-center mt-2">
+    <p class="text-muted mb-4">Answers coming soon &mdash; join the waitlist to know when Umbrella.lgbt launches.</p>
+    <a href="/waitlist" class="btn-retro">Coming {{launchYear}}</a>
   </div>
-</div>
+</article>
 {{/seeded}}

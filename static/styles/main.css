@@ -1,0 +1,119 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===== base ===== */
+@layer base {
+  :root {
+    --bg: #FAF5EF;
+    --surface: #FFFFFF;
+    --surface-soft: #F4EDE3;
+    --border: #E0D5C8;
+    --border-strong: #D4C5B9;
+    --text: #2D2A26;
+    --text-muted: #6B5E53;
+    --text-faint: #93887D;
+    --pink: #E8A0BF;
+    --pink-deep: #C96E93;
+    --purple: #B8A9C9;
+    --purple-deep: #8F7BA6;
+    --blue: #A0C4D8;
+    --blue-deep: #6F9EBB;
+    --button: #2D2A26;
+    --button-text: #FAF5EF;
+    --shadow-sm: 0 1px 2px rgba(45,42,38,.05);
+    --shadow-md: 0 6px 24px rgba(45,42,38,.10);
+    --radius: 10px;
+  }
+  [data-theme="dark"] {
+    --bg: #191613;
+    --surface: #211D19;
+    --surface-soft: #2A2520;
+    --border: #3A332B;
+    --border-strong: #4A4238;
+    --text: #ECE4D8;
+    --text-muted: #A69A8B;
+    --text-faint: #7E7468;
+    --pink: #D487A5;
+    --pink-deep: #E8A0BF;
+    --purple: #A594B8;
+    --purple-deep: #B8A9C9;
+    --blue: #8BAEBF;
+    --blue-deep: #A0C4D8;
+    --button: #ECE4D8;
+    --button-text: #191613;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,.3);
+    --shadow-md: 0 6px 24px rgba(0,0,0,.45);
+  }
+
+  html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+  body { @apply bg-bg text-ink font-sans antialiased; }
+  :focus-visible { outline: 3px solid var(--pink-deep); outline-offset: 2px; border-radius: 3px; }
+}
+
+/* ===== retro brand accents ===== */
+@layer components {
+  .wordmark { @apply font-retro font-bold tracking-wide; }
+  .r { color: var(--pink-deep); }
+  .g { color: var(--purple-deep); }
+  .b { color: var(--blue-deep); }
+
+  .stars-divider { @apply flex items-center gap-3 my-8 select-none; color: var(--text-faint); }
+  .stars-divider::before, .stars-divider::after { content: ''; @apply flex-1 h-px; background: var(--border); }
+
+  .btn-retro {
+    @apply inline-flex items-center gap-2 rounded-card font-retro px-8 py-3 transition;
+    background: var(--button); color: var(--button-text); box-shadow: var(--shadow-md);
+  }
+  .btn-retro:hover { transform: translateY(-2px); background: var(--pink-deep); color: #fff; }
+
+  .pixel-divider {
+    width: 100%; height: 8px;
+    background: repeating-linear-gradient(90deg, var(--border-strong) 0 4px, transparent 4px 8px);
+  }
+
+  /* mobile overlay menu */
+  .mobile-menu {
+    @apply fixed inset-0 z-50 flex flex-col justify-center px-8;
+    background: var(--surface);
+    opacity: 0; visibility: hidden;
+    transition: opacity .25s ease, visibility .25s ease;
+  }
+  .mobile-menu.open { opacity: 1; visibility: visible; }
+  .mobile-menu::before {
+    content: ''; @apply absolute inset-0 pointer-events-none;
+    background: radial-gradient(ellipse at 50% 0%, var(--pink) 0%, transparent 60%);
+    opacity: .14;
+  }
+  .mobile-menu a {
+    @apply font-retro text-3xl py-4 border-b relative flex items-center justify-between;
+    border-color: var(--border); color: var(--text);
+    opacity: 0; transform: translateY(14px);
+    transition: opacity .3s ease, transform .3s ease, color .15s;
+  }
+  .mobile-menu.open a { opacity: 1; transform: translateY(0); }
+  .mobile-menu a:hover { color: var(--pink-deep); }
+  .mobile-menu a::after { content: '→'; color: var(--pink-deep); font-size: 1.1rem; opacity: 0; transition: opacity .2s; }
+  .mobile-menu a:hover::after { opacity: 1; }
+
+  body.menu-open { overflow: hidden; }
+
+  /* hamburger -> X */
+  .nav-toggle span:nth-child(1) { @apply -translate-y-2; }
+  .nav-toggle span:nth-child(2) { @apply translate-y-0; }
+  .nav-toggle span:nth-child(3) { @apply translate-y-2; }
+  .nav-toggle.open span:nth-child(1) { @apply translate-y-0 rotate-45; }
+  .nav-toggle.open span:nth-child(2) { @apply opacity-0; }
+  .nav-toggle.open span:nth-child(3) { @apply translate-y-0 -rotate-45; }
+
+  /* theme icon swap */
+  html[data-theme="light"] .theme-icon-dark { display: none; }
+  html[data-theme="dark"] .theme-icon-light { display: none; }
+
+  /* content rich-text helpers */
+  .prose-q ul { @apply mb-6 space-y-2; list-style: none; }
+  .prose-q ul li { @apply pl-6 relative; }
+  .prose-q ul li::before { content: '✦'; @apply absolute left-0; color: var(--pink-deep); font-size: .8em; }
+  .prose-q ol { @apply mb-6 space-y-2 pl-5 list-decimal; }
+  .prose-q blockquote { @apply border-l-4 pl-5 my-7 italic text-muted; border-color: var(--pink); }
+}

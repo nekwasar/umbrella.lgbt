@@ -20,44 +20,44 @@
   {{schema}}
   <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
   <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
-  <link rel="stylesheet" href="/styles/base.css">
-  <link rel="stylesheet" href="/styles/retro.css">
-  {{extraCSS}}
+  <link rel="stylesheet" href="/styles/site.css">
 </head>
-<body>
-  <nav class="nav">
-    <div class="nav-inner">
-      <a href="/" class="nav-logo">
-        <span class="r">U</span><span class="r">m</span><span class="r">b</span><span class="r">r</span><span class="r">e</span><span class="g">l</span><span class="b">l</span><span class="b">a</span>
-      </a>
-      <div class="nav-actions">
-        <button class="theme-toggle" aria-label="Toggle dark mode" id="themeToggle">
+<body class="min-h-screen flex flex-col">
+  <!-- NAV -->
+  <header class="sticky top-0 z-40 bg-surface border-b border-line">
+    <div class="max-w-content mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      <a href="/" class="wordmark text-xl"><span class="r">U</span><span class="r">m</span><span class="r">b</span><span class="r">r</span><span class="r">e</span><span class="g">l</span><span class="b">l</span><span class="b">a</span></a>
+
+      <div class="flex items-center gap-2">
+        <button class="theme-toggle px-2 py-1 rounded-card border border-linetrong text-ink hover:border-pink transition" aria-label="Toggle dark mode" id="themeToggle">
           <span class="theme-icon-light" aria-hidden="true">&#9788;</span>
           <span class="theme-icon-dark" aria-hidden="true">&#9790;</span>
         </button>
-        <button class="nav-toggle" aria-label="Open menu" aria-expanded="false">
-          <span></span><span></span><span></span>
+        <button class="nav-toggle w-10 h-10 relative lg:hidden" aria-label="Open menu" aria-expanded="false">
+          <span class="absolute left-1/2 top-1/2 -translate-x-1/2 block w-6 h-0.5 bg-ink transition-all duration-200 -translate-y-2"></span>
+          <span class="absolute left-1/2 top-1/2 -translate-x-1/2 block w-6 h-0.5 bg-ink transition-all duration-200"></span>
+          <span class="absolute left-1/2 top-1/2 -translate-x-1/2 block w-6 h-0.5 bg-ink transition-all duration-200 translate-y-2"></span>
         </button>
       </div>
-      <div class="nav-links">
-        <a href="/about">About</a>
-        <a href="/features">Features</a>
-        <a href="/blog">Blog</a>
-        <a href="/glossary">Glossary</a>
-        <a href="/qa">Q&amp;A</a>
-        <a href="/city">Cities</a>
-        <a href="/resources">Resources</a>
-        <a href="/press">Press</a>
-        <a href="/contact">Contact</a>
-        <a href="https://x.com/cocortech" class="nav-icon" aria-label="X (Twitter)">
-          {{xIcon}}
-        </a>
-      </div>
-    </div>
-  </nav>
 
+      <!-- desktop nav -->
+      <nav class="hidden lg:flex items-center gap-7" aria-label="Main">
+        <a class="text-sm font-medium text-ink hover:text-pink transition" href="/about">About</a>
+        <a class="text-sm font-medium text-ink hover:text-pink transition" href="/features">Features</a>
+        <a class="text-sm font-medium text-ink hover:text-pink transition" href="/blog">Blog</a>
+        <a class="text-sm font-medium text-ink hover:text-pink transition" href="/glossary">Glossary</a>
+        <a class="text-sm font-medium text-ink hover:text-pink transition" href="/qa">Q&amp;A</a>
+        <a class="text-sm font-medium text-ink hover:text-pink transition" href="/city">Cities</a>
+        <a class="text-sm font-medium text-ink hover:text-pink transition" href="/resources">Resources</a>
+        <a class="text-sm font-medium text-ink hover:text-pink transition" href="/contact">Contact</a>
+        <a href="https://x.com/cocortech" class="text-muted hover:text-ink transition" aria-label="X (Twitter)">{{xIcon}}</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- MOBILE OVERLAY MENU -->
   <div class="mobile-menu" aria-hidden="true">
-    <nav class="mobile-menu-links" aria-label="Mobile">
+    <nav class="relative z-10" aria-label="Mobile">
       <a href="/about">About</a>
       <a href="/features">Features</a>
       <a href="/blog">Blog</a>
@@ -68,57 +68,52 @@
       <a href="/press">Press</a>
       <a href="/contact">Contact</a>
     </nav>
-    <div class="mobile-menu-foot">
-      <a href="mailto:hello@umbrella.lgbt">hello@umbrella.lgbt</a>
-      <a href="https://x.com/cocortech" class="nav-icon" aria-label="X (Twitter)">
-        {{xIcon}}
-      </a>
+    <div class="absolute bottom-10 left-8 right-8 flex items-center justify-between z-10">
+      <a href="mailto:hello@umbrella.lgbt" class="text-sm text-muted">hello@umbrella.lgbt</a>
+      <a href="https://x.com/cocortech" class="text-muted" aria-label="X (Twitter)">{{xIcon}}</a>
     </div>
   </div>
 
   {{breadcrumbs}}
 
-  <main>
+  <main class="flex-1 w-full max-w-content mx-auto px-4 sm:px-6 py-10 sm:py-14">
     {{content}}
   </main>
 
-  <footer class="footer">
-    <div class="footer-inner">
-      <div class="footer-grid">
-        <div class="footer-brand">
-          <span class="footer-logo">
-            <span class="r">U</span><span class="r">m</span><span class="r">b</span><span class="r">r</span><span class="r">e</span><span class="g">l</span><span class="b">l</span><span class="b">a</span>
-          </span>
-          <p>The everything queer app. Built by and for the LGBTQ+ community.</p>
+  <!-- FOOTER -->
+  <footer class="bg-surface border-t border-line mt-auto">
+    <div class="max-w-content mx-auto px-4 sm:px-6 py-12">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 pb-10">
+        <div class="col-span-2 md:col-span-1">
+          <span class="wordmark text-lg"><span class="r">U</span><span class="r">m</span><span class="r">b</span><span class="r">r</span><span class="r">e</span><span class="g">l</span><span class="b">l</span><span class="b">a</span></span>
+          <p class="mt-3 text-sm text-muted leading-relaxed">The everything queer app. Built by and for the LGBTQ+ community.</p>
         </div>
-        <div class="footer-col">
-          <h5>Explore</h5>
-          <a href="/blog">Blog</a>
-          <a href="/glossary">Glossary</a>
-          <a href="/qa">Q&amp;A</a>
-          <a href="/city">City Guides</a>
+        <div>
+          <h5 class="text-xs uppercase tracking-wider text-faint mb-4">Explore</h5>
+          <a class="block text-sm text-muted py-1 hover:text-pink transition" href="/blog">Blog</a>
+          <a class="block text-sm text-muted py-1 hover:text-pink transition" href="/glossary">Glossary</a>
+          <a class="block text-sm text-muted py-1 hover:text-pink transition" href="/qa">Q&amp;A</a>
+          <a class="block text-sm text-muted py-1 hover:text-pink transition" href="/city">City Guides</a>
         </div>
-        <div class="footer-col">
-          <h5>Company</h5>
-          <a href="/about">About</a>
-          <a href="/features">Features</a>
-          <a href="/press">Press</a>
-          <a href="/contact">Contact</a>
+        <div>
+          <h5 class="text-xs uppercase tracking-wider text-faint mb-4">Company</h5>
+          <a class="block text-sm text-muted py-1 hover:text-pink transition" href="/about">About</a>
+          <a class="block text-sm text-muted py-1 hover:text-pink transition" href="/features">Features</a>
+          <a class="block text-sm text-muted py-1 hover:text-pink transition" href="/press">Press</a>
+          <a class="block text-sm text-muted py-1 hover:text-pink transition" href="/contact">Contact</a>
         </div>
-        <div class="footer-col">
-          <h5>Resources</h5>
-          <a href="/resources">Country Resources</a>
-          <a href="/privacy">Privacy</a>
-          <a href="/waitlist">Waitlist</a>
-          <a href="https://x.com/cocortech">X (Twitter)</a>
+        <div>
+          <h5 class="text-xs uppercase tracking-wider text-faint mb-4">Resources</h5>
+          <a class="block text-sm text-muted py-1 hover:text-pink transition" href="/resources">Country Resources</a>
+          <a class="block text-sm text-muted py-1 hover:text-pink transition" href="/privacy">Privacy</a>
+          <a class="block text-sm text-muted py-1 hover:text-pink transition" href="/waitlist">Waitlist</a>
+          <a class="block text-sm text-muted py-1 hover:text-pink transition" href="https://x.com/cocortech">X (Twitter)</a>
         </div>
       </div>
-      <div class="footer-bottom">
-        <a href="mailto:hello@umbrella.lgbt">hello@umbrella.lgbt</a>
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-6 border-t border-line text-xs text-faint">
+        <a href="mailto:hello@umbrella.lgbt" class="hover:text-pink transition">hello@umbrella.lgbt</a>
         <span>&copy; 2026 Umbrella.lgbt</span>
-        <a href="https://x.com/cocortech" class="nav-icon" aria-label="X (Twitter)">
-          {{xIcon}}
-        </a>
+        <a href="https://x.com/cocortech" class="hover:text-pink transition" aria-label="X (Twitter)">{{xIcon}}</a>
       </div>
     </div>
   </footer>

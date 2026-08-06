@@ -6,6 +6,10 @@
   <title>{{title}}</title>
   <meta name="description" content="{{description}}">
   <meta name="robots" content="{{robots}}">
+  <meta name="theme-color" content="#FAF5EF">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Umbrella">
   <link rel="canonical" href="{{canonical}}">
   <meta property="og:title" content="{{ogTitle}}">
   <meta property="og:description" content="{{description}}">
@@ -15,6 +19,7 @@
   <meta name="twitter:card" content="summary_large_image">
   {{schema}}
   <link rel="icon" type="image/svg+xml" href="/assets/favicon.svg">
+  <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
   <link rel="stylesheet" href="/styles/base.css">
   <link rel="stylesheet" href="/styles/retro.css">
   {{extraCSS}}
@@ -27,10 +32,10 @@
       </a>
       <div class="nav-actions">
         <button class="theme-toggle" aria-label="Toggle dark mode" id="themeToggle">
-          <span class="theme-icon-light">&#9788;</span>
-          <span class="theme-icon-dark">&#9790;</span>
+          <span class="theme-icon-light" aria-hidden="true">&#9788;</span>
+          <span class="theme-icon-dark" aria-hidden="true">&#9790;</span>
         </button>
-        <button class="nav-toggle" aria-label="Toggle menu">
+        <button class="nav-toggle" aria-label="Open menu" aria-expanded="false">
           <span></span><span></span><span></span>
         </button>
       </div>
@@ -51,6 +56,26 @@
     </div>
   </nav>
 
+  <div class="mobile-menu" aria-hidden="true">
+    <nav class="mobile-menu-links" aria-label="Mobile">
+      <a href="/about">About</a>
+      <a href="/features">Features</a>
+      <a href="/blog">Blog</a>
+      <a href="/glossary">Glossary</a>
+      <a href="/qa">Q&amp;A</a>
+      <a href="/city">City Guides</a>
+      <a href="/resources">Resources</a>
+      <a href="/press">Press</a>
+      <a href="/contact">Contact</a>
+    </nav>
+    <div class="mobile-menu-foot">
+      <a href="mailto:hello@umbrella.lgbt">hello@umbrella.lgbt</a>
+      <a href="https://x.com/cocortech" class="nav-icon" aria-label="X (Twitter)">
+        {{xIcon}}
+      </a>
+    </div>
+  </div>
+
   {{breadcrumbs}}
 
   <main>
@@ -58,31 +83,42 @@
   </main>
 
   <footer class="footer">
-    <div class="pixel-divider" aria-hidden="true"></div>
     <div class="footer-inner">
-      <div class="footer-links">
-        <a href="/about">About</a>
-        <span>&middot;</span>
-        <a href="/features">Features</a>
-        <span>&middot;</span>
-        <a href="/blog">Blog</a>
-        <span>&middot;</span>
-        <a href="/glossary">Glossary</a>
-        <span>&middot;</span>
-        <a href="/city">City Guides</a>
-        <span>&middot;</span>
-        <a href="/press">Press</a>
-        <span>&middot;</span>
-        <a href="/contact">Contact</a>
-        <span>&middot;</span>
-        <a href="/privacy">Privacy</a>
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <span class="footer-logo">
+            <span class="r">U</span><span class="r">m</span><span class="r">b</span><span class="r">r</span><span class="r">e</span><span class="g">l</span><span class="b">l</span><span class="b">a</span>
+          </span>
+          <p>The everything queer app. Built by and for the LGBTQ+ community.</p>
+        </div>
+        <div class="footer-col">
+          <h5>Explore</h5>
+          <a href="/blog">Blog</a>
+          <a href="/glossary">Glossary</a>
+          <a href="/qa">Q&amp;A</a>
+          <a href="/city">City Guides</a>
+        </div>
+        <div class="footer-col">
+          <h5>Company</h5>
+          <a href="/about">About</a>
+          <a href="/features">Features</a>
+          <a href="/press">Press</a>
+          <a href="/contact">Contact</a>
+        </div>
+        <div class="footer-col">
+          <h5>Resources</h5>
+          <a href="/resources">Country Resources</a>
+          <a href="/privacy">Privacy</a>
+          <a href="/waitlist">Waitlist</a>
+          <a href="https://x.com/cocortech">X (Twitter)</a>
+        </div>
       </div>
       <div class="footer-bottom">
         <a href="mailto:hello@umbrella.lgbt">hello@umbrella.lgbt</a>
+        <span>&copy; 2026 Umbrella.lgbt</span>
         <a href="https://x.com/cocortech" class="nav-icon" aria-label="X (Twitter)">
           {{xIcon}}
         </a>
-        <span>&copy; 2026 Umbrella.lgbt</span>
       </div>
     </div>
   </footer>

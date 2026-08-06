@@ -10,7 +10,8 @@
     --surface-soft: #F4EDE3;
     --border: #E0D5C8;
     --border-strong: #D4C5B9;
-    --text: #2D2A26;
+    --text: #2B2825;
+    --text-heading: #1A1815;
     --text-muted: #6B5E53;
     --text-faint: #93887D;
     --pink: #E8A0BF;
@@ -24,6 +25,9 @@
     --shadow-sm: 0 1px 2px rgba(45,42,38,.05);
     --shadow-md: 0 6px 24px rgba(45,42,38,.10);
     --radius: 10px;
+    --font-retro: Georgia, 'Times New Roman', serif;
+    --font-content: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    --font-mono: 'Courier New', monospace;
   }
   [data-theme="dark"] {
     --bg: #191613;
@@ -32,6 +36,7 @@
     --border: #3A332B;
     --border-strong: #4A4238;
     --text: #ECE4D8;
+    --text-heading: #F7F1E8;
     --text-muted: #A69A8B;
     --text-faint: #7E7468;
     --pink: #D487A5;
@@ -110,10 +115,108 @@
   html[data-theme="light"] .theme-icon-dark { display: none; }
   html[data-theme="dark"] .theme-icon-light { display: none; }
 
-  /* content rich-text helpers */
-  .prose-q ul { @apply mb-6 space-y-2; list-style: none; }
-  .prose-q ul li { @apply pl-6 relative; }
-  .prose-q ul li::before { content: '✦'; @apply absolute left-0; color: var(--pink-deep); font-size: .8em; }
-  .prose-q ol { @apply mb-6 space-y-2 pl-5 list-decimal; }
-  .prose-q blockquote { @apply border-l-4 pl-5 my-7 italic text-muted; border-color: var(--pink); }
+  /* ===== content page headings (serif display, mirrors logo) ===== */
+  /* ===== content page headings (modern sans, strong hierarchy) ===== */
+  .type-h1 {
+    font-family: var(--font-content);
+    font-size: clamp(1.9rem, 4.5vw, 2.75rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    color: var(--text-heading);
+  }
+
+  .type-h2 {
+    font-family: var(--font-content);
+    font-size: clamp(1.45rem, 3vw, 1.85rem);
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    line-height: 1.2;
+    color: var(--text-heading);
+  }
+
+  /* ===== modern editorial content typography (all non-home pages) ===== */
+  .prose-q {
+    color: var(--text);
+    font-size: 1.0625rem;
+    line-height: 1.75;
+  }
+
+  .prose-q > :first-child { margin-top: 0; }
+
+  .prose-q h2 {
+    font-family: var(--font-content);
+    font-size: clamp(1.3rem, 2.5vw, 1.55rem);
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    line-height: 1.25;
+    color: var(--text-heading);
+    margin-top: 3rem;
+    margin-bottom: 0.9rem;
+  }
+
+  .prose-q h3 {
+    font-family: var(--font-content);
+    font-size: clamp(1.05rem, 1.8vw, 1.2rem);
+    font-weight: 650;
+    letter-spacing: -0.01em;
+    line-height: 1.35;
+    color: var(--text-heading);
+    margin-top: 2.25rem;
+    margin-bottom: 0.65rem;
+  }
+
+  .prose-q h4 {
+    font-family: var(--font-content);
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-heading);
+    margin-top: 1.9rem;
+    margin-bottom: 0.55rem;
+  }
+
+  .prose-q p {
+    margin-bottom: 1.4rem;
+    color: var(--text);
+  }
+
+  .prose-q strong { font-weight: 700; color: var(--text-heading); }
+  .prose-q b { font-weight: 700; }
+
+  .prose-q a {
+    color: var(--pink-deep);
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-color: color-mix(in srgb, var(--pink-deep) 40%, transparent);
+    text-underline-offset: 3px;
+    transition: color .15s, text-decoration-color .15s;
+  }
+  .prose-q a:hover { color: var(--text-heading); text-decoration-color: currentColor; }
+
+  .prose-q ul { @apply mb-7 space-y-2.5; list-style: none; }
+  .prose-q ul li { @apply pl-7 relative; color: var(--text); }
+  .prose-q ul li::before {
+    content: ''; @apply absolute left-1 top-[0.62em];
+    width: 6px; height: 6px; border-radius: 9999px;
+    background: var(--pink-deep);
+  }
+  .prose-q ol { @apply mb-7 space-y-2.5 pl-6 list-decimal; }
+  .prose-q ol li { color: var(--text); padding-left: 0.35rem; }
+  .prose-q ol li::marker { color: var(--pink-deep); font-weight: 700; }
+  .prose-q blockquote {
+    border-left: 3px solid var(--border-strong);
+    padding: 0.25rem 0 0.25rem 1.4rem;
+    margin: 2rem 0;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  .prose-q hr {
+    border: none;
+    height: 1px;
+    background: var(--border);
+    margin: 2.75rem 0;
+  }
 }

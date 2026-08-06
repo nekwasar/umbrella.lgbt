@@ -1,12 +1,12 @@
 {{#seeded}}
 <article class="max-w-read mx-auto prose-q">
-  <h1 class="font-bold text-3xl sm:text-4xl tracking-tight leading-tight mb-8 pb-6 border-b-2 border-line">{{title}}</h1>
-  <div class="text-base sm:text-lg leading-relaxed">
+  <h1 class="type-h1 mb-7 pb-7 border-b border-line">{{title}}</h1>
+  <div class="mt-9">
     {{content}}
   </div>
   {{#otherResources}}
-  <section class="mt-14 pt-8 border-t-2 border-line">
-    <h3 class="text-xs uppercase tracking-widest text-faint font-semibold mb-5">Other Countries</h3>
+  <section class="mt-16 pt-9 border-t border-line">
+    <h2 class="text-xs font-bold uppercase tracking-[0.08em] text-faint mb-6">Other Countries</h2>
     <ul class="grid sm:grid-cols-2 gap-3">
       {{otherResources}}
     </ul>
@@ -16,8 +16,8 @@
 {{/seeded}}
 {{^seeded}}
 <article class="max-w-read mx-auto">
-  <h1 class="font-bold text-3xl sm:text-4xl tracking-tight leading-tight mb-8 pb-6 border-b-2 border-line">{{title}}</h1>
-  <div class="rounded-card border border-dashed border-linetrong bg-soft p-10 text-center">
+  <h1 class="type-h1 mb-8 pb-7 border-b border-line">{{title}}</h1>
+  <div class="rounded-card border border-dashed border-linetrong bg-soft p-10 text-center mt-6">
     <p class="text-muted mb-4">Directory coming soon &mdash; join the waitlist to know when Umbrella.lgbt launches.</p>
     <a href="/waitlist" class="btn-retro">Coming {{launchYear}}</a>
   </div>

@@ -1,16 +1,17 @@
 {{#seeded}}
 <article class="max-w-read mx-auto prose-q">
-  <h1 class="font-bold text-3xl sm:text-5xl tracking-tight leading-tight mb-4">{{title}}</h1>
-  <div class="flex items-center gap-4 text-sm text-faint mb-8 pb-6 border-b-2 border-line">
+  <h1 class="type-h1 mb-5">{{title}}</h1>
+  <div class="flex items-center gap-3 text-sm text-faint mb-10 pb-7 border-b border-line">
     <time datetime="{{date}}">{{date}}</time>
+    <span class="w-1 h-1 rounded-full bg-line"></span>
     <span>{{readingTime}} min read</span>
   </div>
-  <div class="text-base sm:text-lg leading-relaxed">
+  <div class="mt-4">
     {{content}}
   </div>
   {{#relatedPosts}}
-  <section class="mt-14 pt-8 border-t-2 border-line">
-    <h3 class="text-xs uppercase tracking-widest text-faint font-semibold mb-5">Related Posts</h3>
+  <section class="mt-16 pt-9 border-t border-line">
+    <h2 class="text-xs font-bold uppercase tracking-[0.08em] text-faint mb-6">Related Posts</h2>
     <ul class="grid sm:grid-cols-2 gap-3">
       {{relatedPosts}}
     </ul>
@@ -21,7 +22,7 @@
 {{/seeded}}
 {{^seeded}}
 <article class="max-w-read mx-auto">
-  <h1 class="font-bold text-3xl sm:text-5xl tracking-tight leading-tight mb-8">{{title}}</h1>
+  <h1 class="type-h1 mb-8">{{title}}</h1>
   <div class="rounded-card border border-dashed border-linetrong bg-soft p-10 text-center">
     <p class="text-muted mb-4">Post coming soon &mdash; join the waitlist to know when Umbrella.lgbt launches.</p>
     <a href="/waitlist" class="btn-retro">Coming {{launchYear}}</a>

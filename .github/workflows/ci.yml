@@ -28,7 +28,7 @@ jobs:
           test -f public/index.html
           test -f public/sitemap.xml
           test -f public/robots.txt
-          test -f public/styles/base.css
+          test -f public/styles/site.css
           test -f public/scripts/main.js
           test -f public/assets/favicon.svg
           echo "Build output verified ✓"

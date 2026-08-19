@@ -75,4 +75,4 @@ A workflow in `.github/workflows/ci.yml` verifies the build passes on every push
 ## Contact
 
 - Email: hello@umbrella.lgbt
-- X: @cocortech
+- X: [@cocortech](https://x.com/cocortech)

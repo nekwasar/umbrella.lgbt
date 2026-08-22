@@ -1,0 +1,21 @@
+# Umbrella.lgbt — reverse proxy (Caddy)
+# Terminates SSL for the API and proxies to the `api` container.
+
+{$API_DOMAIN:api.umbrella.lgbt} {
+	encode gzip
+
+	# Root + healthcheck
+	handle /health {
+		reverse_proxy api:3000
+	}
+
+	handle {
+		reverse_proxy api:3000
+	}
+
+	header {
+		X-Content-Type-Options nosniff
+		X-Frame-Options DENY
+		Referrer-Policy strict-origin-when-cross-origin
+	}
+}

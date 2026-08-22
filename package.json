@@ -1,13 +1,24 @@
 {
   "name": "umbrella.lgbt",
-  "version": "0.1.0",
-  "description": "The everything queer app — pre-launch site",
+  "version": "0.2.0",
+  "description": "Umbrella.lgbt — the everything queer app. Monorepo: Next.js web (Vercel) + Node API (VPS, Docker) + legacy static site.",
   "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
   "scripts": {
-    "css": "tailwindcss -i static/styles/main.css -o static/styles/site.css --minify",
-    "build": "npm run css && node build.js",
-    "seed:status": "node scripts/seed-status.js",
-    "check:links": "node scripts/check-links.js"
+    "legacy:css": "tailwindcss -i static/styles/main.css -o static/styles/site.css --minify",
+    "legacy:build": "npm run legacy:css && node build.js",
+    "legacy:seed-status": "node scripts/seed-status.js",
+    "legacy:check-links": "node scripts/check-links.js",
+    "legacy:check-sitemap": "node scripts/check-sitemap.js",
+    "build:api": "npm run build --workspace @umbrella/api",
+    "dev:api": "npm run dev --workspace @umbrella/api",
+    "build:web": "npm run build --workspace @umbrella/web",
+    "dev:web": "npm run dev --workspace @umbrella/web",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "docker:up": "docker compose -f infra/docker-compose.yml up -d --build",
+    "docker:down": "docker compose -f infra/docker-compose.yml down"
   },
   "dependencies": {
     "marked": "^14.0.0"

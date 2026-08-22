@@ -7,22 +7,18 @@ on:
     branches: [main]
 
 jobs:
-  build:
+  # Legacy static site (still the live pre-launch site until M5 cutover)
+  legacy-static:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build site
-        run: npm run build
-
+      - run: npm ci
+      - name: Build legacy static site
+        run: npm run legacy:build
       - name: Verify output
         run: |
           test -f public/index.html
@@ -30,11 +26,123 @@ jobs:
           test -f public/robots.txt
           test -f public/styles/site.css
           test -f public/scripts/main.js
-          test -f public/assets/favicon.svg
-          echo "Build output verified ✓"
-
+          echo "Legacy build output verified ✓"
       - name: Check internal links
-        run: node scripts/check-links.js
-
+        run: npm run legacy:check-links
       - name: Check sitemap vs seeded pages
-        run: node scripts/check-sitemap.js
+        run: npm run legacy:check-sitemap
+
+  api:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: umbrella
+          POSTGRES_PASSWORD: umbrella
+          POSTGRES_DB: umbrella
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U umbrella -d umbrella"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DATABASE_URL: postgresql://umbrella:umbrella@localhost:5432/umbrella
+      SUPERADMIN_USERNAME: ci-admin
+      SUPERADMIN_PASSWORD: ci-superadmin-pass-1234
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Prisma generate
+        run: npm run prisma:generate --workspace @umbrella/api
+      - name: Prisma migrate deploy
+        run: npm run prisma:deploy --workspace @umbrella/api
+      - name: Typecheck
+        run: npm run typecheck --workspace @umbrella/api
+      - name: Build
+        run: npm run build --workspace @umbrella/api
+      - name: Migrate legacy content into DB
+        run: npm run migrate:content --workspace @umbrella/api
+      - name: E2E auth tests
+        run: npm run test:e2e --workspace @umbrella/api
+      - name: E2E content tests
+        run: npm run test:e2e:content --workspace @umbrella/api
+      - name: E2E admin tests
+        run: npm run test:e2e:admin --workspace @umbrella/api
+      - name: E2E Q&A tests
+        run: npm run test:e2e:qa --workspace @umbrella/api
+
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Typecheck
+        run: npm run typecheck --workspace @umbrella/web
+      - name: Build
+        run: npm run build --workspace @umbrella/web
+
+  docker-api:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build api docker image (monorepo context)
+        run: docker build -t umbrella-api:ci -f apps/api/Dockerfile .
+
+  site-smoke:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: umbrella
+          POSTGRES_PASSWORD: umbrella
+          POSTGRES_DB: umbrella
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U umbrella -d umbrella"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      DATABASE_URL: postgresql://umbrella:umbrella@localhost:5432/umbrella
+      SUPERADMIN_USERNAME: ci-admin
+      SUPERADMIN_PASSWORD: ci-superadmin-pass-1234
+      NEXT_PUBLIC_API_URL: http://localhost:3000
+      API_SERVER_URL: http://localhost:3000
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Prisma generate
+        run: npm run prisma:generate --workspace @umbrella/api
+      - name: Prisma migrate deploy
+        run: npm run prisma:deploy --workspace @umbrella/api
+      - name: Migrate legacy content into DB
+        run: npm run migrate:content --workspace @umbrella/api
+      - name: Build API
+        run: npm run build --workspace @umbrella/api
+      - name: Build Web
+        run: npm run build --workspace @umbrella/web
+      - name: Admin + web smoke test
+        run: npm run verify:admin --workspace @umbrella/web
+      - name: Q&A SSR smoke test
+        run: npm run verify:qa --workspace @umbrella/web
+      - name: Public site SSR smoke test
+        run: npm run verify:site --workspace @umbrella/web
+      - name: SEO check (schema + sitemap + internal links)
+        run: npm run check:seo --workspace @umbrella/web

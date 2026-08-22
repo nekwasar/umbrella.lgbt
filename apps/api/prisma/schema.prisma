@@ -1,0 +1,234 @@
+// Umbrella.lgbt — Database schema (Upgrade 1, see upgrade1.md §7)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ---------- Enums ----------
+
+enum AdminRole {
+  SUPER_ADMIN
+  ADMIN
+}
+
+enum PageType {
+  CORE
+  BLOG
+  QA
+  GLOSSARY
+  CITY
+  RESOURCES
+}
+
+enum PageStatus {
+  DRAFT
+  PUBLISHED
+}
+
+enum ContentStatus {
+  PENDING
+  PUBLISHED
+  REMOVED
+}
+
+enum CommentTargetType {
+  QUESTION
+  ANSWER
+}
+
+enum ReportTargetType {
+  QUESTION
+  ANSWER
+  COMMENT
+  USER
+  PAGE
+}
+
+// ---------- Admins (CMS) ----------
+
+model Admin {
+  id           String     @id @default(cuid())
+  username     String     @unique
+  passwordHash String
+  role         AdminRole  @default(ADMIN)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  lastLoginAt  DateTime?
+}
+
+// ---------- Public users (minimal, for Q&A participation) ----------
+
+model User {
+  id           String         @id @default(cuid())
+  username     String         @unique
+  email        String?        @unique
+  passwordHash String
+  displayName  String?
+  pronouns     String?
+  isBanned     Boolean        @default(false)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  lastLoginAt  DateTime?
+  questions    Question[]
+  answers      Answer[]
+  comments     Comment[]
+  votes        AnswerVote[]
+  reports      Report[]
+}
+
+// ---------- Editorial content ----------
+
+model Page {
+  id          String         @id @default(cuid())
+  type        PageType
+  slug        String
+  title       String
+  contentMd   String         @default("")
+  status      PageStatus     @default(DRAFT)
+  seeded      Boolean        @default(false)
+  topic       String?
+  category    String?
+  date        DateTime?
+  author      String?
+  readingTime Int            @default(0)
+  publishedAt DateTime?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  meta        PageMeta?
+  relations   PageRelation[] @relation("page")
+  relatedFrom PageRelation[] @relation("related")
+
+  @@unique([type, slug])
+}
+
+model PageMeta {
+  id                String   @id @default(cuid())
+  pageId            String   @unique
+  page              Page     @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  metaTitle         String?
+  metaDescription   String?
+  keywords          String[]
+  canonicalUrl      String?
+  robots            String?
+  noindex           Boolean  @default(false)
+  nofollow          Boolean  @default(false)
+  ogTitle           String?
+  ogDescription     String?
+  ogImage           String?
+  ogUrl             String?
+  ogType            String?
+  ogSiteName        String?
+  ogLocale          String?
+  twitterCard       String?
+  twitterTitle      String?
+  twitterDescription String?
+  twitterImage      String?
+  twitterSite       String?
+  twitterCreator    String?
+  jsonldType        String?
+  jsonldExtra       Json?
+  geoRegion         String?
+  geoPlacename      String?
+  geoPosition       String?
+  icbm              String?
+  hreflang          String[]
+  alternateUrls     String[]
+  authorName        String?
+  publishedTime     DateTime?
+  modifiedTime      DateTime?
+  imageAlt          String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model PageRelation {
+  id            String @id @default(cuid())
+  pageId        String
+  relatedPageId String
+  page          Page   @relation("page", fields: [pageId], references: [id], onDelete: Cascade)
+  related       Page   @relation("related", fields: [relatedPageId], references: [id], onDelete: Cascade)
+
+  @@unique([pageId, relatedPageId])
+}
+
+// ---------- Dynamic Q&A ----------
+
+model Question {
+  id           String        @id @default(cuid())
+  userId       String
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title        String
+  slug         String        @unique
+  bodyMd       String        @default("")
+  topic        String?
+  status       ContentStatus @default(PUBLISHED)
+  viewCount    Int           @default(0)
+  bestAnswerId String?       @unique
+  bestAnswer   Answer?       @relation("bestAnswer", fields: [bestAnswerId], references: [id], onDelete: SetNull)
+  answers      Answer[]      @relation("questionAnswers")
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model Answer {
+  id              String        @id @default(cuid())
+  questionId      String
+  question        Question      @relation("questionAnswers", fields: [questionId], references: [id], onDelete: Cascade)
+  userId          String
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bodyMd          String        @default("")
+  votes           Int           @default(0)
+  isBest          Boolean       @default(false)
+  status          ContentStatus @default(PUBLISHED)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  votesList       AnswerVote[]
+  bestForQuestion Question?     @relation("bestAnswer")
+}
+
+model AnswerVote {
+  id        String   @id @default(cuid())
+  answerId  String
+  answer    Answer   @relation(fields: [answerId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  value     Int
+  createdAt DateTime @default(now())
+
+  @@unique([answerId, userId])
+}
+
+model Comment {
+  id         String            @id @default(cuid())
+  targetType CommentTargetType
+  targetId   String
+  parentId   String?
+  parent     Comment?          @relation("commentThread", fields: [parentId], references: [id], onDelete: Cascade)
+  children   Comment[]         @relation("commentThread")
+  userId     String?
+  user       User?             @relation(fields: [userId], references: [id], onDelete: SetNull)
+  authorName String?
+  bodyMd     String            @default("")
+  status     ContentStatus     @default(PUBLISHED)
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
+}
+
+// ---------- Moderation (reactive, no queue) ----------
+
+model Report {
+  id         String           @id @default(cuid())
+  targetType ReportTargetType
+  targetId   String
+  reporterId String
+  reporter   User             @relation(fields: [reporterId], references: [id], onDelete: Cascade)
+  reason     String
+  status     ContentStatus    @default(PENDING)
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+}

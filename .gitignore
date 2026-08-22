@@ -6,3 +6,9 @@ public/
 .env
 .env.local
 .vercel
+
+# monorepo build outputs
+.next/
+dist/
+*.tsbuildinfo
+next-env.d.ts

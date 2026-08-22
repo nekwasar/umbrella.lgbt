@@ -1,0 +1,17 @@
+node_modules
+.git
+.gitignore
+.next
+**/dist
+**/.next
+**/node_modules
+public
+static
+docs
+upgrade1.md
+*.log
+.env
+.env.local
+.env.*
+!.env.example
+.DS_Store

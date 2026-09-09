@@ -14,9 +14,11 @@ Authentic mid-2000s Web 2.0 / MySpace retro (SpaceHey-like). Source of truth:
   `var(--ink)`, `var(--muted)`, `var(--faint)`, `var(--line)`, `var(--line-strong)`,
   `var(--pink)`, `var(--purple)`, `var(--blue)`, `var(--green)`, `var(--gold)`,
   `var(--brown)` (+ `var(--brown-soft)` bg), `var(--link)` (classic `#0000ee`),
-  pride flag vars `var(--flag-red/orange/yellow/green/blue/purple)` (fixed both themes),
-  `var(--rainbow)` (6-stop flag gradient), bevel vars `var(--btn-face)` /
+  pride flag vars `var(--flag-red/orange/yellow/green/blue/purple)` (fixed both themes,
+  wordmark letters ONLY), header vars `var(--hotpink)` `#e60067` / `var(--pastel)`
+  `#ffe4e1` / `var(--magenta)` `#b30059`, bevel vars `var(--btn-face)` /
   `var(--btn-hi)` / `var(--btn-lo)`. NEVER hardcode hex/rgb. NEVER introduce a new color.
+  NEVER use CSS gradients (the one exception is the hard-stop `.pixel-divider` pattern).
 - Corners: `border-radius: 0` on ALL cards, buttons, inputs, containers. No rounded
   corners, no pills (`.tag` is square). No gradients except `var(--rainbow)` accents.
 - Type: `Arial, Tahoma, Verdana, sans-serif`; 13px body, `line-height: 1.3`;
@@ -25,13 +27,16 @@ Authentic mid-2000s Web 2.0 / MySpace retro (SpaceHey-like). Source of truth:
 - Links: `var(--link)`, NO underline by default, underline on hover. (Exception: links
   sitting on dark strips — `.band a`, `.banner-link` — use the light strip/banner text
   color instead so they stay readable.)
-- Header: solid brown `.top-banner` (`var(--brown)` background, solid cream
-  `.wordmark`, user links) + `.subnav` bar of pipe-separated links
-  (`Home | About | …`, separators are literal `|` in `.sep` spans). NO top-bar +
-  hamburger pattern — the subnav wraps on narrow screens instead. NEVER rebuild
-  header/footer/nav inside a page (they live in the `(public)` layout + `PublicHeader`).
-- Section headers: `.band` = full-width SOLID ink strip, bold left-aligned uppercase
-  text. `.band.rainbow` adds only the rainbow bottom edge. NEVER gradient/muted bands.
+- Header (two-tone, SpaceHey-style): hot-pink `.top-banner` (`var(--hotpink)`
+  background, solid cream `.wordmark`, user links) + pastel `.subnav`
+  (`var(--pastel)` background, 2px hotpink bottom border) with pipe-separated links
+  (`Home | About | …`, separators are literal `|` in `.sep` spans) in deep magenta
+  (`var(--magenta)`), underline on hover. NO top-bar + hamburger pattern — the subnav
+  wraps on narrow screens instead. NEVER rebuild header/footer/nav inside a page
+  (they live in the `(public)` layout + `PublicHeader`).
+- Section headers: `.band` = full-width SOLID pastel bar (`var(--pastel)` background,
+  `var(--magenta)` text/border), bold left-aligned uppercase text. Links inside bands
+  use magenta. NEVER gradient/muted/dark bands (the old `.band.rainbow` is deleted).
 - Buttons: `.btn` = classic 4-sided bevel (`--btn-hi` top/left, `--btn-lo`
   bottom/right), flat `--btn-face` fill; `:active` inverts the bevel (pressed look),
   NEVER translate/scale animations. `.btn-solid` = flat high-contrast solid block.
@@ -44,8 +49,10 @@ Authentic mid-2000s Web 2.0 / MySpace retro (SpaceHey-like). Source of truth:
   tags use `-brown`, `-green` = best-answer only), `.table`, `.row-list`,
   `.md-preview` (markdown body), `.alert` / `.alert-error` / `.alert-success`,
   `.muted` / `.faint` / `.meta`, `.hr` / `.pixel-divider`, `.wordmark` with one
-  flag class per letter (U red, m orange, b yellow, r green, e+l blue, l+a purple),
-  `.rainbow-strip` / `.rainbow-frame`. Focus ring is global (2px pink) — don't remove it.
+  flag class per letter (U red, m orange, b yellow, r green, e+l blue, l+a purple).
+  `.rainbow-strip` = 3px solid hotpink divider; `.rainbow-frame` = 2px solid hotpink
+  frame (doubles as best-answer highlight via `.card.rainbow-frame`). Focus ring is
+  global (2px pink) — don't remove it.
 - Structure content pages like `blog/[slug]/page.tsx`: `Breadcrumbs` → `ArticleView`
   (detail) or `TypeIndexView` (index) → related/cross-link sections via `.band` + `.row-list`.
 - Dark mode works ONLY through the variables (`[data-theme='dark']`). Hardcoded colors

@@ -96,7 +96,7 @@ export function QuestionView({ initial }: { initial: QuestionDetail }) {
 
       {/* answers */}
       <section style={{ marginTop: 16 }}>
-        <div className="band rainbow" style={{ marginBottom: 10 }}>
+        <div className="band" style={{ marginBottom: 10 }}>
           {answers.length} Answer{answers.length === 1 ? '' : 's'}
         </div>
 

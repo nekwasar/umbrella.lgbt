@@ -15,7 +15,7 @@ export function TypeIndexView({
   return (
     <div>
       <h1 style={{ marginBottom: 10 }}>{label}</h1>
-      <div className="band rainbow" style={{ marginBottom: 0 }}>
+      <div className="band" style={{ marginBottom: 0 }}>
         {label}
       </div>
       <div className="row-list" style={{ borderTop: 'none' }}>

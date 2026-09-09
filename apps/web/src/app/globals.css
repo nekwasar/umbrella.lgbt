@@ -659,6 +659,19 @@ h3 {
   text-decoration: underline;
 }
 
+/* footer theme switcher: plain text with link-styled options */
+.footer-theme button {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: var(--link);
+  cursor: pointer;
+}
+.footer-theme button:hover {
+  text-decoration: underline;
+}
+
 /* ---------- list rows ---------- */
 .row-list {
   border: 1px solid var(--line);

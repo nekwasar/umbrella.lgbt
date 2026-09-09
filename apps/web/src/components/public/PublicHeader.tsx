@@ -77,8 +77,14 @@ export function PublicHeader() {
       <div className="banner-search">
         <div className="container">
           <form action="/search" method="get" role="search" className="banner-search-form">
-            <label htmlFor="banner-search-q">Search:</label>
-            <input id="banner-search-q" type="text" name="q" autoComplete="off" />
+            <label htmlFor="banner-search-q">Search Topics:</label>
+            <input
+              id="banner-search-q"
+              type="text"
+              name="q"
+              autoComplete="off"
+              placeholder="e.g. city guides, glossary, Q&A..."
+            />
             <button type="submit" className="btn-search">
               Search
             </button>

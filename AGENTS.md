@@ -42,7 +42,9 @@ Authentic mid-2000s Web 2.0 / MySpace retro (SpaceHey-like). Source of truth:
   1px `#666` border, sharp corners), GETs to `/search?q=`).
   Cream-pink `.subnav` (`var(--creampink)` background, 2px hotpink bottom border,
   `padding: 6px 10px`) holds pipe-separated links (`Home | About | …`, separators are
-  literal `|` in `.sep` spans with `margin: 0 6px`) in ink, pink hover with underline;
+  literal `|` in `.sep` spans with `margin: 0 6px`) in ink, pink hover with underline
+  (dark mode: vivid magenta links, near-white-pink hover — cream washes out on the
+  dusty-rose bar);
   the subnav scrolls horizontally on small screens (`overflow-x: auto`,
   `white-space: nowrap`, no wrapping). NEVER rebuild header/footer/nav inside a page
   (they live in the `(public)` layout + `PublicHeader`).

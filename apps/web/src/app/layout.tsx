@@ -3,7 +3,7 @@ import './globals.css';
 import { SITE, organizationJson, websiteJson } from '@/lib/seo';
 
 export const viewport: Viewport = {
-  themeColor: '#e60067'
+  themeColor: '#fabbd1'
 };
 
 export const metadata: Metadata = {

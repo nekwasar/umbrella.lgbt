@@ -88,13 +88,15 @@ export function PublicHeader() {
                 </Link>
               </>
             )}
+            <span className="banner-sep" aria-hidden="true">
+              |
+            </span>
             <button
-              className="theme-toggle"
+              className="banner-text-btn"
               aria-label="Toggle dark mode"
               onClick={() => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))}
             >
-              <span className="theme-icon-light">&#9728;</span>
-              <span className="theme-icon-dark">&#9790;</span>
+              {theme === 'dark' ? '☀ Light Mode' : '☾ Dark Mode'}
             </button>
           </div>
         </div>

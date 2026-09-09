@@ -623,6 +623,13 @@ h3 {
   font-weight: 700;
   text-decoration: underline;
 }
+/* dark mode: vivid magenta links on the dusty-rose bar (cream looks washed out) */
+[data-theme='dark'] .subnav a {
+  color: var(--magenta);
+}
+[data-theme='dark'] .subnav a:hover {
+  color: #ffd6e7;
+}
 .subnav .sep {
   color: var(--ink);
   margin: 0 6px;

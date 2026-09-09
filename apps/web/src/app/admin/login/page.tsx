@@ -2,14 +2,14 @@
 
 import { FormEvent, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { api, ApiError } from '@/lib/admin-api';
+import { api, toApiError, ApiError } from '@/lib/admin-api';
 import { Banner, Button, Field, Input } from '@/components/admin/ui';
 
 export default function AdminLoginPage() {
   const router = useRouter();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<ApiError | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -29,7 +29,7 @@ export default function AdminLoginPage() {
       });
       router.replace('/admin');
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : 'Login failed');
+      setError(toApiError(err, 'POST', '/api/auth/admin/login'));
       setLoading(false);
     }
   }
@@ -67,7 +67,14 @@ export default function AdminLoginPage() {
                 required
               />
             </Field>
-            {error ? <Banner kind="error">{error}</Banner> : null}
+            {error ? (
+              <Banner kind="error">
+                <p className="font-semibold">{error.summary}</p>
+                <pre className="mt-2 overflow-x-auto whitespace-pre-wrap break-all text-[11px] leading-relaxed opacity-80">
+                  {error.detail}
+                </pre>
+              </Banner>
+            ) : null}
             <Button type="submit" loading={loading} className="w-full">
               Sign in
             </Button>

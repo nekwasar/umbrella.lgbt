@@ -596,8 +596,9 @@ h3 {
   background: #d0d0d0;
 }
 
+/* fixed light bar + dark links in BOTH themes (classic header never adapts) */
 .subnav {
-  background: var(--creampink);
+  background: #ffe4e1;
   border-bottom: 2px solid var(--hotpink);
   overflow-x: auto;
   white-space: nowrap;
@@ -610,28 +611,21 @@ h3 {
   font-size: 12px;
 }
 .subnav a {
-  color: var(--ink);
+  color: #1c1917;
   text-decoration: none;
   font-weight: 400;
   padding: 3px 8px;
 }
 .subnav a:hover {
-  color: var(--pink);
+  color: #d6336c;
   text-decoration: underline;
 }
 .subnav a.active {
   font-weight: 700;
   text-decoration: underline;
 }
-/* dark mode: vivid magenta links on the dusty-rose bar (cream looks washed out) */
-[data-theme='dark'] .subnav a {
-  color: var(--magenta);
-}
-[data-theme='dark'] .subnav a:hover {
-  color: #ffd6e7;
-}
 .subnav .sep {
-  color: var(--ink);
+  color: #1c1917;
   margin: 0 6px;
 }
 

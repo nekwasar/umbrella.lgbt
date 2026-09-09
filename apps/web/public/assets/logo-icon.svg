@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="u-rainbow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ff0000"/>
+      <stop offset="16.6%" stop-color="#ff8c00"/>
+      <stop offset="33.3%" stop-color="#ffd700"/>
+      <stop offset="50%" stop-color="#008000"/>
+      <stop offset="66.6%" stop-color="#0000cd"/>
+      <stop offset="83.3%" stop-color="#4b0082"/>
+      <stop offset="100%" stop-color="#9400d3"/>
+    </linearGradient>
+  </defs>
+  <rect width="32" height="32" rx="7" fill="#FAF5EF"/>
+  <path d="M10 26 C10 16, 22 16, 22 26" stroke="url(#u-rainbow)" stroke-width="6" stroke-linecap="round" fill="none"/>
+</svg>

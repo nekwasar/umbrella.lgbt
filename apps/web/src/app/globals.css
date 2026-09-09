@@ -32,7 +32,22 @@
   --shadow: 2px 2px 0 rgba(28, 25, 23, 0.12);
   --font: Arial, Tahoma, Verdana, sans-serif;
   --font-mono: 'Courier New', Courier, monospace;
-  --rainbow: linear-gradient(90deg, #d6336c 0%, #8a4bd8 55%, #2a7fd4 100%);
+  /* pride flag hues — fixed brand constants, same in both themes */
+  --flag-red: #e40303;
+  --flag-orange: #ff8c00;
+  --flag-yellow: #ffed00;
+  --flag-green: #008026;
+  --flag-blue: #24408e;
+  --flag-purple: #732982;
+  --rainbow: linear-gradient(
+    90deg,
+    var(--flag-red) 0%,
+    var(--flag-orange) 20%,
+    var(--flag-yellow) 40%,
+    var(--flag-green) 60%,
+    var(--flag-blue) 80%,
+    var(--flag-purple) 100%
+  );
 }
 
 [data-theme='dark'] {
@@ -61,7 +76,15 @@
   --btn-bg: #f0e9df;
   --btn-fg: #161310;
   --shadow: 2px 2px 0 rgba(0, 0, 0, 0.4);
-  --rainbow: linear-gradient(90deg, #ff6ea5 0%, #b48bff 55%, #6fb8ff 100%);
+  --rainbow: linear-gradient(
+    90deg,
+    var(--flag-red) 0%,
+    var(--flag-orange) 20%,
+    var(--flag-yellow) 40%,
+    var(--flag-green) 60%,
+    var(--flag-blue) 80%,
+    var(--flag-purple) 100%
+  );
 }
 
 * {
@@ -136,14 +159,23 @@ h3 {
   line-height: 1;
   color: var(--ink);
 }
-.wm-pink {
-  color: var(--pink);
+.wm-red {
+  color: var(--flag-red);
 }
-.wm-purple {
-  color: var(--purple);
+.wm-orange {
+  color: var(--flag-orange);
+}
+.wm-yellow {
+  color: var(--flag-yellow);
+}
+.wm-green {
+  color: var(--flag-green);
 }
 .wm-blue {
-  color: var(--blue);
+  color: var(--flag-blue);
+}
+.wm-purple {
+  color: var(--flag-purple);
 }
 
 .rainbow-strip {
@@ -463,9 +495,9 @@ h3 {
 
 /* ---------- header: solid top banner + pipe subnav (classic) ---------- */
 .top-banner {
-  background: var(--ink);
+  background: var(--brown);
   color: var(--btn-fg);
-  border-bottom: 1px solid var(--ink);
+  border-bottom: 1px solid var(--brown);
 }
 .top-banner-inner {
   display: flex;
@@ -481,11 +513,14 @@ h3 {
 .banner-home:hover {
   text-decoration: none;
 }
-/* solid cream wordmark on the dark banner (guaranteed contrast both themes) */
+/* solid cream wordmark on the brown banner (guaranteed contrast both themes) */
 .top-banner .wordmark,
-.top-banner .wm-pink,
-.top-banner .wm-purple,
-.top-banner .wm-blue {
+.top-banner .wm-red,
+.top-banner .wm-orange,
+.top-banner .wm-yellow,
+.top-banner .wm-green,
+.top-banner .wm-blue,
+.top-banner .wm-purple {
   color: var(--btn-fg);
 }
 .banner-side {

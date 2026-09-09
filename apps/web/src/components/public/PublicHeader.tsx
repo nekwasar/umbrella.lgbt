@@ -23,14 +23,14 @@ function isActive(pathname: string, href: string) {
 export function Wordmark({ size = 18 }: { size?: number }) {
   return (
     <span className="wordmark" style={{ fontSize: size }} aria-label="Umbrella.lgbt">
-      <span className="wm-pink">U</span>
-      <span className="wm-pink">m</span>
-      <span className="wm-pink">b</span>
-      <span className="wm-pink">r</span>
-      <span className="wm-pink">e</span>
+      <span className="wm-red">U</span>
+      <span className="wm-orange">m</span>
+      <span className="wm-yellow">b</span>
+      <span className="wm-green">r</span>
+      <span className="wm-blue">e</span>
+      <span className="wm-blue">l</span>
       <span className="wm-purple">l</span>
-      <span className="wm-purple">l</span>
-      <span className="wm-blue">a</span>
+      <span className="wm-purple">a</span>
     </span>
   );
 }

@@ -30,7 +30,8 @@ Authentic mid-2000s Web 2.0 / MySpace retro (SpaceHey-like). Source of truth:
   sitting on dark strips — `.band a`, `.banner-link` — use the light strip/banner text
   color instead so they stay readable.)
 - Header (two-tone, SpaceHey-style): soft-pink `.top-banner` (`var(--softpink)`
-  background, full rainbow `.wordmark`). Top-right account links are plain wine text
+  background, `logo-icon.svg` rainbow-"U" badge — NOT the text `.wordmark`, which
+  lives on in the hero + footer). Top-right account links are plain wine text
   (`var(--wine)`): `Sign in | Join` (`.banner-text-link` + `.banner-sep`), or `@user` +
   text `Sign out` (`.banner-text-btn`) — NEVER button boxes up there. Dark mode has
   NO header control; it lives in the footer as plain text (`ThemeToggle`: "Theme:
@@ -64,8 +65,8 @@ Authentic mid-2000s Web 2.0 / MySpace retro (SpaceHey-like). Source of truth:
   `.muted` / `.faint` / `.meta`, `.hr` / `.pixel-divider`, `.wordmark` with the exact
   per-letter sequence (U red `#ff0000`, m orange `#ff8c00`, b yellow `#ffd700`,
   r green `#008000`, e cyan `#00bfff`, l royal `#0000cd`, l indigo `#4b0082`,
-  a violet `#9400d3` — no two adjacent letters share a hue; banner instance renders
-  solid cream via the `.top-banner .wm-*` override).
+  a violet `#9400d3` — no two adjacent letters share a hue; `logo-icon.svg` is a
+  copy of the favicon art with the same 7 hues as gradient stops).
   `.rainbow-strip` = 3px solid hotpink divider; `.rainbow-frame` = 2px solid hotpink
   frame (doubles as best-answer highlight via `.card.rainbow-frame`). Focus ring is
   global (2px pink) — don't remove it.

@@ -499,6 +499,9 @@ h3 {
   text-decoration: none;
   line-height: 1;
 }
+.banner-home img {
+  display: block;
+}
 .banner-home:hover {
   text-decoration: none;
 }

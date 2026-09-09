@@ -43,7 +43,7 @@ export function PublicHeader() {
       <div className="top-banner">
         <div className="container top-banner-inner">
           <Link href="/" className="banner-home" aria-label="Umbrella.lgbt home">
-            <Wordmark />
+            <img src="/assets/logo-icon.svg" alt="" width={30} height={30} />
           </Link>
 
           <div className="banner-side">

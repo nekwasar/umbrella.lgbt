@@ -552,18 +552,22 @@ h3 {
 .banner-search-form {
   display: flex;
   align-items: center;
+  width: 100%;
   gap: 6px;
   margin: 0;
   padding: 8px 0;
   text-align: left;
 }
 .banner-search-form label {
-  color: var(--btn-fg);
+  color: #fff5f8;
   font-size: 12px;
   font-weight: 700;
+  white-space: nowrap;
 }
 .banner-search-form input[type='text'] {
-  width: 180px;
+  flex: 1;
+  width: 100%;
+  min-width: 0;
   padding: 2px 6px;
   font-family: var(--font);
   font-size: 12px;

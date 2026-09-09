@@ -49,13 +49,13 @@ export default function AskPage() {
 
   if (!user) {
     return (
-      <div className="card-flat" style={{ maxWidth: 520, margin: '0 auto', textAlign: 'center', padding: '28px 16px' }}>
+      <div className="card-flat" style={{ maxWidth: 520, textAlign: 'left', padding: '12px 8px' }}>
         <h1 style={{ fontSize: 20 }}>Ask a question</h1>
-        <p className="muted" style={{ maxWidth: 400, margin: '8px auto' }}>
+        <p className="muted" style={{ maxWidth: 400, margin: '8px 0' }}>
           Questions are public, permanent, and help other queer people find answers on Google. You
           need an account to ask.
         </p>
-        <div style={{ display: 'flex', gap: 10, justifyContent: 'center', marginTop: 12 }}>
+        <div style={{ display: 'flex', gap: 10, justifyContent: 'flex-start', marginTop: 12 }}>
           <Link href="/register" className="btn btn-solid">
             Join free
           </Link>

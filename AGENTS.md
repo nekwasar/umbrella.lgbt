@@ -7,27 +7,45 @@ Never mix them. Never invent new styles, colors, or primitives.
 
 ### Public pages (`apps/web/src/app/(public)/`, `src/components/public/`)
 
-Retro SpaceHey / early-2000s aesthetic. Source of truth: `src/app/globals.css`.
+Authentic mid-2000s Web 2.0 / MySpace retro (SpaceHey-like). Source of truth:
+`src/app/globals.css`. NO modern flat/pill/gradient patterns anywhere on public pages.
 
 - Colors: CSS variables ONLY — `var(--bg)`, `var(--surface)`, `var(--surface-2)`,
   `var(--ink)`, `var(--muted)`, `var(--faint)`, `var(--line)`, `var(--line-strong)`,
   `var(--pink)`, `var(--purple)`, `var(--blue)`, `var(--green)`, `var(--gold)`,
-  `var(--rainbow)`. NEVER hardcode hex/rgb. NEVER introduce a new color.
-- Corners: `border-radius: 0` everywhere. No rounded corners, no pills (`.tag` is square).
-- Building blocks (reuse, don't reinvent): `.card`, `.card-flat`, `.band` (uppercase
-  section header), `.btn` / `.btn-solid` / `.btn-block`, `.input` / `.textarea` / `.select`
-  + `.label`, `.tag` (+ `-pink`/`-purple`/`-blue`/`-green`/`-gold`), `.table`, `.row-list`,
+  `var(--link)` (classic `#0000ee`), `var(--rainbow)`, bevel vars `var(--btn-face)` /
+  `var(--btn-hi)` / `var(--btn-lo)`. NEVER hardcode hex/rgb. NEVER introduce a new color.
+- Corners: `border-radius: 0` on ALL cards, buttons, inputs, containers. No rounded
+  corners, no pills (`.tag` is square). No gradients except `var(--rainbow)` accents.
+- Type: `Arial, Tahoma, Verdana, sans-serif`; 13px body, `line-height: 1.3`;
+  h1 26px / h2 20px / h3 15px, bold, ink. NO wide `letter-spacing` (must be 0).
+  Left-align body text — NEVER center content panels, heroes, or empty states.
+- Links: `var(--link)`, NO underline by default, underline on hover. (Exception: links
+  sitting on dark strips — `.band a`, `.banner-link` — use the light strip/banner text
+  color instead so they stay readable.)
+- Header: solid `.top-banner` (ink background, solid cream `.wordmark`, user links) +
+  `.subnav` bar of pipe-separated links (`Home | About | …`, separators are literal `|`
+  in `.sep` spans). NO top-bar + hamburger pattern — the subnav wraps on narrow screens
+  instead. NEVER rebuild header/footer/nav inside a page (they live in the `(public)`
+  layout + `PublicHeader`).
+- Section headers: `.band` = full-width SOLID ink strip, bold left-aligned uppercase
+  text. `.band.rainbow` adds only the rainbow bottom edge. NEVER gradient/muted bands.
+- Buttons: `.btn` = classic 4-sided bevel (`--btn-hi` top/left, `--btn-lo`
+  bottom/right), flat `--btn-face` fill; `:active` inverts the bevel (pressed look),
+  NEVER translate/scale animations. `.btn-solid` = flat high-contrast solid block.
+  `.btn-block` = full-width. NEVER pill buttons, NEVER gradient buttons.
+- Containers: 1px solid borders (`--line` / `--line-strong`), compact padding
+  (`.card` 6px 8px, `.card-flat` 8px, `.container` side padding 8px). Dense and
+  structured, no airy whitespace.
+- Other blocks (reuse, don't reinvent): `.input` / `.textarea` / `.select` + `.label`,
+  `.tag` (+ `-pink`/`-purple`/`-blue`/`-green`/`-gold`), `.table`, `.row-list`,
   `.md-preview` (markdown body), `.alert` / `.alert-error` / `.alert-success`,
-  `.muted` / `.faint` / `.meta`, `.hr` / `.pixel-divider`, `.wordmark` +
-  `.wm-pink`/`.wm-purple`/`.wm-blue`, `.rainbow-strip` / `.rainbow-frame`.
-- Links: blue + underline, hover pink. Focus ring is global (2px pink) — don't remove it.
-- Type: Arial/Helvetica, 13px body; h1 26px / h2 20px / h3 15px, bold, ink color.
-- Layout comes from the `(public)` route-group layout (`PublicHeader`, rainbow strip,
-  `.container`, footer). NEVER rebuild header/footer/nav inside a page.
+  `.muted` / `.faint` / `.meta`, `.hr` / `.pixel-divider`, `.rainbow-strip` /
+  `.rainbow-frame`. Focus ring is global (2px pink) — don't remove it.
 - Structure content pages like `blog/[slug]/page.tsx`: `Breadcrumbs` → `ArticleView`
   (detail) or `TypeIndexView` (index) → related/cross-link sections via `.band` + `.row-list`.
 - Dark mode works ONLY through the variables (`[data-theme='dark']`). Hardcoded colors
-  break it. Responsive collapse is at 760px (nav → hamburger) — check narrow widths.
+  break it. Narrow screens: subnav wraps, bands/cards go full width — check 360px wide.
 - Every public page MUST have `generateMetadata` via `pageMetadata()` (`@/lib/meta`),
   `Breadcrumbs`, and the matching JSON-LD block (`@/lib/seo`).
 - Data: fetch in server components via `@/lib/data` (`fetchPublicPage`, `apiFetch`);

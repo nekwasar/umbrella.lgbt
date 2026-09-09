@@ -537,13 +537,13 @@ h3 {
   font-size: 12px;
 }
 .subnav a {
-  color: var(--magenta);
+  color: var(--ink);
   text-decoration: none;
   font-weight: 400;
   padding: 3px 8px;
 }
 .subnav a:hover {
-  color: var(--magenta);
+  color: var(--pink);
   text-decoration: underline;
 }
 .subnav a.active {
@@ -551,7 +551,7 @@ h3 {
   text-decoration: underline;
 }
 .subnav .sep {
-  color: var(--magenta);
+  color: var(--ink);
 }
 
 .theme-toggle {

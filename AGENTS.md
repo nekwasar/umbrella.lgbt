@@ -30,8 +30,9 @@ Authentic mid-2000s Web 2.0 / MySpace retro (SpaceHey-like). Source of truth:
 - Header (two-tone, SpaceHey-style): hot-pink `.top-banner` (`var(--hotpink)`
   background, solid cream `.wordmark`, user links) + pastel `.subnav`
   (`var(--pastel)` background, 2px hotpink bottom border) with pipe-separated links
-  (`Home | About | …`, separators are literal `|` in `.sep` spans) in deep magenta
-  (`var(--magenta)`), underline on hover. NO top-bar + hamburger pattern — the subnav
+  (`Home | About | …`, separators are literal `|` in `.sep` spans) in ink
+  (`var(--ink)` = `#1c1917` light / `#f0e9df` dark), pink hover (`var(--pink)`)
+  with underline. NO top-bar + hamburger pattern — the subnav
   wraps on narrow screens instead. NEVER rebuild header/footer/nav inside a page
   (they live in the `(public)` layout + `PublicHeader`).
 - Section headers: `.band` = full-width SOLID pastel bar (`var(--pastel)` background,

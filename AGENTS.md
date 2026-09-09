@@ -74,6 +74,27 @@ Authentic mid-2000s Web 2.0 / MySpace retro (SpaceHey-like). Source of truth:
 - Data: fetch in server components via `@/lib/data` (`fetchPublicPage`, `apiFetch`);
   `export const revalidate = 300`; call `notFound()` when the API returns null.
 
+### Desktop portal (homepage, ≥992px only)
+
+- Mobile-first: everything stacks single-column below 992px. The 3-column grid, the
+  1140px container, and all multi-column structure live inside
+  `@media (min-width: 992px)` — NEVER apply portal layout to mobile.
+- Grid: `.portal` with areas `left main right` at `4fr 11fr 5fr` (≈20/55/25).
+  DOM order is main → left → right so mobile reads hero-first. All three columns need
+  `min-width: 0`. NEVER reorder with flex `order`.
+- Sidebar modules: `.sidebox` (1px hotpink border) + `.sidebox-hd` (pastel bg, magenta
+  text/border-bottom, bold uppercase, left) + `.sidebox-bd` (6px 8px body). This is the
+  ONLY approved sidebar container — never bare divs or `.card` in sidebars.
+- Tables: `.portal-table` — 1px hotpink grid, pastel/magenta header row, alternating
+  `--alt-row` / `--surface` body rows. NEVER borderless or striped-grey tables.
+- Lists: `.dir-list` with `»` bullets (`.bullet` span, hotpink) for directories;
+  `.mini-list` (dotted separators) for announcements/discussions; tiny `.tag` chips for
+  counts/dates.
+- One-offs: `.bulletin` (2px hotpink border, pink-soft bg, `[ BULLETIN: … ]` title) for
+  site news; `.badge-bar` + `.badge88` (+ `-pink`/`-blue`/`-green`) for 88×31 buttons.
+- New homepage widgets fetch via the existing `@/lib/data` helpers with `revalidate = 300`;
+  static editorial lists (directory, announcements) live as consts at the top of `page.tsx`.
+
 ### Admin pages (`apps/web/src/app/admin/`, `src/components/admin/`)
 
 Modern rounded console. Source of truth: `apps/web/tailwind.config.ts` +

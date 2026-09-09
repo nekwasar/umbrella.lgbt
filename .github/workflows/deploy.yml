@@ -16,7 +16,10 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    if: github.repository_owner == 'nekwasar'
+    # Only attempts a deploy once you've created the repo variable
+    # DEPLOY_ENABLED=true (Settings → Secrets and variables → Actions → Variables)
+    # AND configured the VPS_* secrets + the server itself (docs/m7-deploy.md).
+    if: github.repository_owner == 'nekwasar' && vars.DEPLOY_ENABLED == 'true'
     steps:
       - uses: actions/checkout@v4
 

@@ -1,5 +1,6 @@
 import { UserProvider } from '@/components/public/UserProvider';
 import { PublicHeader, Wordmark } from '@/components/public/PublicHeader';
+import { ThemeToggle } from '@/components/public/ThemeToggle';
 
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -49,7 +50,9 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
                 paddingBottom: 14
               }}
             >
-              <span>&copy; 2026 Umbrella.lgbt</span>
+              <span>
+                &copy; 2026 Umbrella.lgbt · <ThemeToggle />
+              </span>
               <a href="mailto:hello@umbrella.lgbt">hello@umbrella.lgbt</a>
             </div>
           </div>

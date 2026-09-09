@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useUser } from '@/components/public/UserProvider';
@@ -38,23 +37,6 @@ export function Wordmark({ size = 18 }: { size?: number }) {
 export function PublicHeader() {
   const { user, logout } = useUser();
   const pathname = usePathname();
-  const [theme, setTheme] = useState<'light' | 'dark'>('light');
-
-  useEffect(() => {
-    const saved = localStorage.getItem('umbrella-theme');
-    const initial =
-      saved === 'dark' || saved === 'light'
-        ? saved
-        : window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
-          ? 'dark'
-          : 'light';
-    setTheme(initial);
-  }, []);
-
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('umbrella-theme', theme);
-  }, [theme]);
 
   return (
     <header>
@@ -88,16 +70,6 @@ export function PublicHeader() {
                 </Link>
               </>
             )}
-            <span className="banner-sep" aria-hidden="true">
-              |
-            </span>
-            <button
-              className="banner-text-btn"
-              aria-label="Toggle dark mode"
-              onClick={() => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))}
-            >
-              {theme === 'dark' ? '☀ Light Mode' : '☾ Dark Mode'}
-            </button>
           </div>
         </div>
       </div>

@@ -21,6 +21,8 @@
   --blue-soft: #e8f1fa;
   --green: #2e8b57;
   --gold: #b8860b;
+  --brown: #6f4e2e;
+  --brown-soft: #f0e7d6;
   --link: #0000ee;
   --btn-face: #e9e1d1;
   --btn-hi: #ffffff;
@@ -50,6 +52,8 @@
   --blue-soft: #1e2e40;
   --green: #4caf7f;
   --gold: #d9a441;
+  --brown: #cfa66f;
+  --brown-soft: #332619;
   --link: #8ab4ff;
   --btn-face: #2e2822;
   --btn-hi: #5c5245;
@@ -329,6 +333,11 @@ h3 {
   color: var(--gold);
   border-color: var(--gold);
   background: #f8efd9;
+}
+.tag-brown {
+  color: var(--brown);
+  border-color: var(--brown);
+  background: var(--brown-soft);
 }
 
 /* ---------- tables ---------- */

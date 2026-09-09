@@ -107,7 +107,7 @@ export default async function HomePage() {
         <div className="band">Built for every identity</div>
         <div className="card-flat" style={{ borderTop: 'none', display: 'flex', flexWrap: 'wrap', gap: 6 }}>
           {['Gay', 'Lesbian', 'Bisexual', 'Transgender', 'Non-binary', 'Intersex', 'Asexual', 'Aromantic', 'Questioning', 'Two-Spirit'].map((id) => (
-            <span key={id} className="tag tag-pink">
+            <span key={id} className="tag tag-brown">
               {id}
             </span>
           ))}

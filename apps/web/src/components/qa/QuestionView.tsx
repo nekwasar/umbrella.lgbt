@@ -72,7 +72,7 @@ export function QuestionView({ initial }: { initial: QuestionDetail }) {
       {error ? <div className="alert alert-error" style={{ marginBottom: 12 }}>{error}</div> : null}
 
       <header style={{ marginBottom: 12 }}>
-        {question.topic ? <span className="tag tag-pink" style={{ marginBottom: 6 }}>{question.topic}</span> : null}
+        {question.topic ? <span className="tag tag-brown" style={{ marginBottom: 6 }}>{question.topic}</span> : null}
         <h1 style={{ fontSize: 24, margin: '4px 0 6px' }}>{question.title}</h1>
         <p className="meta" style={{ margin: 0 }}>
           {question.authorName ? `asked by ${question.authorName} · ` : ''}

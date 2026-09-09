@@ -13,8 +13,9 @@ Authentic mid-2000s Web 2.0 / MySpace retro (SpaceHey-like). Source of truth:
 - Colors: CSS variables ONLY — `var(--bg)`, `var(--surface)`, `var(--surface-2)`,
   `var(--ink)`, `var(--muted)`, `var(--faint)`, `var(--line)`, `var(--line-strong)`,
   `var(--pink)`, `var(--purple)`, `var(--blue)`, `var(--green)`, `var(--gold)`,
-  `var(--link)` (classic `#0000ee`), `var(--rainbow)`, bevel vars `var(--btn-face)` /
-  `var(--btn-hi)` / `var(--btn-lo)`. NEVER hardcode hex/rgb. NEVER introduce a new color.
+  `var(--brown)` (+ `var(--brown-soft)` bg), `var(--link)` (classic `#0000ee`),
+  `var(--rainbow)`, bevel vars `var(--btn-face)` / `var(--btn-hi)` / `var(--btn-lo)`.
+  NEVER hardcode hex/rgb. NEVER introduce a new color.
 - Corners: `border-radius: 0` on ALL cards, buttons, inputs, containers. No rounded
   corners, no pills (`.tag` is square). No gradients except `var(--rainbow)` accents.
 - Type: `Arial, Tahoma, Verdana, sans-serif`; 13px body, `line-height: 1.3`;
@@ -38,7 +39,8 @@ Authentic mid-2000s Web 2.0 / MySpace retro (SpaceHey-like). Source of truth:
   (`.card` 6px 8px, `.card-flat` 8px, `.container` side padding 8px). Dense and
   structured, no airy whitespace.
 - Other blocks (reuse, don't reinvent): `.input` / `.textarea` / `.select` + `.label`,
-  `.tag` (+ `-pink`/`-purple`/`-blue`/`-green`/`-gold`), `.table`, `.row-list`,
+  `.tag` (+ `-pink`/`-purple`/`-blue`/`-green`/`-gold`/`-brown`; topic/identity
+  tags use `-brown`, `-green` = best-answer only), `.table`, `.row-list`,
   `.md-preview` (markdown body), `.alert` / `.alert-error` / `.alert-success`,
   `.muted` / `.faint` / `.meta`, `.hr` / `.pixel-divider`, `.rainbow-strip` /
   `.rainbow-frame`. Focus ring is global (2px pink) — don't remove it.

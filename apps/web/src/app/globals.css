@@ -23,6 +23,9 @@
   --gold: #b8860b;
   --brown: #6f4e2e;
   --brown-soft: #f0e7d6;
+  --hotpink: #e60067;
+  --pastel: #ffe4e1;
+  --magenta: #b30059;
   --link: #0000ee;
   --btn-face: #e9e1d1;
   --btn-hi: #ffffff;
@@ -39,15 +42,6 @@
   --flag-green: #008026;
   --flag-blue: #24408e;
   --flag-purple: #732982;
-  --rainbow: linear-gradient(
-    90deg,
-    var(--flag-red) 0%,
-    var(--flag-orange) 20%,
-    var(--flag-yellow) 40%,
-    var(--flag-green) 60%,
-    var(--flag-blue) 80%,
-    var(--flag-purple) 100%
-  );
 }
 
 [data-theme='dark'] {
@@ -69,6 +63,9 @@
   --gold: #d9a441;
   --brown: #cfa66f;
   --brown-soft: #332619;
+  --hotpink: #e60067;
+  --pastel: #3a2129;
+  --magenta: #ff7ab8;
   --link: #8ab4ff;
   --btn-face: #2e2822;
   --btn-hi: #5c5245;
@@ -76,15 +73,6 @@
   --btn-bg: #f0e9df;
   --btn-fg: #161310;
   --shadow: 2px 2px 0 rgba(0, 0, 0, 0.4);
-  --rainbow: linear-gradient(
-    90deg,
-    var(--flag-red) 0%,
-    var(--flag-orange) 20%,
-    var(--flag-yellow) 40%,
-    var(--flag-green) 60%,
-    var(--flag-blue) 80%,
-    var(--flag-purple) 100%
-  );
 }
 
 * {
@@ -180,16 +168,15 @@ h3 {
 
 .rainbow-strip {
   height: 3px;
-  background: var(--rainbow);
+  background: var(--hotpink);
   border: none;
 }
 
-/* 2px gradient border wrapper */
-.rainbow-frame {
-  border: 2px solid transparent;
-  background:
-    linear-gradient(var(--surface), var(--surface)) padding-box,
-    var(--rainbow) border-box;
+/* 2px solid accent frame (combo selector wins over .card for best-answer highlight) */
+.rainbow-frame,
+.card.rainbow-frame {
+  border: 2px solid var(--hotpink);
+  background: var(--surface);
 }
 
 /* ---------- structural pieces ---------- */
@@ -207,15 +194,15 @@ h3 {
   padding: 8px;
 }
 
-/* full-width solid section header strip (classic block header bar) */
+/* full-width solid section header bar: pastel pink + magenta (SpaceHey-style block header) */
 .band {
   display: flex;
   align-items: center;
   gap: 8px;
   padding: 3px 8px;
-  background: var(--ink);
-  color: var(--btn-fg);
-  border: 1px solid var(--ink);
+  background: var(--pastel);
+  color: var(--magenta);
+  border: 1px solid var(--magenta);
   border-radius: 0;
   font-size: 12px;
   font-weight: 700;
@@ -224,19 +211,14 @@ h3 {
   text-align: left;
 }
 
-.band.rainbow {
-  border-bottom: 2px solid transparent;
-  border-image: var(--rainbow) 1;
-}
-
 .band a,
 .band .band-link {
-  color: var(--btn-fg);
+  color: var(--magenta);
 }
 
 .band a:hover,
 .band .band-link:hover {
-  color: var(--btn-fg);
+  color: var(--magenta);
   text-decoration: underline;
 }
 
@@ -495,9 +477,9 @@ h3 {
 
 /* ---------- header: solid top banner + pipe subnav (classic) ---------- */
 .top-banner {
-  background: var(--brown);
+  background: var(--hotpink);
   color: var(--btn-fg);
-  border-bottom: 1px solid var(--brown);
+  border-bottom: 1px solid var(--hotpink);
 }
 .top-banner-inner {
   display: flex;
@@ -544,8 +526,8 @@ h3 {
 }
 
 .subnav {
-  background: var(--surface-2);
-  border-bottom: 1px solid var(--line-strong);
+  background: var(--pastel);
+  border-bottom: 2px solid var(--hotpink);
 }
 .subnav-inner {
   display: flex;
@@ -555,13 +537,13 @@ h3 {
   font-size: 12px;
 }
 .subnav a {
-  color: var(--link);
+  color: var(--magenta);
   text-decoration: none;
   font-weight: 400;
   padding: 3px 8px;
 }
 .subnav a:hover {
-  color: var(--link);
+  color: var(--magenta);
   text-decoration: underline;
 }
 .subnav a.active {
@@ -569,7 +551,7 @@ h3 {
   text-decoration: underline;
 }
 .subnav .sep {
-  color: var(--faint);
+  color: var(--magenta);
 }
 
 .theme-toggle {

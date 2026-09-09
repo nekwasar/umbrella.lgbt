@@ -70,7 +70,7 @@ export default async function HomePage() {
 
       {/* the problem */}
       <section style={{ marginBottom: 18 }}>
-        <div className="band rainbow">The problem</div>
+        <div className="band">The problem</div>
         <div className="card-flat" style={{ borderTop: 'none' }}>
           <p style={{ marginTop: 0 }}>
             Every existing platform fragments our community. Dating apps aren&apos;t community. Reddit
@@ -92,7 +92,7 @@ export default async function HomePage() {
 
       {/* what's under the umbrella */}
       <section style={{ marginBottom: 18 }}>
-        <div className="band rainbow">What&apos;s under the umbrella</div>
+        <div className="band">What&apos;s under the umbrella</div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(240px,1fr))', gap: 10, marginTop: 8 }}>
           <MiniCard title="Community">Real-life meetups, events, found family. Move from screen to street.</MiniCard>
           <MiniCard title="Meet">Browse queer people near you. No swipes, no algorithms, just people.</MiniCard>

@@ -26,6 +26,7 @@
   --hotpink: #e60067;
   --pastel: #ffe4e1;
   --magenta: #b30059;
+  --alt-row: #fff0f5;
   --link: #0000ee;
   --btn-face: #e9e1d1;
   --btn-hi: #ffffff;
@@ -59,6 +60,7 @@
   --hotpink: #e60067;
   --pastel: #3a2129;
   --magenta: #ff7ab8;
+  --alt-row: #2b1f26;
   --link: #8ab4ff;
   --btn-face: #2e2822;
   --btn-hi: #5c5245;
@@ -744,5 +746,178 @@ h3 {
   }
   h1 {
     font-size: 22px;
+  }
+}
+
+/* ---------- desktop portal (homepage 3-column 2000s layout) ---------- */
+/* mobile-first: single stacked column; the 3-column grid activates at 992px */
+.portal {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+}
+.portal-main,
+.portal-left,
+.portal-right {
+  min-width: 0;
+}
+.portal-left,
+.portal-right {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
+/* sidebar module: solid pastel header bar + bordered body */
+.sidebox {
+  border: 1px solid var(--hotpink);
+  background: var(--surface);
+}
+.sidebox-hd {
+  background: var(--pastel);
+  color: var(--magenta);
+  border-bottom: 1px solid var(--hotpink);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0;
+  text-align: left;
+  padding: 3px 8px;
+}
+.sidebox-bd {
+  padding: 6px 8px;
+  font-size: 12px;
+}
+
+/* dense bordered tables: hotpink grid, alternating rows */
+.portal-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.portal-table th {
+  background: var(--pastel);
+  color: var(--magenta);
+  border: 1px solid var(--hotpink);
+  padding: 3px 6px;
+  text-align: left;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0;
+}
+.portal-table td {
+  border: 1px solid var(--hotpink);
+  padding: 3px 6px;
+}
+.portal-table tbody tr:nth-child(odd) td {
+  background: var(--surface);
+}
+.portal-table tbody tr:nth-child(even) td {
+  background: var(--alt-row);
+}
+
+/* retro directory list with » bullets */
+.dir-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 13px;
+}
+.dir-list li {
+  margin: 3px 0;
+}
+.dir-list .bullet {
+  color: var(--hotpink);
+  font-weight: 700;
+  margin-right: 4px;
+}
+
+/* dense mini lists (announcements, discussions) */
+.mini-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 12px;
+}
+.mini-list li {
+  padding: 4px 0;
+  border-bottom: 1px dotted var(--line-strong);
+}
+.mini-list li:last-child {
+  border-bottom: none;
+}
+.mini-list .meta {
+  display: block;
+  margin-top: 2px;
+}
+
+/* community bulletin notice box */
+.bulletin {
+  border: 2px solid var(--hotpink);
+  background: var(--pink-soft);
+  padding: 8px 10px;
+  margin-bottom: 14px;
+}
+.bulletin-title {
+  font-weight: 800;
+  color: var(--magenta);
+  margin-bottom: 4px;
+}
+.bulletin ul {
+  margin: 4px 0 0;
+  padding-left: 18px;
+  font-size: 12px;
+}
+.bulletin li {
+  margin: 2px 0;
+}
+
+/* 88x31 retro badge bar */
+.badge-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.badge88 {
+  display: inline-block;
+  min-width: 88px;
+  height: 31px;
+  line-height: 29px;
+  padding: 0 6px;
+  text-align: center;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--btn-fg);
+  border: 1px solid var(--ink);
+  white-space: nowrap;
+}
+.badge88-pink {
+  background: var(--hotpink);
+}
+.badge88-blue {
+  background: var(--blue);
+}
+.badge88-green {
+  background: var(--green);
+}
+
+@media (min-width: 992px) {
+  .container {
+    max-width: 1140px;
+  }
+  .portal {
+    grid-template-columns: 4fr 11fr 5fr;
+    grid-template-areas: 'left main right';
+    gap: 12px;
+    align-items: start;
+  }
+  .portal-main {
+    grid-area: main;
+  }
+  .portal-left {
+    grid-area: left;
+  }
+  .portal-right {
+    grid-area: right;
   }
 }

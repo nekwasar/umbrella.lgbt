@@ -27,10 +27,10 @@ export function Wordmark({ size = 18 }: { size?: number }) {
       <span className="wm-orange">m</span>
       <span className="wm-yellow">b</span>
       <span className="wm-green">r</span>
-      <span className="wm-blue">e</span>
-      <span className="wm-blue">l</span>
-      <span className="wm-purple">l</span>
-      <span className="wm-purple">a</span>
+      <span className="wm-cyan">e</span>
+      <span className="wm-royal">l</span>
+      <span className="wm-indigo">l</span>
+      <span className="wm-violet">a</span>
     </span>
   );
 }
@@ -91,6 +91,18 @@ export function PublicHeader() {
               <span className="theme-icon-dark">&#9790;</span>
             </button>
           </div>
+        </div>
+      </div>
+
+      <div className="banner-search">
+        <div className="container">
+          <form action="/search" method="get" role="search" className="banner-search-form">
+            <label htmlFor="banner-search-q">Search:</label>
+            <input id="banner-search-q" type="text" name="q" autoComplete="off" />
+            <button type="submit" className="btn">
+              Search
+            </button>
+          </form>
         </div>
       </div>
 

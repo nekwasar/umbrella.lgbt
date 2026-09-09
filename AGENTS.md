@@ -30,8 +30,9 @@ Authentic mid-2000s Web 2.0 / MySpace retro (SpaceHey-like). Source of truth:
 - Header (two-tone, SpaceHey-style): hot-pink `.top-banner` (`var(--hotpink)`
   background, solid cream `.wordmark`). Top-right account links are plain cream text
   (`#fff5f8`): `Sign in | Join` (`.banner-text-link` + `.banner-sep`), or `@user` +
-  text `Sign out` (`.banner-text-btn`) — NEVER button boxes up there; dark-mode toggle
-  stays far right. The banner also holds a classic search row (`.banner-search` with
+  text `Sign out` (`.banner-text-btn`) — NEVER button boxes up there; the dark-mode
+  toggle is a plain text link too (`☾ Dark Mode` / `☀ Light Mode`, far right).
+  The banner also holds a classic search row (`.banner-search` with
   8px top/bottom padding: "Search:" label + white 1px-bordered input + flat grey
   `.btn-search` (`#e0e0e0` bg, 1px `#666` border, sharp corners), GETs to `/search?q=`).
   Pastel `.subnav` (`var(--pastel)` background, 2px hotpink bottom border,

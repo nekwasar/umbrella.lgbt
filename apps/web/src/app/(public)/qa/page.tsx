@@ -185,7 +185,7 @@ function TopicTag({ active, href, children }: { active: boolean; href: string; c
   return (
     <Link
       href={href}
-      className={`tag ${active ? 'tag-pink' : ''}`}
+      className={`tag ${active ? 'tag-brown' : ''}`}
       style={active ? { borderWidth: 1 } : undefined}
     >
       {children}

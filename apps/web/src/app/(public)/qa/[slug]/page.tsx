@@ -123,7 +123,7 @@ export default async function QuestionPage({ params }: { params: Promise<{ slug:
         Q&amp;A
       </div>
       <h1 style={{ marginBottom: 8 }}>{p.title}</h1>
-      {p.topic ? <span className="tag tag-pink">{p.topic}</span> : null}
+      {p.topic ? <span className="tag tag-brown">{p.topic}</span> : null}
       {p.contentMd ? (
         <div className="md-preview card-flat" style={{ marginTop: 12, padding: '12px 14px' }} dangerouslySetInnerHTML={{ __html: mdToHtml(p.contentMd) }} />
       ) : (

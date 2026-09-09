@@ -68,16 +68,22 @@ export function PublicHeader() {
             {user ? (
               <>
                 <span className="banner-user">@{user.username}</span>
-                <button className="btn" onClick={() => logout()}>
+                <span className="banner-sep" aria-hidden="true">
+                  |
+                </span>
+                <button className="banner-text-btn" onClick={() => logout()}>
                   Sign out
                 </button>
               </>
             ) : (
               <>
-                <Link href="/login" className="banner-link">
+                <Link href="/login" className="banner-text-link">
                   Sign in
                 </Link>
-                <Link href="/register" className="btn">
+                <span className="banner-sep" aria-hidden="true">
+                  |
+                </span>
+                <Link href="/register" className="banner-text-link">
                   Join
                 </Link>
               </>
@@ -99,7 +105,7 @@ export function PublicHeader() {
           <form action="/search" method="get" role="search" className="banner-search-form">
             <label htmlFor="banner-search-q">Search:</label>
             <input id="banner-search-q" type="text" name="q" autoComplete="off" />
-            <button type="submit" className="btn">
+            <button type="submit" className="btn-search">
               Search
             </button>
           </form>

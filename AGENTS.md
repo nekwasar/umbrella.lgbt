@@ -28,14 +28,17 @@ Authentic mid-2000s Web 2.0 / MySpace retro (SpaceHey-like). Source of truth:
   sitting on dark strips — `.band a`, `.banner-link` — use the light strip/banner text
   color instead so they stay readable.)
 - Header (two-tone, SpaceHey-style): hot-pink `.top-banner` (`var(--hotpink)`
-  background, solid cream `.wordmark`, user links) + pastel `.subnav`
-  (`var(--pastel)` background, 2px hotpink bottom border) with pipe-separated links
-  (`Home | About | …`, separators are literal `|` in `.sep` spans) in ink
-  (`var(--ink)` = `#1c1917` light / `#f0e9df` dark), pink hover (`var(--pink)`)
-  with underline. NO top-bar + hamburger pattern — the subnav
-  wraps on narrow screens instead. The banner also holds a classic search row
-  (`.banner-search`: "Search:" label + white 1px-bordered input + bevel button,
-  GETs to `/search?q=`). NEVER rebuild header/footer/nav inside a page
+  background, solid cream `.wordmark`). Top-right account links are plain cream text
+  (`#fff5f8`): `Sign in | Join` (`.banner-text-link` + `.banner-sep`), or `@user` +
+  text `Sign out` (`.banner-text-btn`) — NEVER button boxes up there; dark-mode toggle
+  stays far right. The banner also holds a classic search row (`.banner-search` with
+  8px top/bottom padding: "Search:" label + white 1px-bordered input + flat grey
+  `.btn-search` (`#e0e0e0` bg, 1px `#666` border, sharp corners), GETs to `/search?q=`).
+  Pastel `.subnav` (`var(--pastel)` background, 2px hotpink bottom border,
+  `padding: 6px 10px`) holds pipe-separated links (`Home | About | …`, separators are
+  literal `|` in `.sep` spans with `margin: 0 6px`) in ink, pink hover with underline;
+  the subnav scrolls horizontally on small screens (`overflow-x: auto`,
+  `white-space: nowrap`, no wrapping). NEVER rebuild header/footer/nav inside a page
   (they live in the `(public)` layout + `PublicHeader`).
 - Section headers: `.band` = full-width SOLID pastel bar (`var(--pastel)` background,
   `var(--magenta)` text/border), bold left-aligned uppercase text. Links inside bands

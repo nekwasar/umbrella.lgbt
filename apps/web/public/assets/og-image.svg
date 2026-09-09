@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#FAF5EF"/>
+  <rect x="60" y="60" width="1080" height="510" fill="none" stroke="#E8A0BF" stroke-width="4"/>
+  <text x="600" y="280" text-anchor="middle" font-size="120" font-family="Georgia, serif" font-weight="bold">
+    <tspan fill="#E8A0BF">U</tspan><tspan fill="#E8A0BF">m</tspan><tspan fill="#E8A0BF">b</tspan><tspan fill="#E8A0BF">r</tspan><tspan fill="#B8A9C9">e</tspan><tspan fill="#A0C4D8">l</tspan><tspan fill="#A0C4D8">l</tspan><tspan fill="#A0C4D8">a</tspan>
+  </text>
+  <text x="600" y="360" text-anchor="middle" font-size="32" font-family="Georgia, serif" fill="#2D2A26">The everything queer app</text>
+  <text x="600" y="410" text-anchor="middle" font-size="22" font-family="system-ui, sans-serif" fill="#6B5E53">Community. Meet. Q&amp;A.</text>
+  <text x="600" y="520" text-anchor="middle" font-size="24" font-family="Georgia, serif" fill="#B8A9C9">umbrella.lgbt</text>
+</svg>

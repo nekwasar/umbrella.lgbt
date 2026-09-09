@@ -14,8 +14,8 @@ Authentic mid-2000s Web 2.0 / MySpace retro (SpaceHey-like). Source of truth:
   `var(--ink)`, `var(--muted)`, `var(--faint)`, `var(--line)`, `var(--line-strong)`,
   `var(--pink)`, `var(--purple)`, `var(--blue)`, `var(--green)`, `var(--gold)`,
   `var(--brown)` (+ `var(--brown-soft)` bg), `var(--link)` (classic `#0000ee`),
-  pride flag vars `var(--flag-red/orange/yellow/green/blue/purple)` (fixed both themes,
-  wordmark letters ONLY), header vars `var(--hotpink)` `#e60067` / `var(--pastel)`
+  wordmark letter hues (exact fixed hexes, both themes — see `.wm-*` classes),
+  header vars `var(--hotpink)` `#e60067` / `var(--pastel)`
   `#ffe4e1` / `var(--magenta)` `#b30059`, bevel vars `var(--btn-face)` /
   `var(--btn-hi)` / `var(--btn-lo)`. NEVER hardcode hex/rgb. NEVER introduce a new color.
   NEVER use CSS gradients (the one exception is the hard-stop `.pixel-divider` pattern).
@@ -33,7 +33,9 @@ Authentic mid-2000s Web 2.0 / MySpace retro (SpaceHey-like). Source of truth:
   (`Home | About | …`, separators are literal `|` in `.sep` spans) in ink
   (`var(--ink)` = `#1c1917` light / `#f0e9df` dark), pink hover (`var(--pink)`)
   with underline. NO top-bar + hamburger pattern — the subnav
-  wraps on narrow screens instead. NEVER rebuild header/footer/nav inside a page
+  wraps on narrow screens instead. The banner also holds a classic search row
+  (`.banner-search`: "Search:" label + white 1px-bordered input + bevel button,
+  GETs to `/search?q=`). NEVER rebuild header/footer/nav inside a page
   (they live in the `(public)` layout + `PublicHeader`).
 - Section headers: `.band` = full-width SOLID pastel bar (`var(--pastel)` background,
   `var(--magenta)` text/border), bold left-aligned uppercase text. Links inside bands
@@ -49,8 +51,11 @@ Authentic mid-2000s Web 2.0 / MySpace retro (SpaceHey-like). Source of truth:
   `.tag` (+ `-pink`/`-purple`/`-blue`/`-green`/`-gold`/`-brown`; topic/identity
   tags use `-brown`, `-green` = best-answer only), `.table`, `.row-list`,
   `.md-preview` (markdown body), `.alert` / `.alert-error` / `.alert-success`,
-  `.muted` / `.faint` / `.meta`, `.hr` / `.pixel-divider`, `.wordmark` with one
-  flag class per letter (U red, m orange, b yellow, r green, e+l blue, l+a purple).
+  `.muted` / `.faint` / `.meta`, `.hr` / `.pixel-divider`, `.wordmark` with the exact
+  per-letter sequence (U red `#ff0000`, m orange `#ff8c00`, b yellow `#ffd700`,
+  r green `#008000`, e cyan `#00bfff`, l royal `#0000cd`, l indigo `#4b0082`,
+  a violet `#9400d3` — no two adjacent letters share a hue; banner instance renders
+  solid cream via the `.top-banner .wm-*` override).
   `.rainbow-strip` = 3px solid hotpink divider; `.rainbow-frame` = 2px solid hotpink
   frame (doubles as best-answer highlight via `.card.rainbow-frame`). Focus ring is
   global (2px pink) — don't remove it.

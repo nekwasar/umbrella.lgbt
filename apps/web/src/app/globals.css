@@ -35,13 +35,6 @@
   --shadow: 2px 2px 0 rgba(28, 25, 23, 0.12);
   --font: Arial, Tahoma, Verdana, sans-serif;
   --font-mono: 'Courier New', Courier, monospace;
-  /* pride flag hues — fixed brand constants, same in both themes */
-  --flag-red: #e40303;
-  --flag-orange: #ff8c00;
-  --flag-yellow: #ffed00;
-  --flag-green: #008026;
-  --flag-blue: #24408e;
-  --flag-purple: #732982;
 }
 
 [data-theme='dark'] {
@@ -147,23 +140,30 @@ h3 {
   line-height: 1;
   color: var(--ink);
 }
+/* wordmark letter hues — exact per-letter spec, fixed both themes, no two adjacent share a hue */
 .wm-red {
-  color: var(--flag-red);
+  color: #ff0000;
 }
 .wm-orange {
-  color: var(--flag-orange);
+  color: #ff8c00;
 }
 .wm-yellow {
-  color: var(--flag-yellow);
+  color: #ffd700;
 }
 .wm-green {
-  color: var(--flag-green);
+  color: #008000;
 }
-.wm-blue {
-  color: var(--flag-blue);
+.wm-cyan {
+  color: #00bfff;
 }
-.wm-purple {
-  color: var(--flag-purple);
+.wm-royal {
+  color: #0000cd;
+}
+.wm-indigo {
+  color: #4b0082;
+}
+.wm-violet {
+  color: #9400d3;
 }
 
 .rainbow-strip {
@@ -495,14 +495,16 @@ h3 {
 .banner-home:hover {
   text-decoration: none;
 }
-/* solid cream wordmark on the brown banner (guaranteed contrast both themes) */
+/* solid cream wordmark on the hotpink banner (guaranteed contrast both themes) */
 .top-banner .wordmark,
 .top-banner .wm-red,
 .top-banner .wm-orange,
 .top-banner .wm-yellow,
 .top-banner .wm-green,
-.top-banner .wm-blue,
-.top-banner .wm-purple {
+.top-banner .wm-cyan,
+.top-banner .wm-royal,
+.top-banner .wm-indigo,
+.top-banner .wm-violet {
   color: var(--btn-fg);
 }
 .banner-side {
@@ -523,6 +525,34 @@ h3 {
 .banner-link:hover {
   color: var(--btn-fg);
   text-decoration: underline;
+}
+
+/* classic header search row: label + white input + bevel button, left-aligned */
+.banner-search {
+  background: var(--hotpink);
+}
+.banner-search-form {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 0 0 6px;
+  text-align: left;
+}
+.banner-search-form label {
+  color: var(--btn-fg);
+  font-size: 12px;
+  font-weight: 700;
+}
+.banner-search-form input[type='text'] {
+  width: 180px;
+  padding: 2px 6px;
+  font-family: var(--font);
+  font-size: 12px;
+  color: var(--ink);
+  background: #fff;
+  border: 1px solid var(--ink);
+  border-radius: 0;
 }
 
 .subnav {

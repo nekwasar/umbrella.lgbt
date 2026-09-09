@@ -16,7 +16,9 @@ Authentic mid-2000s Web 2.0 / MySpace retro (SpaceHey-like). Source of truth:
   `var(--brown)` (+ `var(--brown-soft)` bg), `var(--link)` (classic `#0000ee`),
   wordmark letter hues (exact fixed hexes, both themes — see `.wm-*` classes),
   header vars `var(--hotpink)` `#e60067` / `var(--pastel)`
-  `#ffe4e1` / `var(--magenta)` `#b30059`, bevel vars `var(--btn-face)` /
+  `#ffe4e1` / `var(--magenta)` `#b30059`, soft-pink theme vars `var(--softpink)`
+  `#fabbd1` / `var(--wine)` `#5c062c` / `var(--creampink)` `#fff5f8` /
+  `var(--bandline)` `#e09db5` (fixed both themes), bevel vars `var(--btn-face)` /
   `var(--btn-hi)` / `var(--btn-lo)`. NEVER hardcode hex/rgb. NEVER introduce a new color.
   NEVER use CSS gradients (the one exception is the hard-stop `.pixel-divider` pattern).
 - Corners: `border-radius: 0` on ALL cards, buttons, inputs, containers. No rounded
@@ -27,25 +29,27 @@ Authentic mid-2000s Web 2.0 / MySpace retro (SpaceHey-like). Source of truth:
 - Links: `var(--link)`, NO underline by default, underline on hover. (Exception: links
   sitting on dark strips — `.band a`, `.banner-link` — use the light strip/banner text
   color instead so they stay readable.)
-- Header (two-tone, SpaceHey-style): hot-pink `.top-banner` (`var(--hotpink)`
-  background, solid cream `.wordmark`). Top-right account links are plain cream text
-  (`#fff5f8`): `Sign in | Join` (`.banner-text-link` + `.banner-sep`), or `@user` +
+- Header (two-tone, SpaceHey-style): soft-pink `.top-banner` (`var(--softpink)`
+  background, full rainbow `.wordmark`). Top-right account links are plain wine text
+  (`var(--wine)`): `Sign in | Join` (`.banner-text-link` + `.banner-sep`), or `@user` +
   text `Sign out` (`.banner-text-btn`) — NEVER button boxes up there. Dark mode has
   NO header control; it lives in the footer as plain text (`ThemeToggle`: "Theme:
   Light / Dark" beside the copyright, active option bold text, other a link).
   The banner also holds a classic search row (`.banner-search` with
-  8px top/bottom padding, full-width flex: "Search Topics:" cream nowrap label + white
-  1px-bordered input (`flex: 1`) + flat grey `.btn-search` (`#e0e0e0` bg, 1px `#666`
-  border, sharp corners), GETs to `/search?q=`).
-  Pastel `.subnav` (`var(--pastel)` background, 2px hotpink bottom border,
+  8px top/bottom padding, full-width flex: "Search Topics:" wine nowrap label + white
+  input with 1px wine border (`flex: 1`) + flat grey `.btn-search` (`#e0e0e0` bg,
+  1px `#666` border, sharp corners), GETs to `/search?q=`).
+  Cream-pink `.subnav` (`var(--creampink)` background, 2px hotpink bottom border,
   `padding: 6px 10px`) holds pipe-separated links (`Home | About | …`, separators are
   literal `|` in `.sep` spans with `margin: 0 6px`) in ink, pink hover with underline;
   the subnav scrolls horizontally on small screens (`overflow-x: auto`,
   `white-space: nowrap`, no wrapping). NEVER rebuild header/footer/nav inside a page
   (they live in the `(public)` layout + `PublicHeader`).
-- Section headers: `.band` = full-width SOLID pastel bar (`var(--pastel)` background,
-  `var(--magenta)` text/border), bold left-aligned uppercase text. Links inside bands
-  use magenta. NEVER gradient/muted/dark bands (the old `.band.rainbow` is deleted).
+- Section headers: `.band` = full-width SOLID soft-pink bar (`var(--softpink)`
+  background, `var(--wine)` text, `var(--bandline)` border), bold left-aligned
+  uppercase text. Links inside bands use wine. Sidebar `.sidebox-hd` and
+  `.portal-table th` use the same treatment. NEVER gradient/muted/dark bands
+  (the old `.band.rainbow` is deleted).
 - Buttons: `.btn` = classic 4-sided bevel (`--btn-hi` top/left, `--btn-lo`
   bottom/right), flat `--btn-face` fill; `:active` inverts the bevel (pressed look),
   NEVER translate/scale animations. `.btn-solid` = flat high-contrast solid block.
@@ -68,7 +72,7 @@ Authentic mid-2000s Web 2.0 / MySpace retro (SpaceHey-like). Source of truth:
 - Structure content pages like `blog/[slug]/page.tsx`: `Breadcrumbs` → `ArticleView`
   (detail) or `TypeIndexView` (index) → related/cross-link sections via `.band` + `.row-list`.
 - Dark mode works ONLY through the variables (`[data-theme='dark']`). Hardcoded colors
-  break it. Narrow screens: subnav wraps, bands/cards go full width — check 360px wide.
+  break it. Narrow screens: subnav scrolls sideways, bands/cards go full width — check 360px wide.
 - Every public page MUST have `generateMetadata` via `pageMetadata()` (`@/lib/meta`),
   `Breadcrumbs`, and the matching JSON-LD block (`@/lib/seo`).
 - Data: fetch in server components via `@/lib/data` (`fetchPublicPage`, `apiFetch`);

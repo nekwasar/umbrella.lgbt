@@ -26,6 +26,11 @@
   --hotpink: #e60067;
   --pastel: #ffe4e1;
   --magenta: #b30059;
+  /* soft Y2K pink theme — fixed brand constants, same in both themes */
+  --softpink: #fabbd1;
+  --wine: #5c062c;
+  --creampink: #fff5f8;
+  --bandline: #e09db5;
   --alt-row: #fff0f5;
   --link: #0000ee;
   --btn-face: #e9e1d1;
@@ -196,15 +201,15 @@ h3 {
   padding: 8px;
 }
 
-/* full-width solid section header bar: pastel pink + magenta (SpaceHey-style block header) */
+/* full-width solid section header bar: soft pink + wine (SpaceHey-style block header) */
 .band {
   display: flex;
   align-items: center;
   gap: 8px;
   padding: 3px 8px;
-  background: var(--pastel);
-  color: var(--magenta);
-  border: 1px solid var(--magenta);
+  background: var(--softpink);
+  color: var(--wine);
+  border: 1px solid var(--bandline);
   border-radius: 0;
   font-size: 12px;
   font-weight: 700;
@@ -215,12 +220,12 @@ h3 {
 
 .band a,
 .band .band-link {
-  color: var(--magenta);
+  color: var(--wine);
 }
 
 .band a:hover,
 .band .band-link:hover {
-  color: var(--magenta);
+  color: var(--wine);
   text-decoration: underline;
 }
 
@@ -479,9 +484,9 @@ h3 {
 
 /* ---------- header: solid top banner + pipe subnav (classic) ---------- */
 .top-banner {
-  background: var(--hotpink);
-  color: var(--btn-fg);
-  border-bottom: 1px solid var(--hotpink);
+  background: var(--softpink);
+  color: var(--wine);
+  border-bottom: 1px solid var(--softpink);
 }
 .top-banner-inner {
   display: flex;
@@ -497,18 +502,7 @@ h3 {
 .banner-home:hover {
   text-decoration: none;
 }
-/* solid cream wordmark on the hotpink banner (guaranteed contrast both themes) */
-.top-banner .wordmark,
-.top-banner .wm-red,
-.top-banner .wm-orange,
-.top-banner .wm-yellow,
-.top-banner .wm-green,
-.top-banner .wm-cyan,
-.top-banner .wm-royal,
-.top-banner .wm-indigo,
-.top-banner .wm-violet {
-  color: var(--btn-fg);
-}
+
 .banner-side {
   display: flex;
   align-items: center;
@@ -517,16 +511,16 @@ h3 {
 }
 .banner-user {
   font-size: 11px;
-  color: var(--btn-fg);
+  color: var(--wine);
 }
-/* plain cream text links in the banner (no button boxes) */
+/* plain wine text links in the banner (no button boxes) */
 .banner-text-link {
-  color: #fff5f8;
+  color: var(--wine);
   font-weight: 700;
   text-decoration: none;
 }
 .banner-text-link:hover {
-  color: #fff5f8;
+  color: var(--wine);
   text-decoration: underline;
 }
 .banner-text-btn {
@@ -536,20 +530,20 @@ h3 {
   font-family: var(--font);
   font-size: 12px;
   font-weight: 700;
-  color: #fff5f8;
+  color: var(--wine);
   cursor: pointer;
 }
 .banner-text-btn:hover {
   text-decoration: underline;
 }
 .banner-sep {
-  color: #fff5f8;
+  color: var(--wine);
   margin: 0 6px;
 }
 
 /* classic header search row: label + white input + bevel button, left-aligned */
 .banner-search {
-  background: var(--hotpink);
+  background: var(--softpink);
 }
 .banner-search-form {
   display: flex;
@@ -561,7 +555,7 @@ h3 {
   text-align: left;
 }
 .banner-search-form label {
-  color: #fff5f8;
+  color: var(--wine);
   font-size: 12px;
   font-weight: 700;
   white-space: nowrap;
@@ -575,7 +569,7 @@ h3 {
   font-size: 12px;
   color: var(--ink);
   background: #fff;
-  border: 1px solid var(--ink);
+  border: 1px solid var(--wine);
   border-radius: 0;
 }
 
@@ -600,7 +594,7 @@ h3 {
 }
 
 .subnav {
-  background: var(--pastel);
+  background: var(--creampink);
   border-bottom: 2px solid var(--hotpink);
   overflow-x: auto;
   white-space: nowrap;
@@ -774,9 +768,9 @@ h3 {
   background: var(--surface);
 }
 .sidebox-hd {
-  background: var(--pastel);
-  color: var(--magenta);
-  border-bottom: 1px solid var(--hotpink);
+  background: var(--softpink);
+  color: var(--wine);
+  border-bottom: 1px solid var(--bandline);
   font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
@@ -796,8 +790,8 @@ h3 {
   font-size: 12px;
 }
 .portal-table th {
-  background: var(--pastel);
-  color: var(--magenta);
+  background: var(--softpink);
+  color: var(--wine);
   border: 1px solid var(--hotpink);
   padding: 3px 6px;
   text-align: left;

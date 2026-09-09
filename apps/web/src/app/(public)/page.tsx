@@ -43,18 +43,18 @@ export default async function HomePage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(homeJson) }} />
 
       {/* hero */}
-      <section className="rainbow-frame" style={{ padding: '26px 20px', textAlign: 'center', marginBottom: 18 }}>
-        <Wordmark size={52} />
-        <h1 style={{ fontSize: 20, margin: '10px 0 2px' }}>The everything queer app.</h1>
+      <section className="rainbow-frame" style={{ padding: '14px 12px', textAlign: 'left', marginBottom: 14 }}>
+        <Wordmark size={40} />
+        <h1 style={{ fontSize: 20, margin: '8px 0 2px' }}>The everything queer app.</h1>
         <p className="muted" style={{ margin: 0 }}>
           Community. Meet. Q&amp;A.
         </p>
-        <p className="muted" style={{ maxWidth: 560, margin: '10px auto 0', fontSize: 12 }}>
+        <p className="muted" style={{ maxWidth: 560, margin: '8px 0 0', fontSize: 12 }}>
           A platform built by and for the LGBTQ+ community. Not just another dating app — an umbrella
           for all of us.
         </p>
-        <div style={{ marginTop: 12 }}>
-          <Link href="/waitlist" className="btn btn-solid" style={{ padding: '6px 18px', fontSize: 14 }}>
+        <div style={{ marginTop: 10 }}>
+          <Link href="/waitlist" className="btn btn-solid" style={{ padding: '4px 14px', fontSize: 13 }}>
             Coming 2026
           </Link>
         </div>
@@ -115,7 +115,7 @@ export default async function HomePage() {
       </section>
 
       {/* coming banner */}
-      <section className="card" style={{ textAlign: 'center', marginBottom: 18, padding: '14px 12px' }}>
+      <section className="card" style={{ textAlign: 'left', marginBottom: 14, padding: '10px 8px' }}>
         <p style={{ margin: 0, fontWeight: 700, fontSize: 16 }}>Coming 2026 — The everything queer app</p>
         <p className="muted" style={{ margin: '4px 0 0' }}>
           There&apos;s room under the umbrella.
@@ -203,7 +203,7 @@ function Stat({ n, label }: { n: number | string; label: string }) {
   return (
     <div style={{ textAlign: 'center' }}>
       <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--pink)' }}>{n}</div>
-      <div className="faint" style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+      <div className="faint" style={{ fontSize: 10, textTransform: 'uppercase', letterSpacing: 0 }}>
         {label}
       </div>
     </div>

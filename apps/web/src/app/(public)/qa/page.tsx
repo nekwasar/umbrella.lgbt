@@ -118,7 +118,7 @@ export default async function QAListPage({
 
       {/* results */}
       {list.items.length === 0 ? (
-        <div className="card-flat" style={{ textAlign: 'center', padding: '30px 12px' }}>
+        <div className="card-flat" style={{ textAlign: 'left', padding: '12px 8px' }}>
           <p className="muted">No questions found.</p>
           {q || topic ? (
             <p className="muted">Try a different search or topic.</p>

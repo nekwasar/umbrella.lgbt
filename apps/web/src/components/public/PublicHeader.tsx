@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { useUser } from '@/components/public/UserProvider';
 
 const NAV = [
+  { href: '/', label: 'Home' },
   { href: '/about', label: 'About' },
   { href: '/blog', label: 'Blog' },
   { href: '/glossary', label: 'Glossary' },
@@ -37,7 +38,6 @@ export function Wordmark({ size = 18 }: { size?: number }) {
 export function PublicHeader() {
   const { user, logout } = useUser();
   const pathname = usePathname();
-  const [menuOpen, setMenuOpen] = useState(false);
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
 
   useEffect(() => {
@@ -57,41 +57,27 @@ export function PublicHeader() {
   }, [theme]);
 
   return (
-    <header className="site-header">
-      <div className="container">
-        <div className="site-header-inner">
-          <Link href="/" className="nav-link" style={{ textDecoration: 'none' }}>
+    <header>
+      <div className="top-banner">
+        <div className="container top-banner-inner">
+          <Link href="/" className="banner-home" aria-label="Umbrella.lgbt home">
             <Wordmark />
           </Link>
 
-          <nav className="site-nav" aria-label="Main">
-            {NAV.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`nav-link ${isActive(pathname, item.href) ? 'active' : ''}`}
-              >
-                {item.label}
-              </Link>
-            ))}
-          </nav>
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <div className="banner-side">
             {user ? (
               <>
-                <span className="faint" style={{ fontSize: 11 }}>
-                  @{user.username}
-                </span>
+                <span className="banner-user">@{user.username}</span>
                 <button className="btn" onClick={() => logout()}>
                   Sign out
                 </button>
               </>
             ) : (
               <>
-                <Link href="/login" className="nav-link">
+                <Link href="/login" className="banner-link">
                   Sign in
                 </Link>
-                <Link href="/register" className="btn btn-solid">
+                <Link href="/register" className="btn">
                   Join
                 </Link>
               </>
@@ -104,52 +90,29 @@ export function PublicHeader() {
               <span className="theme-icon-light">&#9728;</span>
               <span className="theme-icon-dark">&#9790;</span>
             </button>
-            <button
-              className={`nav-toggle ${menuOpen ? 'open' : ''}`}
-              aria-label="Toggle menu"
-              aria-expanded={menuOpen}
-              onClick={() => setMenuOpen((m) => !m)}
-            >
-              <span />
-              <span />
-              <span />
-            </button>
           </div>
         </div>
       </div>
 
-      <div className={`mobile-menu ${menuOpen ? 'open' : ''}`}>
-        {NAV.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className={isActive(pathname, item.href) ? 'active' : ''}
-            onClick={() => setMenuOpen(false)}
-          >
-            {item.label}
-          </Link>
-        ))}
-        {user ? (
-          <a
-            href="#"
-            onClick={(e) => {
-              e.preventDefault();
-              logout();
-            }}
-          >
-            Sign out (@{user.username})
-          </a>
-        ) : (
-          <>
-            <Link href="/login" onClick={() => setMenuOpen(false)}>
-              Sign in
-            </Link>
-            <Link href="/register" onClick={() => setMenuOpen(false)}>
-              Join
-            </Link>
-          </>
-        )}
-      </div>
+      <nav className="subnav" aria-label="Main">
+        <div className="container subnav-inner">
+          {NAV.map((item, i) => (
+            <span key={item.href}>
+              {i > 0 ? (
+                <span className="sep" aria-hidden="true">
+                  |
+                </span>
+              ) : null}
+              <Link
+                href={item.href}
+                className={isActive(pathname, item.href) ? 'active' : ''}
+              >
+                {item.label}
+              </Link>
+            </span>
+          ))}
+        </div>
+      </nav>
     </header>
   );
 }

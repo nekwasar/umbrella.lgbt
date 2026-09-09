@@ -101,7 +101,7 @@ export function QuestionView({ initial }: { initial: QuestionDetail }) {
         </div>
 
         {answers.length === 0 ? (
-          <div className="card-flat" style={{ textAlign: 'center', padding: '24px 12px' }}>
+          <div className="card-flat" style={{ textAlign: 'left', padding: '10px 8px' }}>
             <p className="muted" style={{ margin: 0 }}>
               No answers yet. Be the first to help.
             </p>
@@ -264,7 +264,7 @@ function AnswerForm({ slug, refresh }: { slug: string; refresh: () => void }) {
 
   if (!user) {
     return (
-      <div className="card-flat" style={{ marginTop: 16, textAlign: 'center', padding: '22px 12px' }}>
+      <div className="card-flat" style={{ marginTop: 16, textAlign: 'left', padding: '10px 8px' }}>
         <p className="muted" style={{ margin: 0 }}>
           <Link href={`/login?next=/qa/${slug}`}>Sign in</Link> to share an answer. You can read
           everything without an account.

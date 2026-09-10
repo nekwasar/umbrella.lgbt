@@ -19,8 +19,10 @@ export const pinSchema = z.object({
 });
 
 export const commentSchema = z.object({
-  targetType: z.enum(['QUESTION', 'ANSWER', 'PAGE']),
-  targetId: z.string().min(1),
+  // Top-level comments require targetType + targetId; replies only need parentId
+  // (target is inherited from the parent).
+  targetType: z.enum(['QUESTION', 'ANSWER', 'PAGE']).optional(),
+  targetId: z.string().min(1).optional(),
   parentId: z.string().min(1).optional(),
   bodyMd: z.string().min(1, 'Comment cannot be empty').max(20_000),
   authorName: z.string().min(1).max(60).optional()

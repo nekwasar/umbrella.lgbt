@@ -58,6 +58,10 @@ router.post('/', writeLimiter, optionalUser, async (req, res) => {
     return res.status(401).json({ error: 'Sign in to comment' });
   }
 
+  if (!targetType || !targetId) {
+    return res.status(400).json({ error: 'targetType and targetId are required' });
+  }
+
   if (targetType === 'QUESTION') {
     const q = await prisma.question.findUnique({ where: { id: targetId } });
     if (!q) return res.status(404).json({ error: 'Question not found' });

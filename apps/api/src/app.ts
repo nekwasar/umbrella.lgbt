@@ -17,6 +17,9 @@ import qaWriteRouter from './routes/qa/write';
 import qaAnswersRouter from './routes/qa/answers';
 import qaCommentsRouter from './routes/qa/comments';
 import adminQaRouter from './routes/admin/qa';
+import forumReadRouter from './routes/forum/read';
+import forumWriteRouter from './routes/forum/write';
+import reportsRouter from './routes/reports';
 
 export function createApp() {
   const app = express();
@@ -87,6 +90,9 @@ export function createApp() {
   api.use('/qa', qaWriteRouter);
   api.use('/answers', qaAnswersRouter);
   api.use('/comments', qaCommentsRouter);
+  api.use('/forum', forumReadRouter);
+  api.use('/forum', forumWriteRouter);
+  api.use('/reports', reportsRouter);
   api.use('/pages', publicPagesRouter);
   app.use('/api', api);
 

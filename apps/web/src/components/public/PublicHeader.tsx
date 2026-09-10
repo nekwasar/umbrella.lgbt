@@ -10,6 +10,7 @@ const NAV = [
   { href: '/blog', label: 'Blog' },
   { href: '/glossary', label: 'Glossary' },
   { href: '/qa', label: 'Q&A' },
+  { href: '/forum', label: 'Forum' },
   { href: '/city', label: 'Cities' },
   { href: '/resources', label: 'Resources' },
   { href: '/contact', label: 'Contact' }

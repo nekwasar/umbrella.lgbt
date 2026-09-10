@@ -25,4 +25,18 @@ router.delete('/comments/:id', requireAdmin, async (req, res) => {
   res.json({ ok: true });
 });
 
+router.delete('/forum/topics/:id', requireAdmin, async (req, res) => {
+  const t = await prisma.forumTopic.findUnique({ where: { id: req.params.id } });
+  if (!t) return res.status(404).json({ error: 'Topic not found' });
+  await prisma.forumTopic.update({ where: { id: t.id }, data: { status: 'REMOVED' } });
+  res.json({ ok: true });
+});
+
+router.delete('/forum/posts/:id', requireAdmin, async (req, res) => {
+  const p = await prisma.forumPost.findUnique({ where: { id: req.params.id } });
+  if (!p) return res.status(404).json({ error: 'Post not found' });
+  await prisma.forumPost.update({ where: { id: p.id }, data: { status: 'REMOVED' } });
+  res.json({ ok: true });
+});
+
 export default router;

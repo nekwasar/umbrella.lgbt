@@ -39,6 +39,7 @@ enum ContentStatus {
 enum CommentTargetType {
   QUESTION
   ANSWER
+  PAGE
 }
 
 enum ReportTargetType {
@@ -47,6 +48,8 @@ enum ReportTargetType {
   COMMENT
   USER
   PAGE
+  FORUM_TOPIC
+  FORUM_POST
 }
 
 // ---------- Admins (CMS) ----------
@@ -79,6 +82,8 @@ model User {
   comments     Comment[]
   votes        AnswerVote[]
   reports      Report[]
+  forumTopics  ForumTopic[]
+  forumPosts   ForumPost[]
 }
 
 // ---------- Editorial content ----------
@@ -217,6 +222,52 @@ model Comment {
   status     ContentStatus     @default(PUBLISHED)
   createdAt  DateTime          @default(now())
   updatedAt  DateTime          @updatedAt
+}
+
+// ---------- Community forum ----------
+
+model ForumBoard {
+  id          String       @id @default(cuid())
+  category    String
+  name        String
+  slug        String       @unique
+  description String       @default("")
+  position    Int          @default(0)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  topics      ForumTopic[]
+}
+
+model ForumTopic {
+  id        String        @id @default(cuid())
+  boardId   String
+  board     ForumBoard    @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  status    ContentStatus @default(PUBLISHED)
+  pinned    Boolean       @default(false)
+  locked    Boolean       @default(false)
+  viewCount Int           @default(0)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  posts     ForumPost[]
+
+  @@index([boardId, status, updatedAt])
+}
+
+model ForumPost {
+  id        String        @id @default(cuid())
+  topicId   String
+  topic     ForumTopic    @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bodyMd    String        @default("")
+  status    ContentStatus @default(PUBLISHED)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+
+  @@index([topicId, status, createdAt])
 }
 
 // ---------- Moderation (reactive, no queue) ----------

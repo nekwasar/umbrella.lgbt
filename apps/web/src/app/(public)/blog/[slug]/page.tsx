@@ -6,6 +6,7 @@ import { pageMetadata } from '@/lib/meta';
 import { absUrl, articleJson } from '@/lib/seo';
 import { ArticleView } from '@/components/public/ArticleView';
 import { Breadcrumbs } from '@/components/public/Breadcrumbs';
+import { CommentSection } from '@/components/comments/CommentSection';
 
 export const revalidate = 300;
 
@@ -54,6 +55,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           </>
         }
       />
+      <CommentSection targetType="PAGE" targetId={p.id} />
     </article>
   );
 }

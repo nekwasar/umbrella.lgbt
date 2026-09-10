@@ -106,8 +106,10 @@ Authentic mid-2000s Web 2.0 / MySpace retro (SpaceHey-like). Source of truth:
   as blockquotes) + Reply/Quote/ReportTopic actions wired through the `forum-quote`
   CustomEvent to `QuickReply`. Locked topics hide the reply box.
 - New topics/replies require login and bump `updatedAt`; reply counts = posts − 1.
-- Boards are seeded data (`npm run seed:forum` in `apps/api`, idempotent by slug) —
-  NEVER hardcode boards in frontend code. Schema changes need a new
+- Boards are managed at `/admin/forum` (`BoardsManager`: create with auto-slug, edit,
+  delete with cascade confirm) backed by `GET/POST /api/admin/boards` and
+  `PUT/DELETE /api/admin/boards/:id`. `npm run seed:forum` (idempotent by slug) only
+  bootstraps the initial 9 — NEVER hardcode boards in frontend code. Schema changes need a new
   `prisma/migrations/*/` dir (tested with `migrate deploy`); enum additions are safe.
 - Moderation: `DELETE /api/admin/qa/forum/topics/:id` + `/posts/:id` (soft REMOVED).
 

@@ -80,6 +80,37 @@ Authentic mid-2000s Web 2.0 / MySpace retro (SpaceHey-like). Source of truth:
 - Data: fetch in server components via `@/lib/data` (`fetchPublicPage`, `apiFetch`);
   `export const revalidate = 300`; call `notFound()` when the API returns null.
 
+### Universal comments (`src/components/comments/CommentSection.tsx`)
+
+- `<CommentSection targetType="PAGE" targetId={page.id} />` — mounted on blog detail
+  pages. Q&A keeps its own inline threads (votes/best-answer context); do NOT replace them.
+- Backend: `GET/POST /api/comments` (`CommentTargetType` = QUESTION|ANSWER|PAGE).
+  Top-level posts require login; nested replies allow guests with `authorName`.
+  Replies need ONLY `parentId` (target is inherited) — never require target fields there.
+- UI contract: count header (`N Comments`) + Oldest/Newest toggle; guests get the pink
+  Register/Login callout; authed users get markdown textarea + Post Comment. Cards use
+  `.avatar` + name + `timeAgo()` (`@/lib/time`) + `mdToHtml` body + Reply/Quote/Report
+  actions; nested replies indent with softpink left border (`.comment-replies`).
+- Reports go to `POST /api/reports` (auth, reason min 5 chars) — same endpoint backs
+  forum Report actions. Errors via `toApiError` + `summary`, as usual.
+
+### Community forum (`/forum`, API `ForumBoard/ForumTopic/ForumPost`)
+
+- Routes: `/forum` (index, category `.sidebox`es, `?q=` board search) →
+  `/forum/board/[slug]` (`?sort=top|recent`, new-topic form) →
+  `/forum/topic/[id]` (posts, quick reply). Breadcrumbs + `generateMetadata` on all three.
+- Board/topic/post rows: desktop 3-col CSS grid (`.forum-board-row`, `.forum-topic-row`),
+  stacked cards on mobile — one markup, NO table elements, NO duplicated markup.
+- Thread posts: `.forum-post` rows alternate `--surface` / `--post-alt`; author head
+  (avatar, name, Member tag, join date, post count) + `md-preview` body (quotes render
+  as blockquotes) + Reply/Quote/ReportTopic actions wired through the `forum-quote`
+  CustomEvent to `QuickReply`. Locked topics hide the reply box.
+- New topics/replies require login and bump `updatedAt`; reply counts = posts − 1.
+- Boards are seeded data (`npm run seed:forum` in `apps/api`, idempotent by slug) —
+  NEVER hardcode boards in frontend code. Schema changes need a new
+  `prisma/migrations/*/` dir (tested with `migrate deploy`); enum additions are safe.
+- Moderation: `DELETE /api/admin/qa/forum/topics/:id` + `/posts/:id` (soft REMOVED).
+
 ### Desktop portal (homepage, ≥992px only)
 
 - Mobile-first: everything stacks single-column below 992px. The 3-column grid, the

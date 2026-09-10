@@ -10,7 +10,7 @@ function parsePaging(req: { query: any }, defSize = 20, maxSize = 100) {
   return { page, pageSize, skip: (page - 1) * pageSize };
 }
 
-async function boardStats(boardId: string) {
+export async function boardStats(boardId: string) {
   const [topicCount, postCount, last] = await Promise.all([
     prisma.forumTopic.count({ where: { boardId, status: 'PUBLISHED' } }),
     prisma.forumPost.count({ where: { topic: { boardId, status: 'PUBLISHED' }, status: 'PUBLISHED' } }),

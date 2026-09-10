@@ -20,6 +20,7 @@ import adminQaRouter from './routes/admin/qa';
 import forumReadRouter from './routes/forum/read';
 import forumWriteRouter from './routes/forum/write';
 import reportsRouter from './routes/reports';
+import adminBoardsRouter from './routes/admin/boards';
 
 export function createApp() {
   const app = express();
@@ -86,6 +87,7 @@ export function createApp() {
   api.use('/admin/users', usersRouter);
   api.use('/admin/stats', statsRouter);
   api.use('/admin/qa', adminQaRouter);
+  api.use('/admin/boards', adminBoardsRouter);
   api.use('/qa', qaReadRouter);
   api.use('/qa', qaWriteRouter);
   api.use('/answers', qaAnswersRouter);

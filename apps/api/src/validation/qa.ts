@@ -19,7 +19,7 @@ export const pinSchema = z.object({
 });
 
 export const commentSchema = z.object({
-  targetType: z.enum(['QUESTION', 'ANSWER']),
+  targetType: z.enum(['QUESTION', 'ANSWER', 'PAGE']),
   targetId: z.string().min(1),
   parentId: z.string().min(1).optional(),
   bodyMd: z.string().min(1, 'Comment cannot be empty').max(20_000),

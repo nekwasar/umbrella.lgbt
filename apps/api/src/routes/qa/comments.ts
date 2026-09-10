@@ -3,7 +3,7 @@ import rateLimit from 'express-rate-limit';
 import { prisma } from '../../db/prisma';
 import { optionalUser, requireUser } from '../../middleware/auth';
 import { commentSchema } from '../../validation/qa';
-import { serializeComment } from '../../lib/qa';
+import { buildCommentTree, serializeComment } from '../../lib/qa';
 
 const router = Router();
 
@@ -61,9 +61,12 @@ router.post('/', writeLimiter, optionalUser, async (req, res) => {
   if (targetType === 'QUESTION') {
     const q = await prisma.question.findUnique({ where: { id: targetId } });
     if (!q) return res.status(404).json({ error: 'Question not found' });
-  } else {
+  } else if (targetType === 'ANSWER') {
     const a = await prisma.answer.findUnique({ where: { id: targetId } });
     if (!a) return res.status(404).json({ error: 'Answer not found' });
+  } else {
+    const p = await prisma.page.findUnique({ where: { id: targetId } });
+    if (!p || p.status !== 'PUBLISHED') return res.status(404).json({ error: 'Page not found' });
   }
 
   const comment = await prisma.comment.create({
@@ -80,6 +83,36 @@ router.post('/', writeLimiter, optionalUser, async (req, res) => {
   });
 
   res.status(201).json({ comment: serializeComment(comment) });
+});
+
+/**
+ * List comments for a target as a nested tree (oldest first).
+ * GET /api/comments?targetType=PAGE&targetId=<id>
+ */
+router.get('/', async (req, res) => {
+  const { targetType, targetId } = req.query;
+  if (
+    (targetType !== 'QUESTION' && targetType !== 'ANSWER' && targetType !== 'PAGE') ||
+    typeof targetId !== 'string' ||
+    !targetId
+  ) {
+    return res.status(400).json({ error: 'targetType and targetId are required' });
+  }
+
+  const targetExists =
+    targetType === 'QUESTION'
+      ? await prisma.question.findUnique({ where: { id: targetId } })
+      : targetType === 'ANSWER'
+        ? await prisma.answer.findUnique({ where: { id: targetId } })
+        : await prisma.page.findUnique({ where: { id: targetId } });
+  if (!targetExists) return res.status(404).json({ error: 'Target not found' });
+
+  const comments = await prisma.comment.findMany({
+    where: { targetType: targetType as any, targetId, status: 'PUBLISHED' },
+    orderBy: { createdAt: 'asc' },
+    include: { user: { select: { id: true, username: true, displayName: true } } }
+  });
+  res.json({ total: comments.length, comments: buildCommentTree(comments) });
 });
 
 export default router;

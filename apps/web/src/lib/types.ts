@@ -162,3 +162,85 @@ export interface QuestionDetail {
 export interface TopicsResponse {
   topics: { topic: string; count: number }[];
 }
+
+// ---------- Community forum (public) ----------
+
+export interface ForumLastPost {
+  topicId?: string;
+  topicTitle?: string;
+  authorName: string;
+  createdAt: string;
+}
+
+export interface ForumBoard {
+  id: string;
+  category: string;
+  name: string;
+  slug: string;
+  description: string;
+  topicCount: number;
+  postCount: number;
+  lastPost: ForumLastPost | null;
+}
+
+export interface ForumCategory {
+  name: string;
+  boards: ForumBoard[];
+}
+
+export interface ForumIndexResponse {
+  categories: ForumCategory[];
+}
+
+export interface ForumTopicSummary {
+  id: string;
+  boardId: string;
+  boardSlug: string | null;
+  boardName: string | null;
+  title: string;
+  status: string;
+  pinned: boolean;
+  locked: boolean;
+  viewCount: number;
+  replyCount: number;
+  postCount: number;
+  authorName: string | null;
+  createdAt: string;
+  updatedAt: string;
+  lastPost: { authorName: string; createdAt: string } | null;
+}
+
+export interface ForumBoardResponse {
+  board: ForumBoard;
+  sort: string;
+  total: number;
+  page: number;
+  pageSize: number;
+  items: ForumTopicSummary[];
+}
+
+export interface ForumPostAuthor {
+  id: string;
+  username: string;
+  displayName: string | null;
+  createdAt: string;
+  postCount: number;
+}
+
+export interface ForumPost {
+  id: string;
+  topicId: string;
+  bodyMd: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  author: ForumPostAuthor | null;
+}
+
+export interface ForumTopicResponse {
+  topic: ForumTopicSummary;
+  total: number;
+  page: number;
+  pageSize: number;
+  items: ForumPost[];
+}

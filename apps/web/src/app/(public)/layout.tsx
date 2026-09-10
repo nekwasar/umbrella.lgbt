@@ -23,6 +23,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
                 <a href="/blog">Blog</a>
                 <a href="/glossary">Glossary</a>
                 <a href="/qa">Q&amp;A</a>
+                <a href="/forum">Forum</a>
                 <a href="/city">City Guides</a>
               </div>
               <div className="footer-col">

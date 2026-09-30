@@ -40,6 +40,7 @@ enum CommentTargetType {
   QUESTION
   ANSWER
   PAGE
+  BULLETIN
 }
 
 enum ReportTargetType {
@@ -222,6 +223,7 @@ model Comment {
   status     ContentStatus     @default(PUBLISHED)
   createdAt  DateTime          @default(now())
   updatedAt  DateTime          @updatedAt
+  bulletin   Bulletin?         @relation(fields: [targetId], references: [id], onDelete: Cascade)
 }
 
 // ---------- Community forum ----------
@@ -270,6 +272,18 @@ model ForumPost {
   @@index([topicId, status, createdAt])
 }
 
+// ---------- Bulletins (site announcements, MySpace-style) ----------
+
+model Bulletin {
+  id        String        @id @default(cuid())
+  title     String
+  bodyMd    String        @default("")
+  pinned    Boolean       @default(false)
+  status    ContentStatus @default(PUBLISHED)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  comments  Comment[]
+}
 // ---------- Moderation (reactive, no queue) ----------
 
 model Report {

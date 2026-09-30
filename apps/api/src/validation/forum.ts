@@ -21,6 +21,13 @@ export const boardSchema = z.object({
   position: z.number().int().min(0).max(999).optional().default(0)
 });
 
+export const bulletinSchema = z.object({
+  title: z.string().min(3, 'Title must be at least 3 characters').max(150),
+  bodyMd: z.string().max(50_000).optional().default(''),
+  pinned: z.boolean().optional().default(false),
+  status: z.enum(['PUBLISHED', 'REMOVED']).optional().default('PUBLISHED')
+});
+
 export const reportSchema = z.object({
   targetType: z.enum(['QUESTION', 'ANSWER', 'COMMENT', 'USER', 'PAGE', 'FORUM_TOPIC', 'FORUM_POST']),
   targetId: z.string().min(1),

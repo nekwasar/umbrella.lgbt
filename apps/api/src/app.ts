@@ -21,6 +21,8 @@ import forumReadRouter from './routes/forum/read';
 import forumWriteRouter from './routes/forum/write';
 import reportsRouter from './routes/reports';
 import adminBoardsRouter from './routes/admin/boards';
+import bulletinsRouter from './routes/bulletins';
+import adminBulletinsRouter from './routes/admin/bulletins';
 
 export function createApp() {
   const app = express();
@@ -88,6 +90,8 @@ export function createApp() {
   api.use('/admin/stats', statsRouter);
   api.use('/admin/qa', adminQaRouter);
   api.use('/admin/boards', adminBoardsRouter);
+  api.use('/bulletins', bulletinsRouter);
+  api.use('/admin/bulletins', adminBulletinsRouter);
   api.use('/qa', qaReadRouter);
   api.use('/qa', qaWriteRouter);
   api.use('/answers', qaAnswersRouter);

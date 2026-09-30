@@ -27,7 +27,9 @@ router.post('/', writeLimiter, optionalUser, async (req, res) => {
     return res.status(400).json({ error: parsed.error.issues[0]?.message || 'Invalid comment' });
   }
 
-  const { targetType, targetId, parentId, bodyMd, authorName } = parsed.data;
+  const { targetType: rawType, targetId: rawId, parentId, bodyMd, authorName } = parsed.data;
+  const targetType = rawType as 'QUESTION' | 'ANSWER' | 'PAGE' | 'BULLETIN' | undefined;
+  const targetId = rawId;
   const include = { user: { select: { id: true, username: true, displayName: true } } };
 
   if (parentId) {
@@ -68,6 +70,9 @@ router.post('/', writeLimiter, optionalUser, async (req, res) => {
   } else if (targetType === 'ANSWER') {
     const a = await prisma.answer.findUnique({ where: { id: targetId } });
     if (!a) return res.status(404).json({ error: 'Answer not found' });
+  } else if (targetType === 'BULLETIN') {
+    const b = await prisma.bulletin.findUnique({ where: { id: targetId } });
+    if (!b || b.status !== 'PUBLISHED') return res.status(404).json({ error: 'Bulletin not found' });
   } else {
     const p = await prisma.page.findUnique({ where: { id: targetId } });
     if (!p || p.status !== 'PUBLISHED') return res.status(404).json({ error: 'Page not found' });
@@ -96,7 +101,7 @@ router.post('/', writeLimiter, optionalUser, async (req, res) => {
 router.get('/', async (req, res) => {
   const { targetType, targetId } = req.query;
   if (
-    (targetType !== 'QUESTION' && targetType !== 'ANSWER' && targetType !== 'PAGE') ||
+    (targetType !== 'QUESTION' && targetType !== 'ANSWER' && targetType !== 'PAGE' && targetType !== 'BULLETIN') ||
     typeof targetId !== 'string' ||
     !targetId
   ) {
@@ -108,7 +113,9 @@ router.get('/', async (req, res) => {
       ? await prisma.question.findUnique({ where: { id: targetId } })
       : targetType === 'ANSWER'
         ? await prisma.answer.findUnique({ where: { id: targetId } })
-        : await prisma.page.findUnique({ where: { id: targetId } });
+        : targetType === 'BULLETIN'
+          ? await prisma.bulletin.findUnique({ where: { id: targetId } })
+          : await prisma.page.findUnique({ where: { id: targetId } });
   if (!targetExists) return res.status(404).json({ error: 'Target not found' });
 
   const comments = await prisma.comment.findMany({

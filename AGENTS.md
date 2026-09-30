@@ -113,6 +113,24 @@ Authentic mid-2000s Web 2.0 / MySpace retro (SpaceHey-like). Source of truth:
   `prisma/migrations/*/` dir (tested with `migrate deploy`); enum additions are safe.
 - Moderation: `DELETE /api/admin/qa/forum/topics/:id` + `/posts/:id` (soft REMOVED).
 
+### Bulletins (`/bulletin`, MySpace-style site announcements)
+
+- Real data, never hardcoded: `Bulletin` model, admin CRUD at `/admin/bulletins`
+  (title, markdown body, pinned, PUBLISHED/REMOVED), public API
+  `GET /api/bulletins` (+ `/:id`), seeded via `npm run seed:bulletins`.
+- Comments are ON: bulletin detail pages mount `<CommentSection targetType="BULLETIN" />`.
+  The enum value must exist in Postgres (`CommentTargetType`) — after adding enum values
+  in a migration, VERIFY the live DB has them (migrate deploy can mark a migration
+  applied while the enum value is missing if the transaction was odd); fix with direct
+  `ALTER TYPE ... ADD VALUE IF NOT EXISTS`.
+- Homepage: right sidebar "Bulletins" panel (`/api/bulletins?pageSize=3`, pinned first,
+  `timeAgo` + comment-count tags + mdToText excerpt, "all →" to `/bulletin`).
+  NEVER reintroduce hardcoded announcement arrays.
+- Hero: `Umbrella.lgbt` h1 + tagline left, "Get Involved" sidebox right (numbered
+  step-links to Q&A/Forum/Glossary/Waitlist with live counts). "Coming 2026" lives ONLY
+  in the `.marquee` ticker under the subnav (softpink strip, wine text, CSS animation,
+  `prefers-reduced-motion` disables it, links to `/waitlist`).
+
 ### Desktop portal (homepage, ≥992px only)
 
 - Mobile-first: everything stacks single-column below 992px. The 3-column grid, the

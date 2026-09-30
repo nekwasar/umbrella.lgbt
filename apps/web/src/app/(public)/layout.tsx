@@ -1,5 +1,6 @@
 import { UserProvider } from '@/components/public/UserProvider';
 import { PublicHeader, Wordmark } from '@/components/public/PublicHeader';
+import { Marquee } from '@/components/public/Marquee';
 import { ThemeToggle } from '@/components/public/ThemeToggle';
 
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
@@ -7,6 +8,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
     <UserProvider>
       <div className="flex min-h-screen flex-col">
         <PublicHeader />
+        <Marquee />
         <div className="rainbow-strip" />
         <main className="container flex-1 py-6">{children}</main>
         <footer className="site-footer">

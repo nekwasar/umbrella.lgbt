@@ -762,6 +762,60 @@ h3 {
   }
 }
 
+/* scrolling ticker (classic marquee, CSS-animated) */
+.marquee {
+  overflow: hidden;
+  background: var(--softpink);
+  border-bottom: 1px solid var(--bandline);
+  white-space: nowrap;
+}
+.marquee a {
+  color: var(--wine);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0;
+}
+.marquee a:hover {
+  text-decoration: underline;
+}
+.marquee-track {
+  display: inline-block;
+  padding: 3px 0;
+  will-change: transform;
+  animation: marquee-scroll 28s linear infinite;
+}
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+}
+
+/* hero get-involved list */
+.get-involved {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 12px;
+}
+.get-involved li {
+  margin: 4px 0;
+}
+.get-involved .step {
+  color: var(--wine);
+  font-weight: 700;
+  margin-right: 4px;
+}
+
 /* ---------- desktop portal (homepage 3-column 2000s layout) ---------- */
 /* mobile-first: single stacked column; the 3-column grid activates at 992px */
 .portal {

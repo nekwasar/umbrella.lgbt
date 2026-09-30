@@ -2,8 +2,10 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { connection } from 'next/server';
 import { apiFetch, fetchPageList, fetchTypeCount } from '@/lib/data';
-import { QuestionListResponse } from '@/lib/types';
+import { mdToText } from '@/lib/sanitize';
+import { QuestionListResponse, BulletinListResponse } from '@/lib/types';
 import { Wordmark } from '@/components/public/PublicHeader';
+import { timeAgo } from '@/lib/time';
 
 export const revalidate = 300;
 
@@ -38,15 +40,9 @@ const QUICK_JUMP = [
   { href: '#hubs', label: 'Regional hubs' }
 ];
 
-const ANNOUNCEMENTS = [
-  { date: 'Sep 2026', text: 'Retro portal homepage is live. You are looking at it.' },
-  { date: 'Sep 2026', text: 'Admin console and public API are online.' },
-  { date: '2026', text: 'The full Umbrella app launches soon. Watch this space.' }
-];
-
 export default async function HomePage() {
   await connection();
-  const [blog, qaRes, latestRes, cities, glossaryCount, qaCount, cityCount, resourcesCount] =
+  const [blog, qaRes, latestRes, cities, glossaryCount, qaCount, cityCount, resourcesCount, bulletinRes] =
     await Promise.all([
       fetchPageList('BLOG', { pageSize: 2 }),
       apiFetch<QuestionListResponse>('/api/qa?pageSize=2&sort=popular'),
@@ -55,12 +51,14 @@ export default async function HomePage() {
       fetchTypeCount('GLOSSARY'),
       fetchTypeCount('QA'),
       fetchTypeCount('CITY'),
-      fetchTypeCount('RESOURCES')
+      fetchTypeCount('RESOURCES'),
+      apiFetch<BulletinListResponse>('/api/bulletins?pageSize=3')
     ]);
 
   const qaItems = qaRes?.items ?? [];
   const latestItems = latestRes?.items ?? [];
   const cityItems = cities?.items ?? [];
+  const bulletinItems = bulletinRes?.items ?? [];
 
   const counts = [glossaryCount, qaCount, cityCount, resourcesCount].filter(
     (n): n is number => typeof n === 'number'
@@ -80,39 +78,46 @@ export default async function HomePage() {
 
       {/* ============ CENTER: main column ============ */}
       <div className="portal-main">
-        {/* bulletin */}
-        <section className="bulletin" aria-label="Community bulletin">
-          <div className="bulletin-title">[ BULLETIN: Welcome to Umbrella ]</div>
-          <ul>
-            <li>
-              {totalIndexed !== null ? `${totalIndexed} pages` : '150+ pages'} indexed and counting
-              — new guides every week.
-            </li>
-            <li>
-              Q&amp;A is open: <Link href="/qa/ask">ask a question</Link>, get answers from the
-              community.
-            </li>
-            <li>
-              The full app launches 2026. <Link href="/waitlist">Read the plan</Link>.
-            </li>
-          </ul>
-        </section>
-
-        {/* hero */}
+        {/* hero: identity + action panel (MySpace "Get Started" pattern) */}
         <section className="rainbow-frame" style={{ padding: '14px 12px', textAlign: 'left', marginBottom: 14 }}>
-          <Wordmark size={40} />
-          <h1 style={{ fontSize: 20, margin: '8px 0 2px' }}>The everything queer app.</h1>
-          <p className="muted" style={{ margin: 0 }}>
-            Community. Meet. Q&amp;A.
-          </p>
-          <p className="muted" style={{ maxWidth: 560, margin: '8px 0 0', fontSize: 12 }}>
-            A platform built by and for the LGBTQ+ community. Not just another dating app — an umbrella
-            for all of us.
-          </p>
-          <div style={{ marginTop: 10 }}>
-            <Link href="/waitlist" className="btn btn-solid" style={{ padding: '4px 14px', fontSize: 13 }}>
-              Coming 2026
-            </Link>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 14, alignItems: 'flex-start' }}>
+            <div style={{ flex: '1 1 240px', minWidth: 0 }}>
+              <Wordmark size={34} />
+              <h1 style={{ fontSize: 20, margin: '8px 0 2px' }}>Umbrella.lgbt</h1>
+              <p className="muted" style={{ margin: 0 }}>
+                Community. Meet. Q&A. Forum.
+              </p>
+              <p className="muted" style={{ margin: '6px 0 0', fontSize: 12 }}>
+                Built by and for the LGBTQ+ community
+                {totalIndexed !== null ? ` — ${totalIndexed}+ pages live and growing` : ''}. Not just
+                another dating app — an umbrella for all of us.
+              </p>
+            </div>
+            <div className="sidebox" style={{ flex: '1 1 260px', minWidth: 0 }}>
+              <div className="sidebox-hd">Get Involved</div>
+              <div className="sidebox-bd">
+                <ul className="get-involved">
+                  <li>
+                    <span className="step">1.</span>
+                    <Link href="/qa">Browse Q&A</Link> — answers to the questions you're
+                    googling{qaCount != null ? ` · ${qaCount}` : ''} live
+                  </li>
+                  <li>
+                    <span className="step">2.</span>
+                    <Link href="/forum">Join the Forum</Link> — introduce yourself
+                  </li>
+                  <li>
+                    <span className="step">3.</span>
+                    <Link href="/glossary">Learn the language</Link>
+                    {glossaryCount != null ? ` · ${glossaryCount} terms` : ''} and growing
+                  </li>
+                  <li>
+                    <span className="step">4.</span>
+                    <Link href="/waitlist">Be first in 2026</Link> — join the waitlist
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -212,14 +217,6 @@ export default async function HomePage() {
             ))}
           </div>
         </section>
-
-        {/* coming banner */}
-        <section className="card" style={{ textAlign: 'left', padding: '10px 8px' }}>
-          <p style={{ margin: 0, fontWeight: 700, fontSize: 16 }}>Coming 2026 — The everything queer app</p>
-          <p className="muted" style={{ margin: '4px 0 0' }}>
-            There&apos;s room under the umbrella.
-          </p>
-        </section>
       </div>
 
       {/* ============ LEFT: sidebar ============ */}
@@ -288,16 +285,34 @@ export default async function HomePage() {
       {/* ============ RIGHT: sidebar ============ */}
       <aside className="portal-right" aria-label="Community sidebar">
         <section className="sidebox">
-          <div className="sidebox-hd">Announcements</div>
+          <div className="sidebox-hd">
+            Bulletins
+            <Link href="/bulletin" className="band-link">
+              all →
+            </Link>
+          </div>
           <div className="sidebox-bd">
-            <ul className="mini-list">
-              {ANNOUNCEMENTS.map((a) => (
-                <li key={a.date + a.text}>
-                  <span className="tag">{a.date}</span>
-                  <span className="meta">{a.text}</span>
-                </li>
-              ))}
-            </ul>
+            {bulletinItems.length > 0 ? (
+              <ul className="mini-list">
+                {bulletinItems.map((b) => (
+                  <li key={b.id}>
+                    <Link href={`/bulletin/${b.id}`}>
+                      {b.pinned ? '📌 ' : ''}
+                      <strong>{b.title}</strong>
+                    </Link>
+                    <span className="meta">
+                      <span className="tag tag-brown">{timeAgo(b.createdAt)}</span>
+                      {b.commentCount ? <span className="tag">{b.commentCount} comments</span> : null}
+                      {mdToText(b.bodyMd, 80) ? ` — ${mdToText(b.bodyMd, 110)}` : ''}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="muted" style={{ margin: 0, fontStyle: 'italic' }}>
+                No bulletins yet.
+              </p>
+            )}
           </div>
         </section>
 

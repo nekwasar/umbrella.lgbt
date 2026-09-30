@@ -244,3 +244,27 @@ export interface ForumTopicResponse {
   pageSize: number;
   items: ForumPost[];
 }
+
+// ---------- Bulletins (public) ----------
+
+export interface BulletinSummary {
+  id: string;
+  title: string;
+  bodyMd: string;
+  pinned: boolean;
+  status: string;
+  commentCount: number | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface BulletinListResponse {
+  total: number;
+  page: number;
+  pageSize: number;
+  items: BulletinSummary[];
+}
+
+export interface BulletinDetailResponse {
+  bulletin: BulletinSummary;
+}

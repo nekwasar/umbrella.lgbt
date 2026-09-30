@@ -19,6 +19,7 @@ const NAV = [
   { href: '/admin/pages', label: 'Pages', exact: false },
   { href: '/admin/pages/new', label: 'New Page', exact: true },
   { href: '/admin/forum', label: 'Forum', exact: false },
+  { href: '/admin/bulletins', label: 'Bulletins', exact: false },
   { href: '/admin/meta', label: 'Meta Editor', exact: true },
   { href: '/admin/admins', label: 'Admins', exact: true },
   { href: '/admin/users', label: 'Users', exact: true }

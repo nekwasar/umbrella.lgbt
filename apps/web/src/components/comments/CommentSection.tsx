@@ -193,7 +193,7 @@ export function CommentSection({
   targetType,
   targetId
 }: {
-  targetType: 'PAGE' | 'QUESTION' | 'ANSWER';
+  targetType: 'PAGE' | 'QUESTION' | 'ANSWER' | 'BULLETIN';
   targetId: string;
 }) {
   const { user, loading } = useUser();

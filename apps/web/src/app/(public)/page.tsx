@@ -60,11 +60,6 @@ export default async function HomePage() {
   const cityItems = cities?.items ?? [];
   const bulletinItems = bulletinRes?.items ?? [];
 
-  const counts = [glossaryCount, qaCount, cityCount, resourcesCount].filter(
-    (n): n is number => typeof n === 'number'
-  );
-  const totalIndexed = counts.length > 0 ? counts.reduce((a, b) => a + b, 0) : null;
-
   const stats: Array<[string, string]> = [
     ['Glossary Terms', String(glossaryCount ?? '50+')],
     ['Q&A Answers', String(qaCount ?? '50+')],
@@ -84,9 +79,8 @@ export default async function HomePage() {
             <div style={{ flex: '1 1 240px', minWidth: 0 }}>
               <Wordmark size={34} />
               <p className="muted" style={{ margin: '8px 0 0', fontSize: 12 }}>
-                Built by and for the LGBTQ+ community
-                {totalIndexed !== null ? ` — ${totalIndexed}+ pages live and growing` : ''}. Not just
-                another dating app — an umbrella for all of us.
+                Built by and for the LGBTQ+ community — a growing space built to bring us together.
+                Not just another dating app — an umbrella for all of us.
               </p>
             </div>
             <div className="sidebox" style={{ flex: '1 1 260px', minWidth: 0 }}>
@@ -95,8 +89,7 @@ export default async function HomePage() {
                 <ul className="get-involved">
                   <li>
                     <span className="step">1.</span>
-                    <Link href="/qa">Browse Q&A</Link> — answers to the questions you're
-                    googling{qaCount != null ? ` · ${qaCount}` : ''} live
+                    <Link href="/qa">Browse Q&A</Link> — real answers from real community members
                   </li>
                   <li>
                     <span className="step">2.</span>
@@ -104,8 +97,8 @@ export default async function HomePage() {
                   </li>
                   <li>
                     <span className="step">3.</span>
-                    <Link href="/glossary">Learn the language</Link>
-                    {glossaryCount != null ? ` · ${glossaryCount} terms` : ''} and growing
+                    <Link href="/glossary">Learn the language</Link> — clear guides to identity &amp;
+                    terminology
                   </li>
                   <li>
                     <span className="step">4.</span>

@@ -126,8 +126,12 @@ Authentic mid-2000s Web 2.0 / MySpace retro (SpaceHey-like). Source of truth:
 - Homepage: right sidebar "Bulletins" panel (`/api/bulletins?pageSize=3`, pinned first,
   `timeAgo` + comment-count tags + mdToText excerpt, "all →" to `/bulletin`).
   NEVER reintroduce hardcoded announcement arrays.
-- Hero: `Umbrella.lgbt` h1 + tagline left, "Get Involved" sidebox right (numbered
-  step-links to Q&A/Forum/Glossary/Waitlist with live counts). "Coming 2026" lives ONLY
+- Hero: rainbow wordmark + warm tagline left ("a growing space built to bring us
+  together"), "Get Involved" sidebox right (numbered step-links to
+  Q&A/Forum/Glossary/Waitlist). COPY RULE: hero is human-first — NEVER raw content
+  metrics ("N pages live", "N terms") in hero/tagline/step-link copy; metrics live ONLY
+  in the Community Stats sidebar table. Warm, belonging-focused phrasing over
+  transactional counts. "Coming 2026" lives ONLY
   in the `.marquee` ticker under the subnav (softpink strip, wine text, CSS animation,
   `prefers-reduced-motion` disables it, links to `/waitlist`).
 

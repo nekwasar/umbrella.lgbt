@@ -1,0 +1,11 @@
+/* Admin console styles — Tailwind pipeline entry (scoped to /admin only).
+   The public retro site must NOT get preflight/utilities, so @tailwind lives here,
+   not in globals.css. */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* keep the retro body background from globals.css out of the admin viewport */
+body {
+  background: #f7f5f2;
+}

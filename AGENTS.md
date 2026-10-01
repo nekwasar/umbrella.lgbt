@@ -189,6 +189,9 @@ Modern rounded console. Source of truth: `apps/web/tailwind.config.ts` +
   reports?status=`, `PATCH /api/admin/moderation/reports/:id` (PUBLISHED=resolved,
   REMOVED=dismissed), `GET /api/admin/moderation/qa?type=`, `POST /api/admin/moderation/
   remove` ({kind,id}; questions/answers/topics/posts → REMOVED, comments → hard delete).
+- Page CRUD schema: `slug` OPTIONAL — server auto-slugifies the title on create
+  (fallback `"page"`), keeps existing on update. Content-only autosave via
+  `PATCH /admin/pages/:id/content`.
 - All 156 seeded pages (blog/glossary/city/resources/QA/core) are ordinary `Page`
   rows — editable at `/admin/pages` (filter by type/status/seeded). NEVER special-case
   seeded content; one editor for everything.

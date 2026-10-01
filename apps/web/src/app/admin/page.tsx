@@ -3,8 +3,9 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { api } from '@/lib/admin-api';
-import { StatsResponse } from '@/lib/types';
+import { AdminStatsResponse } from '@/lib/types';
 import { Badge, Card, EmptyState, PageHeader, Spinner } from '@/components/admin/ui';
+import { timeAgo } from '@/lib/time';
 
 const TYPE_LABEL: Record<string, string> = {
   CORE: 'Core',
@@ -16,11 +17,11 @@ const TYPE_LABEL: Record<string, string> = {
 };
 
 export default function AdminDashboardPage() {
-  const [stats, setStats] = useState<StatsResponse | null>(null);
+  const [stats, setStats] = useState<AdminStatsResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    api<StatsResponse>('/api/admin/stats')
+    api<AdminStatsResponse>('/api/admin/stats')
       .then(setStats)
       .catch((err) => setError(err.message));
   }, []);
@@ -45,17 +46,35 @@ export default function AdminDashboardPage() {
   const byType = Object.fromEntries(stats.pages.byType.map((t) => [t.type, t._count]));
 
   const cards = [
-    { label: 'Total pages', value: stats.pages.total, sub: `${stats.pages.published} published · ${stats.pages.drafts} drafts` },
-    { label: 'Q&A questions', value: stats.questions, sub: 'dynamic content' },
-    { label: 'Answers', value: stats.answers, sub: `${stats.comments} comments` },
-    { label: 'Members', value: stats.users, sub: `${stats.reports} open reports` }
+    { label: 'Pages', value: stats.pages.total, sub: `${stats.pages.published} published · ${stats.pages.drafts} drafts` },
+    { label: 'Q&A', value: stats.questions, sub: `${stats.answers} answers · ${stats.comments} comments` },
+    { label: 'Members', value: stats.users, sub: 'registered community' },
+    { label: 'Open reports', value: stats.pendingReports, sub: `${stats.reports} reports total` },
+    { label: 'Forum', value: stats.forum.topics, sub: `${stats.forum.posts} posts in ${stats.forum.boards} boards` },
+    { label: 'Bulletins', value: stats.bulletins, sub: 'live announcements' }
   ];
 
   return (
     <div>
-      <PageHeader title="Dashboard" subtitle="Overview of your Umbrella.lgbt content." />
+      <PageHeader
+        title="Dashboard"
+        subtitle="Everything under the umbrella, at a glance."
+        actions={
+          <>
+            <Link href="/admin/pages/new" className="rounded-lg bg-ink px-3 py-2 text-xs font-semibold text-canvas hover:bg-black">
+              + New Page
+            </Link>
+            <Link href="/admin/bulletins" className="rounded-lg border border-line-strong bg-surface px-3 py-2 text-xs font-semibold text-ink hover:border-brand hover:text-brand">
+              + Bulletin
+            </Link>
+            <Link href="/admin/moderation" className="rounded-lg border border-line-strong bg-surface px-3 py-2 text-xs font-semibold text-ink hover:border-brand hover:text-brand">
+              Moderation{stats.pendingReports > 0 ? ` (${stats.pendingReports})` : ''}
+            </Link>
+          </>
+        }
+      />
 
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
         {cards.map((c) => (
           <Card key={c.label} className="p-5">
             <p className="text-xs font-semibold uppercase tracking-wide text-faint">{c.label}</p>
@@ -65,7 +84,7 @@ export default function AdminDashboardPage() {
         ))}
       </div>
 
-      <div className="mt-6 grid gap-4 lg:grid-cols-2">
+      <div className="mt-6 grid gap-4 lg:grid-cols-3">
         <Card className="p-5">
           <h2 className="mb-4 text-sm font-bold uppercase tracking-wide text-muted">Pages by type</h2>
           <div className="space-y-2">
@@ -77,6 +96,12 @@ export default function AdminDashboardPage() {
                 <span className="font-semibold text-muted">{byType[type] ?? 0}</span>
               </div>
             ))}
+          </div>
+          <div className="mt-4 border-t border-line pt-3">
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-muted">Content total</span>
+              <span className="font-bold text-ink">{stats.pages.total}</span>
+            </div>
           </div>
         </Card>
 
@@ -105,7 +130,64 @@ export default function AdminDashboardPage() {
             </ul>
           )}
         </Card>
+
+        <Card className="p-5">
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-sm font-bold uppercase tracking-wide text-muted">Latest questions</h2>
+            <Link href="/admin/moderation" className="text-xs font-semibold text-brand hover:underline">
+              Moderate
+            </Link>
+          </div>
+          {stats.recentQuestions.length === 0 ? (
+            <EmptyState>No questions yet.</EmptyState>
+          ) : (
+            <ul className="divide-y divide-line">
+              {stats.recentQuestions.map((q) => (
+                <li key={q.id}>
+                  <a
+                    href={`/qa/${q.slug}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="block py-2.5 text-sm hover:text-brand"
+                  >
+                    <span className="block truncate font-medium text-ink">{q.title}</span>
+                    <span className="text-xs text-faint">
+                      @{q.author} · {q.answerCount} answers · {timeAgo(q.createdAt)}
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )}
+        </Card>
       </div>
+
+      <Card className="mt-4 p-5">
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-sm font-bold uppercase tracking-wide text-muted">Bulletins</h2>
+          <Link href="/admin/bulletins" className="text-xs font-semibold text-brand hover:underline">
+            Manage
+          </Link>
+        </div>
+        {stats.recentBulletins.length === 0 ? (
+          <EmptyState>No bulletins yet.</EmptyState>
+        ) : (
+          <ul className="divide-y divide-line">
+            {stats.recentBulletins.map((b) => (
+              <li key={b.id} className="flex items-center justify-between gap-3 py-2.5 text-sm">
+                <span className="truncate font-medium text-ink">
+                  {b.pinned ? '📌 ' : ''}
+                  {b.title}
+                </span>
+                <span className="flex items-center gap-2">
+                  <Badge tone={b.status === 'PUBLISHED' ? 'good' : 'warn'}>{b.status === 'PUBLISHED' ? 'Live' : 'Hidden'}</Badge>
+                  <span className="text-xs text-faint">{timeAgo(b.createdAt)}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </Card>
     </div>
   );
 }

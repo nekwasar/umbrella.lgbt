@@ -22,7 +22,8 @@ const NAV = [
   { href: '/admin/bulletins', label: 'Bulletins', exact: false },
   { href: '/admin/meta', label: 'Meta Editor', exact: true },
   { href: '/admin/admins', label: 'Admins', exact: true },
-  { href: '/admin/users', label: 'Users', exact: true }
+  { href: '/admin/users', label: 'Users', exact: true },
+  { href: '/admin/moderation', label: 'Moderation', exact: false }
 ];
 
 export function AdminShell({ children }: { children: ReactNode }) {

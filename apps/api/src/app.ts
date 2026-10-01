@@ -17,10 +17,10 @@ import qaWriteRouter from './routes/qa/write';
 import qaAnswersRouter from './routes/qa/answers';
 import qaCommentsRouter from './routes/qa/comments';
 import adminQaRouter from './routes/admin/qa';
-import forumReadRouter from './routes/forum/read';
-import forumWriteRouter from './routes/forum/write';
+import forumReadRouter from './routes/forum/read';import forumWriteRouter from './routes/forum/write';
 import reportsRouter from './routes/reports';
 import adminBoardsRouter from './routes/admin/boards';
+import adminModerationRouter from './routes/admin/moderation';
 import bulletinsRouter from './routes/bulletins';
 import adminBulletinsRouter from './routes/admin/bulletins';
 
@@ -90,6 +90,7 @@ export function createApp() {
   api.use('/admin/stats', statsRouter);
   api.use('/admin/qa', adminQaRouter);
   api.use('/admin/boards', adminBoardsRouter);
+  api.use('/admin/moderation', adminModerationRouter);
   api.use('/bulletins', bulletinsRouter);
   api.use('/admin/bulletins', adminBulletinsRouter);
   api.use('/qa', qaReadRouter);

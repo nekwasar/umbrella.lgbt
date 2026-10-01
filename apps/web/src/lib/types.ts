@@ -268,3 +268,68 @@ export interface BulletinListResponse {
 export interface BulletinDetailResponse {
   bulletin: BulletinSummary;
 }
+
+// ---------- Admin moderation ----------
+
+export interface AdminStatsResponse {
+  pages: {
+    total: number;
+    published: number;
+    drafts: number;
+    byType: { type: PageType; _count: number }[];
+  };
+  users: number;
+  questions: number;
+  answers: number;
+  comments: number;
+  reports: number;
+  pendingReports: number;
+  bulletins: number;
+  forum: { boards: number; topics: number; posts: number };
+  recentPages: Page[];
+  recentQuestions: {
+    id: string;
+    slug: string;
+    title: string;
+    author: string;
+    answerCount: number;
+    createdAt: string;
+  }[];
+  recentBulletins: {
+    id: string;
+    title: string;
+    pinned: boolean;
+    status: string;
+    createdAt: string;
+  }[];
+}
+
+export type ModerationKind =
+  | 'question'
+  | 'answer'
+  | 'comment'
+  | 'forum-topic'
+  | 'forum-post';
+
+export interface ModerationReport {
+  id: string;
+  targetType: string;
+  targetId: string;
+  reason: string;
+  status: string;
+  createdAt: string;
+  reporter: { id: string; username: string; displayName: string | null; isBanned: boolean };
+  contentPreview: string | null;
+  contentAuthor: string | null;
+  targetExists: boolean;
+}
+
+export interface ModerationItem {
+  id: string;
+  title: string;
+  preview: string | null;
+  author: string | null;
+  status: string;
+  meta: string;
+  createdAt: string;
+}

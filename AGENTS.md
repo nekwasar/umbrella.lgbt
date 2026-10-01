@@ -192,6 +192,17 @@ Modern rounded console. Source of truth: `apps/web/tailwind.config.ts` +
 - All 156 seeded pages (blog/glossary/city/resources/QA/core) are ordinary `Page`
   rows — editable at `/admin/pages` (filter by type/status/seeded). NEVER special-case
   seeded content; one editor for everything.
+- **Files** (`/admin/files`, PRIMARY content UI — file manager metaphor):
+  folders = page types (`core/ blog/ qa/ glossary/ city/ resources/`) →
+  file list (`slug.md` rows + title + seeded/status badges) →
+  **FileEditor** (`/admin/files/[type]/[slug]`): edits ONLY `contentMd`
+  (title/slug/meta stay read-only there; full editing remains at Pages + Meta Editor).
+  - AUTOSAVE: debounced `PATCH /api/admin/pages/:id/content` ({contentMd}) fires
+    1.5s after last keystroke; Save button forces immediate save; `beforeunload`
+    guard while dirty; live status label (Saving… / Unsaved / Saved N ago).
+    Saves persist server-side — reload NEVER reverts content.
+  - Endpoint updates `readingTime` automatically; 500KB cap.
+  - Sidebar shows markdown live preview toggle.
 
 ### Cross-cutting
 

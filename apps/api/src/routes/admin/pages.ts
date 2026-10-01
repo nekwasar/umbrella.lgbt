@@ -84,7 +84,7 @@ router.post('/', requireAdmin, async (req, res) => {
   }
 
   const data = parsed.data;
-  const slug = data.slug || slugify(data.title);
+  const slug = data.slug || slugify(data.title) || 'page';
 
   const clash = await prisma.page.findUnique({ where: { type_slug: { type: data.type, slug } } });
   if (clash) {

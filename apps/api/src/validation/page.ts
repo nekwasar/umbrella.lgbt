@@ -53,11 +53,12 @@ export const pageMetaSchema = z
 
 export const pageUpsertSchema = z.object({
   type: typeEnum,
+  // optional: server auto-slugifies the title on create, keeps existing on update
   slug: z
     .string()
-    .min(1)
     .max(150)
-    .regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, 'Slug must be lowercase, with hyphens only (e.g. how-to-come-out)'),
+    .regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, 'Slug must be lowercase, with hyphens only (e.g. how-to-come-out)')
+    .optional(),
   title: z.string().min(1).max(300),
   contentMd: z.string().max(500_000).optional(),
   status: z.enum(['DRAFT', 'PUBLISHED']).optional(),

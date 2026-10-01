@@ -784,7 +784,7 @@ h3 {
   display: inline-block;
   padding: 3px 0;
   will-change: transform;
-  animation: marquee-scroll 28s linear infinite;
+  animation: marquee-scroll 60s linear infinite;
 }
 @keyframes marquee-scroll {
   from {

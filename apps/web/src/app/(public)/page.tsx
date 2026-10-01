@@ -83,11 +83,7 @@ export default async function HomePage() {
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 14, alignItems: 'flex-start' }}>
             <div style={{ flex: '1 1 240px', minWidth: 0 }}>
               <Wordmark size={34} />
-              <h1 style={{ fontSize: 20, margin: '8px 0 2px' }}>Umbrella.lgbt</h1>
-              <p className="muted" style={{ margin: 0 }}>
-                Community. Meet. Q&A. Forum.
-              </p>
-              <p className="muted" style={{ margin: '6px 0 0', fontSize: 12 }}>
+              <p className="muted" style={{ margin: '8px 0 0', fontSize: 12 }}>
                 Built by and for the LGBTQ+ community
                 {totalIndexed !== null ? ` — ${totalIndexed}+ pages live and growing` : ''}. Not just
                 another dating app — an umbrella for all of us.

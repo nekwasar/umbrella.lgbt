@@ -170,6 +170,23 @@ router.put('/:id', requireAdmin, async (req, res) => {
   res.json({ page: serializePage(page) });
 });
 
+// --- content-only update (file manager editor: autosave + explicit save) ---
+router.patch('/:id/content', requireAdmin, async (req, res) => {
+  const contentMd = typeof req.body?.contentMd === 'string' ? req.body.contentMd : null;
+  if (contentMd == null) return res.status(400).json({ error: 'contentMd string required' });
+  if (contentMd.length > 500_000) return res.status(400).json({ error: 'Content too large' });
+
+  const existing = await prisma.page.findUnique({ where: { id: req.params.id } });
+  if (!existing) return res.status(404).json({ error: 'Page not found' });
+
+  const page = await prisma.page.update({
+    where: { id: existing.id },
+    data: { contentMd, readingTime: readingTime(contentMd) },
+    include: { meta: true }
+  });
+  res.json({ ok: true, updatedAt: page.updatedAt.toISOString(), readingTime: page.readingTime });
+});
+
 // --- meta-only update (single page) ---
 router.patch('/:id/meta', requireAdmin, async (req, res) => {
   const parsed = pageMetaSchema.safeParse(req.body);

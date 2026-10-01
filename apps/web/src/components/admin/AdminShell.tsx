@@ -16,6 +16,7 @@ export const useAdmin = () => useContext(AdminContext);
 
 const NAV = [
   { href: '/admin', label: 'Dashboard', exact: true },
+  { href: '/admin/files', label: 'Files', exact: false },
   { href: '/admin/pages', label: 'Pages', exact: false },
   { href: '/admin/pages/new', label: 'New Page', exact: true },
   { href: '/admin/forum', label: 'Forum', exact: false },

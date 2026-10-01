@@ -175,6 +175,24 @@ Modern rounded console. Source of truth: `apps/web/tailwind.config.ts` +
 - Admin shell (sidebar nav + `noindex`) is automatic via `src/app/admin/layout.tsx`.
   NEVER place admin pages outside `src/app/admin/`, NEVER make them indexable.
 
+### Admin sections (complete map — every site area is manageable here)
+
+- **Dashboard** (`/admin`): 6 stat cards (pages, Q&A, members, open reports, forum,
+  bulletins) + quick actions (New Page / + Bulletin / Moderation with pending count) +
+  pages-by-type with links + recently-updated + latest questions + bulletins list.
+  Data from `GET /api/admin/stats` (`AdminStatsResponse` — includes `pendingReports`,
+  `bulletins`, `forum{boards,topics,posts}`, `recentQuestions`, `recentBulletins`).
+- **Moderation** (`/admin/moderation`, `ModerationManager`): tabbed reactive tools —
+  Reports (filter Open/Resolved/Dismissed/All; per-report: content preview + author +
+  Remove-content / Dismiss) and listings for Questions / Answers / Comments /
+  Forum Topics / Forum Posts with soft-Remove. Backend: `GET /api/admin/moderation/
+  reports?status=`, `PATCH /api/admin/moderation/reports/:id` (PUBLISHED=resolved,
+  REMOVED=dismissed), `GET /api/admin/moderation/qa?type=`, `POST /api/admin/moderation/
+  remove` ({kind,id}; questions/answers/topics/posts → REMOVED, comments → hard delete).
+- All 156 seeded pages (blog/glossary/city/resources/QA/core) are ordinary `Page`
+  rows — editable at `/admin/pages` (filter by type/status/seeded). NEVER special-case
+  seeded content; one editor for everything.
+
 ### Cross-cutting
 
 - `@/*` maps to `apps/web/src/*`. Prefer server components; `'use client'` only for

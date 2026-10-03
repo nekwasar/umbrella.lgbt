@@ -3,6 +3,7 @@ import { CommentTargetType, Prisma } from '@prisma/client';
 import { prisma } from '../../db/prisma';
 import { optionalUser } from '../../middleware/auth';
 import { buildCommentTree, serializeAnswer, serializeQuestion } from '../../lib/qa';
+import { hybridSearch } from '../../lib/search';
 
 const router = Router();
 
@@ -23,7 +24,8 @@ router.get('/topics', async (_req, res) => {
 router.get('/', async (req, res) => {
   const topic = typeof req.query.topic === 'string' ? req.query.topic : undefined;
   const q = typeof req.query.q === 'string' ? req.query.q : undefined;
-  const sort = typeof req.query.sort === 'string' ? req.query.sort : 'newest';
+  const rawSort = typeof req.query.sort === 'string' ? req.query.sort : undefined;
+  const sort = rawSort ?? 'newest';
   const page = Math.max(1, parseInt((req.query.page as string) || '1', 10) || 1);
   const pageSize = Math.min(50, Math.max(1, parseInt((req.query.pageSize as string) || '20', 10) || 20));
 
@@ -31,6 +33,31 @@ router.get('/', async (req, res) => {
   if (topic) where.topic = topic;
   if (q) where.OR = [{ title: { contains: q, mode: 'insensitive' } }, { bodyMd: { contains: q, mode: 'insensitive' } }];
   if (sort === 'unanswered') where.answers = { none: {} };
+
+  // Hybrid engine (opt-in): blended FTS + TF-IDF relevance ranking.
+  // Relevance by default; an explicit route sort still wins. Sorts the
+  // hybrid layer doesn't model (views, unanswered) fall back to relevance.
+  if (q && req.query.engine === 'hybrid') {
+    try {
+      const hybridSort =
+        rawSort === undefined
+          ? 'score'
+          : rawSort === 'newest'
+            ? 'new'
+            : rawSort === 'popular'
+              ? 'votes'
+              : 'score';
+      const result = await hybridSearch({ q, topic, sort: hybridSort, page, pageSize });
+      return res.json({
+        total: result.total,
+        page,
+        pageSize,
+        items: result.items.map((it) => serializeQuestion(it))
+      });
+    } catch (err) {
+      console.warn('[qa] hybrid search failed, falling back to keyword filter:', err);
+    }
+  }
 
   let orderBy: Record<string, unknown>[] | Record<string, unknown> = [{ createdAt: 'desc' }];
   if (sort === 'popular') {

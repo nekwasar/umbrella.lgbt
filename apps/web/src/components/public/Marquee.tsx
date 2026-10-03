@@ -1,5 +1,3 @@
-import Link from 'next/link';
-
 const ITEM = '★ COMING 2026 ★ THE EVERYTHING QUEER APP ★ COMMUNITY · MEET · Q&A · FORUM ★ NO ALGORITHMS ★ NO DATA SOLD ';
 
 export function Marquee() {

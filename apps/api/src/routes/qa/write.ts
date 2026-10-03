@@ -5,6 +5,7 @@ import { requireUser } from '../../middleware/auth';
 import { answerSchema, askQuestionSchema } from '../../validation/qa';
 import { slugify, uniqueQuestionSlug } from '../../lib/slug';
 import { serializeAnswer, serializeQuestion } from '../../lib/qa';
+import { embedAnswer, embedQuestion } from '../../lib/search';
 
 const router = Router();
 
@@ -37,6 +38,7 @@ router.post('/', writeLimiter, requireUser, async (req, res) => {
     }
   });
 
+  await embedQuestion(question.id);
   res.status(201).json({ question: serializeQuestion(question) });
 });
 
@@ -62,6 +64,7 @@ router.post('/:slug/answers', writeLimiter, requireUser, async (req, res) => {
     include: { user: { select: { id: true, username: true, displayName: true } } }
   });
 
+  await embedAnswer(answer.id);
   res.status(201).json({ answer: serializeAnswer(answer) });
 });
 

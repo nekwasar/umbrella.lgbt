@@ -211,6 +211,13 @@ Modern rounded console. Source of truth: `apps/web/tailwind.config.ts` +
 
 - `@/*` maps to `apps/web/src/*`. Prefer server components; `'use client'` only for
   interactivity. Mutations go through `api()` (`@/lib/api`, sends cookies).
+- Q&A hybrid search: `GET /api/qa?engine=hybrid&q=…` (relevance default) blends Postgres
+  FTS (`Question.searchIndex` — GENERATED tsvector, GIN) with cosine over the stored
+  hashing embedding `searchVec` (384-dim, `embedQuestion`/`embedAnswer` on create;
+  TF-IDF in-process fallback until reindexed). Full backfill: `npm run reindex:search`.
+  The search migration is idempotent (IF NOT EXISTS) — the live DB has NO
+  prisma_migrations table, apply migrations with `docker exec -i umbrella-db-1 psql -U
+  umbrella -d umbrella < migration.sql`, never `migrate deploy` against prod.
 - `.gitignore` anchors the legacy static output as `/public/`. NEVER add a bare `public/`
   ignore — it would hide `src/components/public/` from git.
 - Verify every UI change with `npx tsc --noEmit` in `apps/web`; if routes changed,

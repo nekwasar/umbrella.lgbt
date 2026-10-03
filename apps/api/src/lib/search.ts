@@ -1,39 +1,83 @@
 // ---- search helpers -------------------------------------------------
 //
 // Two-layer hybrid search for the Q&A area:
-//   1) keyword search  – PostgreSQL full-text (`tsvector`), multi-term,
-//      scored by relevance (ts_rank). This is the reliable fallback when the
-//      embedding model isn't available or when you need exact phrase matching.
-//   2) semantic search – a small embedding of the query is compared against
-//      the `searchVec` column (float[]) with cosine similarity (pgvector's
-//      `<=>`). This captures meaning even when the exact words differ.
+//   1) keyword search — PostgreSQL full-text over the GENERATED
+//      `searchIndex` tsvector column, scored by `ts_rank`
+//      (`searchQuestions()`). Reliable for exact/multi-term queries.
+//   2) semantic search — cosine against the stored hashing embedding
+//      (`searchVec`, computed in JS with `embedText`/`cosine`, no pgvector
+//      required), falling back to in-process TF-IDF (`rankSimilar`) for
+//      rows that have not been reindexed yet.
 //
-// Priority: queries are expanded to include topic aliases + synonyms, then
-// the full-text layer scores before the vector layer. `sort` can be:
-//   score   | relevance (full-text rank)
-//   votes   | upvote rank
+// `hybridSearch()` blends both: candidates come from keyword matching
+// (falling back to the recent corpus when a paraphrase query matches no
+// keywords), the FTS rank and TF-IDF cosine are normalized and weighted,
+// then the list is paginated. `sort` can be:
+//   score   | blended relevance (default)
+//   votes   | answer upvotes
 //   new     | recency
-//   top     | full-text rank + upvotes
+//   top     | blended relevance, votes as tie-breaker
 //
-// Usage:
-//   import { hybridSearch, buildKeyword } from '@/lib/search';
+// Usage (e.g. from `routes/qa/read.ts` with `?engine=hybrid`):
+//   import { hybridSearch } from '@/lib/search';
 //   const hits = await hybridSearch({
 //     q: 'coming out',
 //     topic: 'coming-out',
 //     sort: 'score',
-//     type: 'question',
 //     page: 1,
 //     pageSize: 20,
 //   });
+//
+// `searchVec` maintenance: written on every Q&A create
+// (`embedQuestion`/`embedAnswer`, wired in `routes/qa/write.ts`); backfill
+// the whole corpus with `npm run reindex:search`.
 
+import { Prisma } from '@prisma/client';
 import { prisma } from '../db/prisma';
+import {
+  CorpusDoc,
+  EMBED_DIM,
+  STOP_WORDS,
+  cosine,
+  embedText,
+  rankSimilar,
+} from './embedding';
 
-/** Number of dimensions for the embedding vector (keep consistent). */
-export const EMBED_DIM = 384;
+export { EMBED_DIM };
+
+/** How many candidates each layer may contribute to a blended query. */
+const CANDIDATE_CAP = 200;
+
+export type SearchSort = 'score' | 'votes' | 'new' | 'top';
+
+export interface SearchQuestionRow {
+  id: string;
+  slug: string;
+  title: string;
+  bodyMd: string;
+  topic: string | null;
+  votes: number;
+  isBest: number;
+  rank: number;
+}
+
+export interface SearchQuestionItem {
+  id: string;
+  slug: string;
+  title: string;
+  bodyMd: string;
+  topic: string | null;
+  viewCount: number;
+  votes: number;
+  isBest: boolean;
+  answerCount: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
 
 /**
- * Tokenize + lowercase + strip punctuation for a stable keyword token.
- * Use this both for building the tsvector and for query expansion.
+ * Tokenize + lowercase + strip punctuation for stable keyword tokens.
+ * Used both for building the tsquery and for keyword candidate matching.
  */
 export function tokenize(text: string): string[] {
   return text
@@ -45,59 +89,56 @@ export function tokenize(text: string): string[] {
 }
 
 /**
- * Build a verbose, comma-separated keyword string from a raw query.
- * This is what we feed into the full-text `search` operator and the
- * similarity layer. It keeps the original words + aliases + synonyms,
- * which dramatically improves recall on misspelled or colloquial queries.
+ * Build a verbose, sorted keyword string from a raw query (tokens only —
+ * alias expansion can be added later via the `aliases` argument).
  */
 export function buildKeywords(query: string, aliases: Record<string, string[]> = {}): string {
   const tokens = tokenize(query);
-
-  // Expand with aliases (e.g. "coming out" -> "comingout", "comingout", ...)
-  const allTokens = new Set<string>([...tokens]);
+  const allTokens = new Set<string>(tokens);
   for (const token of tokens) {
-    const expanded = aliases[token] ?? [];
-    for (const e of expanded) allTokens.add(e);
+    for (const e of aliases[token] ?? []) allTokens.add(e);
   }
-
-  // Dedupe + sort for stability (the `search` operator doesn't care about order,
-  // but deterministic output is easier to test and cache).
   return [...allTokens].sort().join(' | ');
 }
 
 /**
- * Build the full-text `tsquery` from a verbose keyword string.
- * Uses the database's own parser so stop-words + stemming happen naturally.
- * `||` = OR, so one matching term is enough.
+ * Turn a keyword string into a safe Postgres `tsquery` spec: every term is
+ * reduced to [a-z0-9]+ (so `-`, `&`, `!`, `(`, `)` can never break the
+ * parser) and terms are OR-ed. Returns '' when nothing survives — callers
+ * must treat that as "no query" (`to_tsquery('')` errors).
  */
 export function buildTsQuery(keywords: string): string {
-  // Prisma's `search` operator accepts a tsvector + tsquery spec, but we also
-  // expose a raw SQL path via `$queryRawUnsafe` when we need complex ranking.
-  // Here we just return the human-friendly tsvector query format. The actual
-  // `%` characters are replaced by Prisma before it sends to the DB.
-  return keywords.replace(/\s*\|\s*/g, ' | ');
+  return keywords
+    .split('|')
+    .map((t) => t.replace(/[^a-z0-9]/g, ''))
+    .filter(Boolean)
+    .join(' | ');
 }
 
-/** PostgreSQL `ts_rank` weight configuration (A=title, B=body). */
-const RANK_W = new Map<string, number[]>([
-  ['title', [0.4, 0.2, 0.2, 0.1, 0.1]],
-  ['body',  [0.2, 0.2, 0.2, 0.2, 0.2]]
-]);
-
-/** Build a `to_tsvector` expression for the given field(s). */
-export function buildFullTextVectors({ title, bodyMd, topic }: { title: string; bodyMd: string; topic: string | null }) {
-  return `to_tsvector('english', coalesce(${title}, '') || ' ' || coalesce(${bodyMd}, ''))`;
+/** Raw, de-duplicated, stop-word-free terms for Prisma `contains` filters. */
+function contentTerms(query: string): string[] {
+  return [...new Set(tokenize(query).filter((t) => !STOP_WORDS.has(t)))];
 }
 
-/** Build a `simraml` (cosine similarity) expression when vector support exists. */
-export function buildVectorSimilarity(queryVec: number[]) {
-  return `1 - ('[' + ${queryVec.map((v) => v.toFixed(4)).join(', ')} + ']')::float4[] <=> "searchVec"`;
+/** Whitelisted ORDER BY fragments (static SQL only — never user input). */
+const ORDER_SQL: Record<SearchSort, string> = {
+  score: 'coalesce(r.rank, 0) DESC',
+  votes: 'votes DESC',
+  new: 'q."createdAt" DESC',
+  top: 'coalesce(r.rank, 0) DESC, votes DESC',
+};
+
+function clampPage(page: number, pageSize: number): { take: number; offset: number } {
+  const take = Math.min(500, Math.max(1, Math.trunc(pageSize) || 20));
+  const current = Math.max(1, Math.trunc(page) || 1);
+  return { take, offset: (current - 1) * take };
 }
 
 /**
- * Raw SQL helper that calls PostgreSQL's full-text search + vector cosine
- * distance in a single query, and returns ordered results. We fall back to
- * a plain `contains` query if the vector extension is missing.
+ * Full-text search against the GENERATED `searchIndex` tsvector column.
+ * Returns rows ranked by `ts_rank` (title+body weighted by the english
+ * config), with per-question vote totals and best-answer flags computed
+ * from the answers. Empty/no-op queries return [].
  */
 export async function searchQuestions({
   q,
@@ -108,51 +149,99 @@ export async function searchQuestions({
 }: {
   q: string;
   topic?: string;
-  sort?: 'score' | 'votes' | 'new' | 'top';
+  sort?: SearchSort;
   page?: number;
   pageSize?: number;
-}) {
-  const keywords = buildKeywords(q);
-  const tsQuery = buildTsQuery(keywords);
+}): Promise<SearchQuestionRow[]> {
+  const tsQuery = buildTsQuery(buildKeywords(q));
+  if (!tsQuery) return [];
 
-  // Topic filter (case-insensitive match against the alias map).
-  const topicWhere = topic
-    ? {
-        topic: { contains: topic, mode: 'insensitive' },
-      }
-    : {};
+  const { take, offset } = clampPage(page, pageSize);
+  const orderSql = ORDER_SQL[sort] ?? ORDER_SQL.new;
+  const topicClause = topic
+    ? Prisma.sql` AND q.topic ILIKE ${'%' + topic.replace(/[%_\\]/g, '\\$&') + '%'}`
+    : Prisma.empty;
 
-  // Base where clause.
-  const where = { status: 'PUBLISHED', ...topicWhere };
-
-  // Raw SQL for FTS + vector ranking.
-  const sql = `
+  return prisma.$queryRaw<SearchQuestionRow[]>(Prisma.sql`
     SELECT
-      q.*,
-      rank,
-      votes,
-      CASE WHEN "isBest" THEN 1 ELSE 0 END AS "isBest"
+      q.id,
+      q.slug,
+      q.title,
+      q."bodyMd",
+      q.topic,
+      coalesce(v.votes, 0) AS votes,
+      CASE WHEN q."bestAnswerId" IS NULL THEN 0 ELSE 1 END AS "isBest",
+      coalesce(r.rank, 0) AS rank
     FROM "Question" q
     LEFT JOIN LATERAL (
-      SELECT ts_rank(to_tsvector('english', coalesce(q."title", '') || ' ' || coalesce(q."bodyMd", '')), to_tsquery('english', ${tsQuery})) AS rank
+      SELECT ts_rank(q."searchIndex", to_tsquery('english', ${tsQuery})) AS rank
     ) r ON true
-    ORDER BY
-      CASE ${sort}
-        WHEN 'score' THEN coalesce(rank, 0) DESC
-        WHEN 'votes' THEN q."votes" DESC
-        WHEN 'new' THEN q."createdAt" DESC
-        WHEN 'top' THEN coalesce(rank, 0) DESC, q."votes" DESC
-        ELSE q."createdAt" DESC
-      END
-    LIMIT ${pageSize} OFFSET ${(page - 1) * pageSize}
-  `;
+    LEFT JOIN LATERAL (
+      SELECT coalesce(sum(a.votes), 0)::int AS votes
+      FROM "Answer" a
+      WHERE a."questionId" = q.id AND a."status" = 'PUBLISHED'
+    ) v ON true
+    WHERE q."status" = 'PUBLISHED'
+      AND q."searchIndex" @@ to_tsquery('english', ${tsQuery})
+      ${topicClause}
+    ORDER BY ${Prisma.raw(orderSql)}
+    LIMIT ${take} OFFSET ${offset}
+  `);
+}
 
-  return prisma.$queryRawUnsafe<{ id: string; slug: string; title: string; bodyMd: string; topic: string | null; votes: number; isBest: number; rank: number }[]>(sql);
+const candidateSelect = {
+  id: true,
+  slug: true,
+  title: true,
+  bodyMd: true,
+  topic: true,
+  viewCount: true,
+  status: true,
+  bestAnswerId: true,
+  createdAt: true,
+  updatedAt: true,
+  user: { select: { id: true, username: true, displayName: true } },
+  _count: { select: { answers: true } },
+  answers: { where: { status: 'PUBLISHED' as const }, select: { votes: true } },
+  searchVec: true,
+} satisfies Prisma.QuestionSelect;
+
+type Candidate = Prisma.QuestionGetPayload<{ select: typeof candidateSelect }>;
+
+function toItem(it: Candidate): SearchQuestionItem {
+  return {
+    id: it.id,
+    slug: it.slug,
+    title: it.title,
+    bodyMd: it.bodyMd,
+    topic: it.topic,
+    viewCount: it.viewCount,
+    votes: it.answers.reduce((sum, a) => sum + a.votes, 0),
+    isBest: it.bestAnswerId !== null,
+    answerCount: it._count.answers,
+    createdAt: it.createdAt,
+    updatedAt: it.updatedAt,
+  };
+}
+
+function keywordWhere(q: string, topic?: string): Prisma.QuestionWhereInput {
+  const terms = contentTerms(q);
+  const where: Prisma.QuestionWhereInput = { status: 'PUBLISHED' };
+  if (topic) where.topic = { contains: topic, mode: 'insensitive' };
+  if (terms.length) {
+    where.AND = terms.map((t) => ({
+      OR: [
+        { title: { contains: t, mode: 'insensitive' } },
+        { bodyMd: { contains: t, mode: 'insensitive' } },
+      ],
+    }));
+  }
+  return where;
 }
 
 /**
- * Plain keyword search: post-process a `findMany` result with ranking.
- * This is the fallback when you don't want raw SQL. Returns `{ items, total }`.
+ * Plain keyword search: stop-word-free terms must appear in the title or
+ * body (AND across terms, OR across fields). Returns `{ items, total }`.
  */
 export async function fullTextSearch({
   q,
@@ -163,45 +252,40 @@ export async function fullTextSearch({
 }: {
   q: string;
   topic?: string;
-  sort?: 'score' | 'votes' | 'new' | 'top';
+  sort?: SearchSort;
   page?: number;
   pageSize?: number;
-}) {
+}): Promise<{ items: SearchQuestionItem[]; total: number; keywords: string }> {
   const keywords = buildKeywords(q);
+  const where = keywordWhere(q, topic);
+  const { take, offset } = clampPage(page, pageSize);
 
-  const where: Record<string, unknown> = { status: 'PUBLISHED' };
-  if (topic) where.topic = { contains: topic, mode: 'insensitive' };
+  let orderBy: Prisma.QuestionOrderByWithRelationInput[] = [{ createdAt: 'desc' }];
+  if (sort === 'votes') {
+    // Prisma can't order by a computed vote sum; the plain layer proxies it
+    // with answer count (same proxy the list route uses for `popular`).
+    // `hybridSearch` sorts by the real summed votes.
+    orderBy = [{ answers: { _count: 'desc' } }, { createdAt: 'desc' }];
+  }
 
-  const items = await prisma.question.findMany({
-    where,
-    orderBy: sort === 'new' ? { createdAt: 'desc' } : sort === 'votes' ? { votes: 'desc' } : { createdAt: 'desc' },
-    skip: (page - 1) * pageSize,
-    take: pageSize,
-    include: { _count: { select: { answers: true } } },
-    select: {
-      id: true,
-      slug: true,
-      title: true,
-      bodyMd: true,
-      topic: true,
-      votes: true,
-      isBest: true,
-      createdAt: true,
-      updatedAt: true,
-      _count: { select: { answers: true } },
-    },
-  });
+  const [total, rows] = await Promise.all([
+    prisma.question.count({ where }),
+    prisma.question.findMany({
+      where,
+      orderBy,
+      skip: offset,
+      take,
+      select: candidateSelect,
+    }),
+  ]);
 
-  return {
-    total: await prisma.question.count({ where }),
-    items,
-    keywords,
-  };
+  return { items: rows.map(toItem), total, keywords };
 }
 
 /**
- * Hybrid: vector similarity first, then full-text + keyword ranking as a tie-breaker.
- * Returns the same shape as `fullTextSearch`.
+ * Hybrid: keyword candidates (or the recent corpus for paraphrase-only
+ * queries) blended as `0.65 * tfidfCosine + 0.35 * tsRank`, then sorted per
+ * `sort` and paginated. Same shape as `fullTextSearch`.
  */
 export async function hybridSearch({
   q,
@@ -212,63 +296,157 @@ export async function hybridSearch({
 }: {
   q: string;
   topic?: string;
-  sort?: 'score' | 'votes' | 'new' | 'top';
+  sort?: SearchSort;
   page?: number;
   pageSize?: number;
-}) {
+}): Promise<{ items: SearchQuestionItem[]; total: number; keywords: string }> {
   const keywords = buildKeywords(q);
-  const tokens = tokenize(keywords);
+  if (!contentTerms(q).length) {
+    return fullTextSearch({ q, topic, sort, page, pageSize });
+  }
+  const { take, offset } = clampPage(page, pageSize);
 
-  // 1) Vector similarity (if vector column exists).
-  const vectorWhere: Record<string, unknown> = { status: 'PUBLISHED' };
-  if (topic) vectorWhere.topic = { contains: topic, mode: 'insensitive' };
+  // 1) FTS layer: ts_rank over the generated searchIndex column.
+  let rankById = new Map<string, number>();
+  try {
+    const fts = await searchQuestions({ q, topic, sort: 'score', page: 1, pageSize: CANDIDATE_CAP });
+    rankById = new Map(fts.map((r) => [r.id, r.rank]));
+  } catch (err) {
+    console.warn('[search] fts layer failed, continuing semantic-only:', err);
+  }
 
-  const vectorItems = await prisma.question.findMany({
-    where: vectorWhere,
-    orderBy: { createdAt: 'desc' },
-    skip: 0,
-    take: pageSize,
-    select: {
-      id: true,
-      slug: true,
-      title: true,
-      bodyMd: true,
-      topic: true,
-      votes: true,
-      isBest: true,
-      createdAt: true,
-      updatedAt: true,
-      _count: { select: { answers: true } },
-    },
+  // 2) Candidates: keyword matches; fall back to the recent corpus when the
+  //    query only works paraphrastically (no keyword hits at all).
+  let where = keywordWhere(q, topic);
+  let total = await prisma.question.count({ where });
+  let rows = total
+    ? await prisma.question.findMany({
+        where,
+        orderBy: [{ createdAt: 'desc' }],
+        take: CANDIDATE_CAP,
+        select: candidateSelect,
+      })
+    : [];
+
+  if (!rows.length) {
+    const fallback: Prisma.QuestionWhereInput = { status: 'PUBLISHED' };
+    if (topic) fallback.topic = { contains: topic, mode: 'insensitive' };
+    where = fallback;
+    total = await prisma.question.count({ where });
+    rows = await prisma.question.findMany({
+      where,
+      orderBy: [{ createdAt: 'desc' }],
+      take: CANDIDATE_CAP,
+      select: candidateSelect,
+    });
+  }
+  if (!rows.length) return { items: [], total: 0, keywords };
+
+  // 3) Semantic layer: cosine against the stored hashing embedding
+  //    (`searchVec`); fall back to in-process TF-IDF for rows that were
+  //    never reindexed (e.g. right after a migration, before
+  //    `npm run reindex:search`).
+  const semById = new Map<string, number>();
+  const queryVec = embedText(q);
+  const hasStored = rows.some((r) => r.searchVec.length === EMBED_DIM);
+  if (hasStored) {
+    for (const r of rows) semById.set(r.id, cosine(queryVec, r.searchVec));
+  } else {
+    const docs: CorpusDoc[] = rows.map((it) => ({
+      id: it.id,
+      type: 'question',
+      entityId: it.id,
+      title: it.title,
+      bodyMd: it.bodyMd,
+      topic: it.topic,
+    }));
+    for (const r of rankSimilar({ q, docs, topK: docs.length })) {
+      semById.set(r.id, r.score);
+    }
+  }
+  const maxRank = rankById.size ? Math.max(...rankById.values(), 1e-9) : 0;
+
+  const blended = rows.map((it) => {
+    const item = toItem(it);
+    const semantic = semById.get(it.id) ?? 0;
+    const ftsScore = maxRank > 0 ? (rankById.get(it.id) ?? 0) / maxRank : 0;
+    return { ...item, _row: it, blended: 0.65 * semantic + 0.35 * ftsScore };
   });
 
-  // 2) Full-text ranking for the same set (or the union).
-  const textWhere: Record<string, unknown> = { status: 'PUBLISHED' };
-  if (topic) textWhere.topic = { contains: topic, mode: 'insensitive' };
+  if (sort === 'votes') {
+    blended.sort((a, b) => b.votes - a.votes || b.blended - a.blended);
+  } else if (sort === 'new') {
+    blended.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  } else if (sort === 'top') {
+    blended.sort((a, b) => b.blended - a.blended || b.votes - a.votes);
+  } else {
+    blended.sort((a, b) => b.blended - a.blended);
+  }
 
-  const textItems = await prisma.question.findMany({
-    where: textWhere,
-    orderBy: { createdAt: 'desc' },
-    skip: 0,
-    take: pageSize,
-    select: {
-      id: true,
-      slug: true,
-      title: true,
-      bodyMd: true,
-      topic: true,
-      votes: true,
-      isBest: true,
-      createdAt: true,
-      updatedAt: true,
-      _count: { select: { answers: true } },
-    },
-  });
+  return { items: blended.slice(offset, offset + take).map(({ _row, ...item }) => item), total, keywords };
+}
 
-  // 3) Merge + rank (simplified: fallback to keywords if no vector results).
-  const ranked = [...new Map([...vectorItems, ...textItems].map((i) => [i.id, i])).values()];
+// ---- searchVec maintenance -----------------------------------------
 
-  const total = ranked.length;
+/**
+ * Sanitize a vector for storage. NOTE: pass the JS array itself (Prisma
+ * serializes `number[]` natively) — a pre-formatted `[...]` string gets
+ * double-encoded and Postgres rejects it with 22P02.
+ */
+function toSqlArray(vec: number[]): number[] {
+  return vec.map((v) => (Number.isFinite(v) ? v : 0));
+}
 
-  return { items: ranked, total, keywords };
+/** Recompute + store the hashing embedding for one question. Never throws. */
+export async function embedQuestion(questionId: string): Promise<void> {
+  try {
+    const row = await prisma.question.findUnique({
+      where: { id: questionId },
+      select: { id: true, title: true, bodyMd: true },
+    });
+    if (!row) return;
+    const vec = embedText(`${row.title} ${row.bodyMd}`);
+    await prisma.$executeRaw`UPDATE "Question" SET "searchVec" = ${toSqlArray(vec)}::double precision[] WHERE "id" = ${row.id}`;
+  } catch (err) {
+    console.warn('[search] embedQuestion failed:', err);
+  }
+}
+
+/** Recompute + store the hashing embedding for one answer. Never throws. */
+export async function embedAnswer(answerId: string): Promise<void> {
+  try {
+    const row = await prisma.answer.findUnique({
+      where: { id: answerId },
+      select: { id: true, bodyMd: true },
+    });
+    if (!row) return;
+    const vec = embedText(row.bodyMd);
+    await prisma.$executeRaw`UPDATE "Answer" SET "searchVec" = ${toSqlArray(vec)}::double precision[] WHERE "id" = ${row.id}`;
+  } catch (err) {
+    console.warn('[search] embedAnswer failed:', err);
+  }
+}
+
+/**
+ * Full backfill of `searchVec` for every question + answer
+ * (`npm run reindex:search`). Idempotent; safe to re-run any time.
+ */
+export async function refreshSearchVecs(): Promise<void> {
+  try {
+    const questions = await prisma.question.findMany({
+      select: { id: true, title: true, bodyMd: true },
+    });
+    for (const row of questions) {
+      const vec = embedText(`${row.title} ${row.bodyMd}`);
+      await prisma.$executeRaw`UPDATE "Question" SET "searchVec" = ${toSqlArray(vec)}::double precision[] WHERE "id" = ${row.id}`;
+    }
+    const answers = await prisma.answer.findMany({ select: { id: true, bodyMd: true } });
+    for (const row of answers) {
+      const vec = embedText(row.bodyMd);
+      await prisma.$executeRaw`UPDATE "Answer" SET "searchVec" = ${toSqlArray(vec)}::double precision[] WHERE "id" = ${row.id}`;
+    }
+    console.log(`[search] reindexed ${questions.length} questions, ${answers.length} answers`);
+  } catch (err) {
+    console.warn('[search] refreshSearchVecs failed:', err);
+  }
 }

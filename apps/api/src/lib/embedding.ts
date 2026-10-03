@@ -1,48 +1,44 @@
 // ---- light embedding + ranking --------------------------------------
 //
-// MVP: we ship a deterministic, corpus-aware embedding so the site can
-// "search well" and "train a small model" without needing a third-party
-// model vendor at launch. The pipeline is:
+// Hybrid search's in-process layer. Two deterministic embeddings, both
+// dependency-free (no model vendor, no native addons):
 //
-//   1. Tokenize + stem each word in the corpus (title + body).
-//   2. TF-IDF weight every term (so common words like "come" / "out" matter,
-//      but stop-words like "the" / "and" don't).
-//   3. Build a sparse vector per question/answer from its weighted terms.
-//   4. Rank by cosine similarity to the query vector. This is the
-//      "semantic" layer; the full-text `searchIndex` layer is used for the
-//      keyword hits and as a tie-breaker.
+//   1. TF-IDF vocabulary vectors (`Vocabulary` + `rankSimilar`) — built over
+//      the candidate corpus at query time for paraphrase-tolerant ranking
+//      ("how do I tell my parents I'm gay" ≈ "coming out" questions).
+//      Corpus-aware: idf down-weights terms common across the corpus.
 //
-// This gives you:
-//   - Good recall on paraphrased / misspelled queries (e.g. "how do I tell
-//     my parents I'm gay" will match "coming out" questions).
-//   - A small, self-contained model you can continue training offline
-//     (add a mock `trainEmbedding` that ingests question/answer pairs).
-//   - A clean seam to swap in a real model (OpenAI, Anthropic, local
-//     `sentence-transformers`) later — just replace `embedText` and
-//     `searchVectors` in `qa/read.ts`.
+//   2. Hashing embedding (`embedText()`, EMBED_DIM dims) — a stable
+//      bag-of-stems vector signed-hashed into a fixed-size vector. Because it
+//      does not depend on the corpus, it can be stored per row in
+//      `Question.searchVec` / `Answer.searchVec` and compared with cosine
+//      similarity at any time (writers live in `lib/search.ts`).
 //
-// Design notes:
-//   - The embedding is intentionally cheap (no external API, no heavy
-//     deps). It's a TF-IDF sparse vector over a curated vocabulary.
-//   - You can grow it into a proper neural embedding by swapping this
-//     module for a model wrapper — the rest of the search path is typed
-//     behind `searchVec: number[]`, so the change is localized.
-//   - For production, consider `pgvector` + `sentence-transformers`, but
-//     this keeps the MVP on-platform and free.
+// Swap-in seam for a real model later (OpenAI / Anthropic /
+// sentence-transformers): replace `embedText` + `cosine` — storage
+// (`searchVec Float[]`) and every caller stay unchanged.
+//
+// The keyword layer is separate: `searchIndex` is a Postgres GENERATED
+// tsvector column (see the search migration), ranked by ts_rank inside
+// `searchQuestions()` in `lib/search.ts`.
 
-import { tokenize, buildKeywords } from './search';
+import { tokenize } from './search';
 
-/** Minimal in-memory corpus of seeded Q&A so we can build a vocabulary. */
+/** Fixed dimension for the stored hashing embedding (`searchVec`). */
+export const EMBED_DIM = 384;
+
+/** Minimal corpus doc used for in-process ranking. */
 export interface CorpusDoc {
   id: string;
   type: 'question' | 'answer';
   entityId: string;
   title: string;
   bodyMd: string;
+  topic?: string | null;
 }
 
-/** Stop-word list (common English words we down-weight or drop). */
-const STOP_WORDS = new Set([
+/** Stop-word list (common English words we drop before embedding/ranking). */
+export const STOP_WORDS = new Set([
   'a', 'an', 'the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for',
   'of', 'with', 'by', 'from', 'is', 'are', 'was', 'were', 'be', 'been',
   'being', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would',
@@ -55,24 +51,13 @@ const STOP_WORDS = new Set([
   'just', 'don', 'now', 's', 't', 'd', 'll', 'm', 're', 've', 'y',
 ]);
 
-/** Simple light stemmer (covers the most common queer-identity / health /
-//  coming-out terms). Extend as needed for your domain. */
+/** Light domain-aware stemmer (common English suffixes + queer/health terms). */
 function stem(word: string): string {
   const w = word.toLowerCase();
   if (w.length <= 3) return w;
 
-  // Common English suffixes
-  let s = w;
-  if (s.endsWith('ing')) s = s.slice(0, -3);
-  else if (s.endsWith('ed')) s = s.slice(0, -2);
-  else if (s.endsWith('es')) s = s.slice(0, -2);
-  else if (s.endsWith('s') && !s.endsWith('ss')) s = s.slice(0, -1);
-  else if (s.endsWith('ly')) s = s.slice(0, -2);
-  else if (s.endsWith('er')) s = s.slice(0, -2);
-  else if (s.endsWith('est')) s = s.slice(0, -3);
-
-  // A few domain-specific stems
-  const domain = {
+  // A few domain-specific stems (checked first so "gay" stays "gay", not "ga")
+  const domain: Record<string, string> = {
     coming: 'come',
     comingout: 'come',
     identity: 'ident',
@@ -120,87 +105,144 @@ function stem(word: string): string {
     transition: 'transition',
     pass: 'pass',
   };
-
-  // Check the domain map first (so "gay" stays "gay", not "ga")
   if (domain[w]) return domain[w];
 
-  // Handle long suffixes before short ones
-  const suffixes = ['ing', 'ed', 'es', 'ly', 'er', 'est', 's'];
-  for (const suf of suffixes) {
-    if (s.length > suf.length + 1 && s.endsWith(suf)) {
-      s = s.slice(0, -suf.length);
-      break;
-    }
-  }
+  // Common English suffixes (longest first)
+  let s = w;
+  if (s.endsWith('ing')) s = s.slice(0, -3);
+  else if (s.endsWith('ed')) s = s.slice(0, -2);
+  else if (s.endsWith('es')) s = s.slice(0, -2);
+  else if (s.endsWith('s') && !s.endsWith('ss')) s = s.slice(0, -1);
+  else if (s.endsWith('ly')) s = s.slice(0, -2);
+  else if (s.endsWith('er')) s = s.slice(0, -2);
+  else if (s.endsWith('est')) s = s.slice(0, -3);
 
   return s;
 }
 
+/** Normalize a vector to unit length (cosine similarity becomes a dot product). */
+function normalize(vec: number[]): number[] {
+  const norm = Math.sqrt(vec.reduce((a, b) => a + b * b, 0));
+  if (norm > 0) {
+    for (let i = 0; i < vec.length; i++) vec[i] /= norm;
+  }
+  return vec;
+}
+
+/** FNV-1a 32-bit hash (stable across processes for the hashing embedding). */
+function fnv1a(str: string): number {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < str.length; i++) {
+    h ^= str.charCodeAt(i);
+    h = Math.imul(h, 0x01000193) >>> 0;
+  }
+  return h >>> 0;
+}
+
 /**
- * Build a vocabulary from a list of documents: word -> index + idf.
- * We compute idf on the fly so we can reuse this for both questions and
- * answers, and so we can add new docs later without rebuilding the whole
- * index.
+ * Corpus-independent hashing embedding: stemmed terms are signed-hashed into
+ * a fixed EMBED_DIM vector (bag of stems with sublinear tf). Deterministic,
+ * cheap, and safe to persist in `searchVec`.
+ */
+export function embedText(text: string): number[] {
+  const counts = new Map<string, number>();
+  for (const t of tokenize(text)) {
+    const st = stem(t);
+    if (STOP_WORDS.has(st)) continue;
+    counts.set(st, (counts.get(st) ?? 0) + 1);
+  }
+  const vec = new Array<number>(EMBED_DIM).fill(0);
+  for (const [term, tf] of counts) {
+    const h = fnv1a(term);
+    const idx = (h >>> 1) % EMBED_DIM;
+    const sign = h & 1 ? 1 : -1;
+    vec[idx] += sign * (1 + Math.log(tf));
+  }
+  return normalize(vec);
+}
+
+/**
+ * Cosine similarity, length-tolerant (returns 0 on a length mismatch or a
+ * zero vector instead of producing garbage scores).
+ */
+export function cosine(a: number[], b: number[]): number {
+  const n = Math.min(a.length, b.length);
+  if (n === 0) return 0;
+  let dotSum = 0;
+  let na = 0;
+  let nb = 0;
+  for (let i = 0; i < n; i++) dotSum += a[i] * b[i];
+  for (let i = 0; i < a.length; i++) na += a[i] * a[i];
+  for (let i = 0; i < b.length; i++) nb += b[i] * b[i];
+  if (na === 0 || nb === 0) return 0;
+  return dotSum / (Math.sqrt(na) * Math.sqrt(nb));
+}
+
+/**
+ * Vocabulary built from a corpus: term -> { count, df } plus a stable
+ * term -> vector index map (insertion order), so every vector produced by
+ * one Vocabulary is index-aligned.
  */
 export class Vocabulary {
   private index = new Map<string, { count: number; df: number }>();
+  private termPos = new Map<string, number>();
+  private docs = 0;
 
   /** Add a document and update term frequencies + document frequencies. */
-  add(doc: CorpusDoc) {
+  add(doc: CorpusDoc): void {
     const seen = new Set<string>();
     for (const text of [doc.title, doc.bodyMd]) {
       for (const t of tokenize(text)) {
         const st = stem(t);
         if (STOP_WORDS.has(st)) continue;
-        if (!seen.has(st)) {
-          seen.add(st);
-          this.index.set(st, (this.index.get(st) ?? { count: 0, df: 0 }) => {
-            const cur = this.index.get(st)!;
-            cur.count += 1;
-            cur.df += 1;
-            return cur;
-          })();
-        } else {
-          const entry = this.index.get(st)!;
+        const entry = this.index.get(st);
+        if (entry) {
           entry.count += 1;
+          if (!seen.has(st)) entry.df += 1;
+        } else {
+          this.index.set(st, { count: 1, df: 1 });
+          this.termPos.set(st, this.termPos.size);
         }
+        seen.add(st);
       }
     }
+    this.docs += 1;
   }
 
-  /** Number of docs in the corpus. */
+  /** Number of documents added to the corpus. */
   get docCount(): number {
-    return this.index.size;
+    return this.docs;
   }
 
-  /** Get the normalized vector for a document (TF-IDF over its tokens). */
+  /** Number of distinct terms in the vocabulary. */
+  get size(): number {
+    return this.termPos.size;
+  }
+
+  /** Unit-length TF-IDF vector for a document, aligned to this vocabulary. */
   vectorFor(doc: CorpusDoc): number[] {
     const counts = new Map<string, number>();
+    let total = 0;
     for (const text of [doc.title, doc.bodyMd]) {
       for (const t of tokenize(text)) {
         const st = stem(t);
         if (STOP_WORDS.has(st)) continue;
         counts.set(st, (counts.get(st) ?? 0) + 1);
+        total += 1;
       }
     }
-    const total = doc.title.split(/\s+/).length + doc.bodyMd.split(/\s+/).length;
-    const vec = new Array<number>(this.index.size).fill(0);
+    const vec = new Array<number>(this.termPos.size).fill(0);
     for (const [term, tf] of counts) {
-      const entry = this.index.get(term);
-      if (!entry) continue;
-      const idf = Math.log((this.docCount + 1) / (entry.df + 1)) + 1;
-      const tfidf = (tf / total) * idf;
-      vec[this.index.get(term)!.count - 1] = tfidf;
+      const idx = this.termPos.get(term);
+      if (idx === undefined) continue;
+      const entry = this.index.get(term)!;
+      const idf = Math.log((this.docs + 1) / (entry.df + 1)) + 1;
+      vec[idx] = (tf / (total || 1)) * idf;
     }
-    // Normalize to unit length (cosine similarity becomes dot product)
-    const norm = Math.sqrt(vec.reduce((a, b) => a + b * b, 0));
-    if (norm > 0) {
-      for (let i = 0; i < vec.length; i++) vec[i] /= norm;
-    }
-    return vec;
+    return normalize(vec);
   }
 
-  /** Get the vector for a single query token (on the fly). */
+  /** Unit-length TF-IDF vector for raw query tokens, same alignment. */
   vectorForTokens(tokens: string[]): number[] {
     const counts = new Map<string, number>();
     for (const t of tokens) {
@@ -208,33 +250,24 @@ export class Vocabulary {
       if (STOP_WORDS.has(st)) continue;
       counts.set(st, (counts.get(st) ?? 0) + 1);
     }
-    const vec = new Array<number>(this.index.size).fill(0);
+    const total = tokens.length || 1;
+    const vec = new Array<number>(this.termPos.size).fill(0);
     for (const [term, tf] of counts) {
-      const entry = this.index.get(term);
-      if (!entry) continue;
-      const idf = Math.log((this.docCount + 1) / (entry.df + 1)) + 1;
-      const tfidf = (tf / (tokens.length || 1)) * idf;
-      vec[this.index.get(term)!.count - 1] = tfidf;
+      const idx = this.termPos.get(term);
+      if (idx === undefined) continue;
+      const entry = this.index.get(term)!;
+      const idf = Math.log((this.docs + 1) / (entry.df + 1)) + 1;
+      vec[idx] = (tf / total) * idf;
     }
-    const norm = Math.sqrt(vec.reduce((a, b) => a + b * b, 0));
-    if (norm > 0) {
-      for (let i = 0; i < vec.length; i++) vec[i] /= norm;
-    }
-    return vec;
+    return normalize(vec);
   }
 }
 
 /**
- * Return the top N similar question IDs for a query. This is the "search
- * well" layer that runs on the server and returns results the client can
- * display as suggestions. A real LLM/RLHF model would replace this later,
- * but this TF-IDF embedding gives you a working, trainable similarity
- * function immediately from your seeded data.
- *
- * You can use the returned scores to:
- *   - surface "related questions",
- *   - order "ask a question" suggestions,
- *   - build a ranking/RL training set from vote + best-answer signals.
+ * Top-N similar docs for a query, TF-IDF cosine over ONE shared vocabulary
+ * (every vector is index-aligned — all docs and the query come from the same
+ * `Vocabulary` instance). Used by `hybridSearch()` as the semantic layer;
+ * scores are `0..1` (unit vectors).
  */
 export function rankSimilar({
   q,
@@ -246,29 +279,18 @@ export function rankSimilar({
   docs: CorpusDoc[];
   topic?: string;
   topK?: number;
-}) {
+}): { id: string; score: number; doc: CorpusDoc }[] {
   const vocab = new Vocabulary();
   for (const d of docs) vocab.add(d);
 
-  const queryTokens = tokenize(q);
-  const queryVec = vocab.vectorForTokens(queryTokens);
-  const topicTokens = topic ? tokenize(topic) : [];
-  const limited = topicTokens.length > 0 ? docs.filter((d) => d.topic === topic) : docs;
+  const queryVec = vocab.vectorForTokens(tokenize(q));
+  const pool = topic ? docs.filter((d) => d.topic === topic) : docs;
 
-  const scored = limited.map((d) => {
-    const dv = new Vocabulary();
-    dv.add(d);
-    const dvVec = dv.vectorFor(d);
-    const cos = dot(queryVec, dvVec);
-    return { id: d.id, score: cos, doc: d };
-  });
-
+  const scored = pool.map((d) => ({
+    id: d.id,
+    score: cosine(queryVec, vocab.vectorFor(d)),
+    doc: d,
+  }));
   scored.sort((a, b) => b.score - a.score);
   return scored.slice(0, topK);
-}
-
-function dot(a: number[], b: number[]): number {
-  let s = 0;
-  for (let i = 0; i < a.length; i++) s += a[i] * b[i];
-  return s;
 }

@@ -20,7 +20,7 @@ const BULLETINS: Array<{ title: string; bodyMd: string; pinned: boolean }> = [
   {
     title: 'The plan for 2026',
     bodyMd:
-      'The full app ships in 2026: profiles, meet, community, chats, events — all age-gated and privacy-first. No algorithms, no data sold, ever.\n\nWant to be first in? Read the **waitlist** page. Want to help? Post ideas in the forum — founder reads everything.',
+      'The full app ships in 2026: profiles, meet, community, chats, events — all age-gated and privacy-first. No algorithms, no data sold, ever.\n\nWant to be first in? Post ideas in the forum — founder reads everything.',
     pinned: false
   }
 ];

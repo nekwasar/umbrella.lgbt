@@ -39,7 +39,6 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
                 <h5>Resources</h5>
                 <a href="/resources">Country Resources</a>
                 <a href="/privacy">Privacy</a>
-                <a href="/waitlist">Waitlist</a>
                 <a href="https://x.com/cocortech">X (Twitter)</a>
               </div>
             </div>

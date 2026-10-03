@@ -9,7 +9,6 @@ const CORE: Array<{ path: string; priority: number; freq: MetadataRoute.Sitemap[
   { path: '/', priority: 1.0, freq: 'weekly' },
   { path: '/about', priority: 0.8, freq: 'monthly' },
   { path: '/features', priority: 0.8, freq: 'monthly' },
-  { path: '/waitlist', priority: 0.6, freq: 'monthly' },
   { path: '/press', priority: 0.5, freq: 'monthly' },
   { path: '/contact', priority: 0.5, freq: 'monthly' },
   { path: '/privacy', priority: 0.4, freq: 'yearly' }

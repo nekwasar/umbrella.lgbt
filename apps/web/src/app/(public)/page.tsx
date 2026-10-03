@@ -101,10 +101,7 @@ export default async function HomePage() {
                     <Link href="/glossary">Learn the language</Link> — clear guides to identity &amp;
                     terminology
                   </li>
-                  <li>
-                    <span className="step">4.</span>
-                    <Link href="/waitlist">Be first in 2026</Link> — join the waitlist
-                  </li>
+
                 </ul>
               </div>
             </div>

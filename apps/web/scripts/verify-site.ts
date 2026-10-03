@@ -72,7 +72,6 @@ async function main() {
     { path: '/', needle: 'The everything queer app' },
     { path: '/about', needle: 'Our Mission' },
     { path: '/features', needle: 'Feature' },
-    { path: '/waitlist', needle: 'Stay Updated' },
     { path: '/contact', needle: 'hello@umbrella.lgbt' },
     { path: '/privacy', needle: 'Privacy' },
     { path: '/blog', needle: 'How to Come Out' },

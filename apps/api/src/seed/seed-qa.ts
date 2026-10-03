@@ -9,6 +9,7 @@ import { prisma } from '../db/prisma';
 import { hashPassword } from '../lib/password';
 import { slugify } from '../lib/slug';
 import { refreshSearchVecs } from '../lib/search';
+import { logQuestionAction } from '../lib/question-log';
 
 interface SeedMember {
   username: string;
@@ -785,6 +786,681 @@ The trick with all of these: check the calendar rather than the vibe. Places do 
       }
     ],
     votes: [[0, 'noor_a', 1], [0, 'sam_k', 1], [1, 'priya_s', 1]]
+  },
+
+  // ---------- coming-out (more) ----------
+  {
+    author: 'alex_t',
+    title: `Is it worth coming out if I am only going to date one person?`,
+    topic: 'coming-out',
+    body: `I have only ever been interested in one person so far, and they happen to be the same gender as me. Everyone keeps telling me I should come out, but it feels strange to make a whole announcement about something that might just be one relationship. Does coming out only matter when you are dating around?`,
+    daysAgo: 5,
+    views: 121,
+    answers: [
+      {
+        author: 'maya_r',
+        best: true,
+        daysAgo: 4,
+        body: `Coming out is not about audience size, it is about not hiding. If staying private costs you nothing right now, that is completely valid — you do not owe anyone a performance. The question to ask is whether you would feel relief if the people around you just knew. If yes, tell the two or three people who matter first. If no, wait.`
+      },
+      {
+        author: 'sam_k',
+        daysAgo: 3,
+        body: `One relationship counts. I came out while dating exactly one person and people acted like I had joined a club with a membership drive. You are allowed to describe yourself on your own timeline, and one person is plenty of reason to start being honest if you want to be.`
+      }
+    ],
+    votes: [
+      [0, 'devon_k', 1],
+      [0, 'priya_s', 1],
+      [1, 'noor_a', 1]
+    ]
+  },
+  {
+    author: 'noor_a',
+    title: `I came out at a party and now I regret it. Can I take it back?`,
+    topic: 'coming-out',
+    body: `I had two drinks and told a room of people I am gay. The next morning I panicked — not because it is not true, but because I wanted to choose the moment. Now it is all over group chats. Is there a way to un-say this, or do I just own it?`,
+    daysAgo: 4,
+    views: 96,
+    answers: [
+      {
+        author: 'priya_s',
+        best: true,
+        daysAgo: 3,
+        body: `You cannot un-say it, but you can set the terms. Send one calm message to the group chat: it is true, you would appreciate people not spreading it further, and you will talk about it when you are ready. People respond to a clear instruction. The moment stops feeling stolen when you decide what happens next.`
+      },
+      {
+        author: 'alex_t',
+        daysAgo: 2,
+        body: `Regret about the timing is not regret about the truth — hold on to that distinction. In my experience the party crowd forgets the drama within a week, while you keep replaying it for months. The gap between how loud it feels to you and how little others dwell on it is bigger than you think.`
+      }
+    ],
+    votes: [
+      [0, 'sam_k', 1],
+      [0, 'devon_k', 1],
+      [1, 'maya_r', 1]
+    ]
+  },
+
+  // ---------- identity (more) ----------
+  {
+    author: 'devon_k',
+    title: `Can I use more than one label, or do I have to pick just one?`,
+    topic: 'identity',
+    body: `Bi and queer both fit me depending on the day. When people ask, I freeze because I feel like I am supposed to choose a team. Is it normal to hold more than one label at the same time?`,
+    daysAgo: 7,
+    views: 134,
+    answers: [
+      {
+        author: 'sam_k',
+        best: true,
+        daysAgo: 6,
+        body: `Labels are tools, not team jerseys. Use whichever one communicates what you need in that moment — bi with family, queer with friends, both in your own head. Nobody audits your vocabulary, and changing your mind later does not invalidate today.`
+      },
+      {
+        author: 'maya_r',
+        daysAgo: 5,
+        body: `Totally normal. I say bi to older relatives who need something concrete and queer in community spaces where the wider word just fits. You can also answer the question with a question: "why do you ask?" buys you time and sometimes tells you whether the person deserves the real answer.`
+      }
+    ],
+    votes: [
+      [0, 'priya_s', 1],
+      [1, 'noor_a', 1]
+    ]
+  },
+  {
+    author: 'maya_r',
+    title: `How do I stop second-guessing something I finally feel sure about?`,
+    topic: 'identity',
+    body: `Some days I feel completely sure, and then one comment from a relative sends me back to square one. I am tired of the cycle. How do you make peace with it so it stops feeling like a question every morning?`,
+    daysAgo: 6,
+    views: 108,
+    answers: [
+      {
+        author: 'priya_s',
+        best: true,
+        daysAgo: 5,
+        body: `Certainty comes in waves, and doubt after a sharp comment does not erase what you know — it just shows you are still carrying their voice. What helped me: write down on a good day how you feel and why, in your own words. Re-read it the next time the doubt creeps in. You are arguing with yourself using evidence from your clear moments.`
+      },
+      {
+        author: 'devon_k',
+        daysAgo: 4,
+        body: `It fades as this becomes ordinary life instead of an event. The first year everything felt like a referendum on my identity; by the second, getting dressed was just getting dressed. The cycle shortens the longer you let yourself live inside the answer.`
+      }
+    ],
+    votes: [
+      [0, 'sam_k', 1],
+      [0, 'alex_t', 1],
+      [1, 'noor_a', 1]
+    ]
+  },
+  {
+    author: 'sam_k',
+    title: `What does it mean if I do not want a label at all?`,
+    topic: 'identity',
+    body: `Every time I go to a queer space there is a discussion about which flag to fly. I am happy with myself as I am and I do not really want to name it. Am I avoiding something, or is no-label a real place to stand?`,
+    daysAgo: 8,
+    views: 87,
+    answers: [
+      {
+        author: 'noor_a',
+        best: true,
+        daysAgo: 7,
+        body: `Questioning the need for labels is as valid as choosing them. Plenty of people live happily without filing themselves under a heading — you are not avoiding anything by declining the paperwork. The community part comes from shared space and values, not from which word you wear at the door.`
+      },
+      {
+        author: 'alex_t',
+        daysAgo: 6,
+        body: `Labels are optional equipment. Some people navigate with a map, some just walk. If "no label" describes you accurately, then you already have your label — it just happens to be a blank one.`
+      }
+    ],
+    votes: [
+      [0, 'maya_r', 1],
+      [0, 'priya_s', 1],
+      [1, 'devon_k', 1]
+    ]
+  },
+
+  // ---------- gender (more) ----------
+  {
+    author: 'sam_k',
+    title: `What is the difference between genderfluid and just questioning?`,
+    topic: 'gender',
+    body: `I have days where I feel different, and I cannot tell if I am exploring or if this is actually how I am built. Where is the line between questioning and an identity?`,
+    daysAgo: 7,
+    views: 142,
+    answers: [
+      {
+        author: 'priya_s',
+        best: true,
+        daysAgo: 6,
+        body: `Questioning is the process, genderfluid describes a pattern you notice inside that process. There is no deadline for figuring out which one you are living — you can call yourself questioning for a year and nobody can challenge that. If the shifting keeps showing up after the novelty wears off, that is information, not confusion.`
+      },
+      {
+        author: 'devon_k',
+        daysAgo: 5,
+        body: `Keep a tiny log for a month: one line a day about how you feel. Patterns become visible fast, and you stop relying on whichever day happens to be loudest. Whatever the log says, you are allowed to use a word that fits it.`
+      }
+    ],
+    votes: [
+      [0, 'maya_r', 1],
+      [0, 'noor_a', 1],
+      [1, 'alex_t', 1]
+    ]
+  },
+  {
+    author: 'priya_s',
+    title: `My pronouns are they/them but people keep getting it wrong. How do I correct them without being rude?`,
+    topic: 'gender',
+    body: `At work people try for a week and then slip back. I do not want to be the pronoun police every meeting, but being ignored stings. What actually works?`,
+    daysAgo: 5,
+    views: 167,
+    answers: [
+      {
+        author: 'sam_k',
+        best: true,
+        daysAgo: 4,
+        body: `Pick a low-effort script and use it every single time — mine is a quick "they, remember" with a smile, no speech attached. Consistency beats comfort: people recalibrate when correction is boring instead of dramatic. It is not rude to correct someone who has forgotten; the forgetting is the rude part.`
+      },
+      {
+        author: 'maya_r',
+        daysAgo: 3,
+        body: `Ask one colleague who already gets it to model it in conversation. People follow correction patterns from peers faster than they follow policy. At my last job that one ally fixed the whole floor within a month.`
+      }
+    ],
+    votes: [
+      [0, 'devon_k', 1],
+      [0, 'alex_t', 1],
+      [1, 'noor_a', 1]
+    ]
+  },
+
+  // ---------- relationships (more) ----------
+  {
+    author: 'noor_a',
+    title: `How do I bring up an open relationship without sounding selfish?`,
+    topic: 'relationships',
+    body: `My partner and I have been together four years. I want to talk about opening up, but every article I read makes it sound like the beginning of the end. How do I start that conversation honestly?`,
+    daysAgo: 6,
+    views: 118,
+    answers: [
+      {
+        author: 'alex_t',
+        best: true,
+        daysAgo: 5,
+        body: `Frame it as curiosity, not a deficit — "here is something I would like us to explore together" lands very differently from "something is missing." Pick a calm, non-bedroom moment, say you are happy with them first, and be genuinely ready for any answer, including no. The conversation goes badly when it is really a request disguised as a chat.`
+      },
+      {
+        author: 'maya_r',
+        daysAgo: 4,
+        body: `Talk feelings before logistics: what scares each of you, what would feel threatening, what would feel like relief. Couples who skip that part and jump to rules end up with rules that ignore the actual anxieties underneath them.`
+      }
+    ],
+    votes: [
+      [0, 'priya_s', 1],
+      [0, 'sam_k', 1],
+      [1, 'devon_k', 1]
+    ]
+  },
+  {
+    author: 'alex_t',
+    title: `My girlfriend wants me to meet her family but she is not out to them yet. What do I do?`,
+    topic: 'relationships',
+    body: `I would be introduced as her "friend", and her parents are the kind who would ask questions. I do not want to pressure her, but playing invisible for a whole weekend feels awful. Has anyone navigated this?`,
+    daysAgo: 4,
+    views: 173,
+    answers: [
+      {
+        author: 'priya_s',
+        best: true,
+        daysAgo: 3,
+        body: `Decide together what you can both live with, in advance. Agree on how you are introduced, what you will say if they ask, and an exit signal if it gets heavy. Her timeline still matters — but so does your dignity, and pretending to be "just a friend" is a cost that needs to be named, not assumed.`
+      },
+      {
+        author: 'devon_k',
+        daysAgo: 2,
+        body: `Meet them as the friend who is obviously important to her. Pressure rarely outpaces fear, but support often does — when she sees you handle the visit with grace, the next conversation about honesty gets a lot shorter.`
+      }
+    ],
+    votes: [
+      [0, 'maya_r', 1],
+      [0, 'noor_a', 1],
+      [1, 'sam_k', 1]
+    ]
+  },
+
+  // ---------- mental-health (more) ----------
+  {
+    author: 'devon_k',
+    title: `Therapy has not helped me accept myself yet. Is that normal?`,
+    topic: 'mental-health',
+    body: `Three months in and I still leave sessions feeling worse. My therapist is fine about LGBTQ things, I think — I just do not know if I am doing it wrong. Do acceptance and self-compassion actually get easier?`,
+    daysAgo: 8,
+    views: 129,
+    answers: [
+      {
+        author: 'maya_r',
+        best: true,
+        daysAgo: 7,
+        body: `Tell your therapist exactly what you wrote here: "I leave feeling worse." That sentence is the most useful thing they can hear, and good therapy can handle it. If they get defensive or sidestep it, that tells you something too — a modality switch or a new therapist is a legitimate move.`
+      },
+      {
+        author: 'sam_k',
+        daysAgo: 6,
+        body: `Three months is early, and self-acceptance rarely moves in a straight line — often it dips right before a breakthrough because you are finally touching the real material. Also consider a queer support group alongside individual therapy. Hearing other people say your exact fear out loud does something a one-to-one room sometimes cannot.`
+      }
+    ],
+    votes: [
+      [0, 'priya_s', 1],
+      [0, 'noor_a', 1],
+      [1, 'alex_t', 1]
+    ]
+  },
+  {
+    author: 'priya_s',
+    title: `How do I deal with the guilt of hurting people when I came out?`,
+    topic: 'mental-health',
+    body: `My mum cried for a week and my brother will not speak to me. I know I did the right thing for me, but the house feels like a funeral. Does the guilt ever stop?`,
+    daysAgo: 5,
+    views: 154,
+    answers: [
+      {
+        author: 'noor_a',
+        best: true,
+        daysAgo: 4,
+        body: `Their grief is theirs to move through, not yours to carry. You did not cause harm — you stopped hiding, and they are reacting to news, not to an injury you inflicted. It feels like a funeral because a version of their assumption about you has ended; that is a loss they are allowed to feel without it becoming your fault.`
+      },
+      {
+        author: 'alex_t',
+        daysAgo: 3,
+        body: `The guilt fading is not the same as caring less. You are watching people adjust at their own speed, and their pace is not a scorecard on how much you love them. My family took about eighteen months; yours may take less.`
+      }
+    ],
+    votes: [
+      [0, 'maya_r', 1],
+      [0, 'devon_k', 1],
+      [1, 'sam_k', 1]
+    ]
+  },
+
+  // ---------- health (more) ----------
+  {
+    author: 'maya_r',
+    title: `I am scared to go to the doctor because of how I look. How do I find a trans-friendly clinic?`,
+    topic: 'health',
+    body: `Last visit the receptionist read my file out loud and the whole waiting room heard. I have put off checkups for two years. How do I find a place that will just treat me like anyone else?`,
+    daysAgo: 6,
+    views: 186,
+    answers: [
+      {
+        author: 'sam_k',
+        best: true,
+        daysAgo: 5,
+        body: `Look for informed-consent clinics and queer community boards where people name both good and bad experiences — reputation travels fast in our communities. Before booking, call and ask one scripted question: "Do you see trans patients regularly?" Their tone answers more than their script does.`
+      },
+      {
+        author: 'devon_k',
+        daysAgo: 4,
+        body: `Send one email ahead of your appointment asking for a note on your file about your name and pronouns. It takes five minutes for them and it prevents the entire scene you are dreading. Ask for the appointment itself to be under your name too.`
+      }
+    ],
+    votes: [
+      [0, 'priya_s', 1],
+      [0, 'noor_a', 1],
+      [1, 'alex_t', 1]
+    ]
+  },
+  {
+    author: 'sam_k',
+    title: `Should I get tested even if I have only had one partner?`,
+    topic: 'health',
+    body: `We are exclusive and both fine, but the nurse made it sound like everyone should just get checked regularly. Is it necessary in a closed relationship?`,
+    daysAgo: 7,
+    views: 98,
+    answers: [
+      {
+        author: 'priya_s',
+        best: true,
+        daysAgo: 6,
+        body: `A baseline test is just smart — plenty of infections are completely quiet, and one conversation with your partner covers everything else. Think of it like a dental checkup: nothing is probably wrong, and finding out either way is the point.`
+      },
+      {
+        author: 'maya_r',
+        daysAgo: 5,
+        body: `Testing is maintenance, not an accusation. Most couples do it at the start of a relationship precisely so this question stops coming up. If your partner reacts badly to the suggestion, that says more about their nerves than about your trust.`
+      }
+    ],
+    votes: [
+      [0, 'devon_k', 1],
+      [0, 'noor_a', 1],
+      [1, 'alex_t', 1]
+    ]
+  },
+
+  // ---------- family (more) ----------
+  {
+    author: 'noor_a',
+    title: `My in-laws do not know about my past marriage to a woman. Do I tell them?`,
+    topic: 'family',
+    body: `My husband knows everything. His parents are warm but very curious and they keep asking about my "history". I do not want to lie, but this feels like it is his family too. Who decides this?`,
+    daysAgo: 6,
+    views: 112,
+    answers: [
+      {
+        author: 'alex_t',
+        best: true,
+        daysAgo: 5,
+        body: `Decide together — a marriage history is shared information, not your secret alone. Agree on what you both say, and let him lead with his family if that is easier for everyone. What you should not do is improvise different versions in different rooms; inconsistency is what actually creates drama.`
+      },
+      {
+        author: 'priya_s',
+        daysAgo: 4,
+        body: `A simple "I was married to a woman before this" usually lands far more calmly than people expect. You can answer without a speech, a disclaimer, or a TED talk about labels. Brief and matter-of-fact gives them nothing to react against.`
+      }
+    ],
+    votes: [
+      [0, 'maya_r', 1],
+      [1, 'sam_k', 1],
+      [1, 'devon_k', 1]
+    ]
+  },
+  {
+    author: 'alex_t',
+    title: `How do I handle holidays when my family still deadnames me?`,
+    topic: 'family',
+    body: `Christmas is in three weeks. I am on HRT, I look different, and they keep using the old name "because it is easier". I want to be there for my niece but I leave every year feeling hollow. Do I skip it this year?`,
+    daysAgo: 4,
+    views: 214,
+    answers: [
+      {
+        author: 'sam_k',
+        best: true,
+        daysAgo: 3,
+        body: `Set one rule before you go — "use my name, or I will politely step out when you don't" — and follow through calmly, every time. Boundaries that are announced but not enforced teach people they have three strikes. The first follow-through is the hard one; after that the room adjusts fast.`
+      },
+      {
+        author: 'noor_a',
+        daysAgo: 2,
+        body: `Short visits changed everything for me: two hours instead of two days, with an ally cousin's place nearby if I need air. Logistics are allowed to be part of self-care. You can love your niece and still refuse to be a punching bag — those are not in conflict.`
+      }
+    ],
+    votes: [
+      [0, 'priya_s', 1],
+      [0, 'maya_r', 1],
+      [1, 'devon_k', 1]
+    ]
+  },
+
+  // ---------- faith (more) ----------
+  {
+    author: 'priya_s',
+    title: `Is there a queer-friendly church, or is that an oxymoron?`,
+    topic: 'faith',
+    body: `I miss having a spiritual community but the last three churches made it clear where they stood on "the issue". Am I looking for something that does not exist?`,
+    daysAgo: 9,
+    views: 143,
+    answers: [
+      {
+        author: 'maya_r',
+        best: true,
+        daysAgo: 8,
+        body: `They exist — affirming congregations list themselves in denominational directories, and many wear it openly on their homepage rather than burying it. Expect imperfect people, just like anywhere; the difference is whether the doctrine leaves room for you. One visit tells you more than their website ever will.`
+      },
+      {
+        author: 'devon_k',
+        daysAgo: 7,
+        body: `I found mine through a friend of a friend rather than a search engine — smaller communities were warmer than the big ones, and somebody sat with me the first Sunday instead of leaving me in a row. Ask around in queer spaces; half of us have a recommendation.`
+      }
+    ],
+    votes: [
+      [0, 'sam_k', 1],
+      [0, 'noor_a', 1],
+      [1, 'alex_t', 1]
+    ]
+  },
+
+  // ---------- workplace (more) ----------
+  {
+    author: 'devon_k',
+    title: `Should I mention being gay in my job interview?`,
+    topic: 'workplace',
+    body: `I have a final round next week. My old workplace was fine with it, but I do not know this company. Including it in "anything else?" feels risky; hiding it feels exhausting. What do people actually do?`,
+    daysAgo: 5,
+    views: 159,
+    answers: [
+      {
+        author: 'noor_a',
+        best: true,
+        daysAgo: 4,
+        body: `You never owe it in an interview — assess them first. A company's reaction to your very first casual mention tells you everything, and that first mention can happen after you have the offer and a probation period to observe. Exhaustion is a reason to disclose, but risk is a reason to wait; you are allowed to sequence it.`
+      },
+      {
+        author: 'alex_t',
+        daysAgo: 3,
+        body: `I check their values page and recent pride posts first. Signals from them should come before disclosure from you — if they wave the flag, mentioning it costs nothing; if there is silence, you have just learned something useful about the place.`
+      }
+    ],
+    votes: [
+      [0, 'maya_r', 1],
+      [0, 'priya_s', 1],
+      [1, 'sam_k', -1]
+    ]
+  },
+
+  // ---------- community (more) ----------
+  {
+    author: 'maya_r',
+    title: `How do I find community outside of bars and clubs?`,
+    topic: 'community',
+    body: `I do not drink much and every event I find involves a pub. Are there daytime, sober, hobby-first ways to meet other queer people?`,
+    daysAgo: 7,
+    views: 137,
+    answers: [
+      {
+        author: 'sam_k',
+        best: true,
+        daysAgo: 6,
+        body: `Look for book clubs, sports leagues, and volunteer days run by queer organizations — the hobby is the excuse and the community comes free with it. Everyone is there for the activity first, which removes the "am I supposed to flirt?" tension that makes bar events weird.`
+      },
+      {
+        author: 'priya_s',
+        daysAgo: 5,
+        body: `Online groups that plan hikes and board game nights got me my entire friend circle. Search your city plus "queer" plus whatever you already enjoy — if nothing exists, post that you are starting something. Someone always replies; the first meetup is usually just three people and that is plenty.`
+      }
+    ],
+    votes: [
+      [0, 'devon_k', 1],
+      [0, 'noor_a', 1],
+      [1, 'alex_t', 1]
+    ]
+  },
+  {
+    author: 'sam_k',
+    title: `I feel like I am not queer enough to be in queer spaces. Is that a thing?`,
+    topic: 'community',
+    body: `I do not look the part, my story is quiet, and everyone seems to know each other. I keep standing at the edge of meetups wondering if someone is going to ask what I am doing here.`,
+    daysAgo: 6,
+    views: 176,
+    answers: [
+      {
+        author: 'devon_k',
+        best: true,
+        daysAgo: 5,
+        body: `Everyone felt like the new person once — organizers especially love first-timers who show up at all. Try the sentence "this is my first time here" and watch doors open; it is the one thing you can say that nobody can misread as you claiming to be a regular.`
+      },
+      {
+        author: 'noor_a',
+        daysAgo: 4,
+        body: `Nobody handed me a credential either. You are not a guest in your own community — there is no bouncer checking how many years you have been here or how you dress. The feeling is real but it is imposter syndrome wearing a Pride lanyard, not a fact about you.`
+      }
+    ],
+    votes: [
+      [0, 'maya_r', 1],
+      [0, 'priya_s', 1],
+      [1, 'alex_t', 1]
+    ]
+  },
+
+  // ---------- school (new topic) ----------
+  {
+    author: 'noor_a',
+    title: `My teacher keeps splitting the class into boys and girls. What can I do?`,
+    topic: 'school',
+    body: `It happens twice a week for group work and every time it turns into a whole thing about where I should stand. I am not out to the class. Do I talk to the teacher alone first?`,
+    daysAgo: 5,
+    views: 104,
+    answers: [
+      {
+        author: 'maya_r',
+        best: true,
+        daysAgo: 4,
+        body: `A quiet private note or email asking to group by table numbers instead usually works — teachers want the class logistics solved too, and "can we mix up the groups another way" reads as a normal classroom suggestion, not a political statement. You never have to explain why.`
+      },
+      {
+        author: 'alex_t',
+        daysAgo: 3,
+        body: `If the teacher does not help, your school counselor can raise it as general classroom-management practice — mixed groups, no lines by gender — without naming you at all. The fix does not have to come with a coming-out attached.`
+      }
+    ],
+    votes: [
+      [0, 'sam_k', 1],
+      [0, 'priya_s', 1],
+      [1, 'devon_k', 1]
+    ]
+  },
+  {
+    author: 'alex_t',
+    title: `How do I talk to my school counselor about my name and pronouns?`,
+    topic: 'school',
+    body: `I have a meeting booked and I am terrified they will call my parents. I want to use a different name at school but I need to know who gets told first.`,
+    daysAgo: 6,
+    views: 148,
+    answers: [
+      {
+        author: 'priya_s',
+        best: true,
+        daysAgo: 5,
+        body: `Start with the question "what do you keep confidential?" — their answer tells you exactly how much detail to share. Most counselors will not out you to parents without serious cause, but you deserve to hear the policy in their own words before you decide to trust it.`
+      },
+      {
+        author: 'sam_k',
+        daysAgo: 4,
+        body: `Bring a friend to wait outside and write the key sentence down before you go in — reading it beats improvising when your heart is pounding. Mine was: "I would like to use a different name at school, and I need to know who you will tell."`
+      }
+    ],
+    votes: [
+      [0, 'maya_r', 1],
+      [0, 'noor_a', 1],
+      [1, 'devon_k', 1]
+    ]
+  },
+
+  // ---------- housing (new topic) ----------
+  {
+    author: 'devon_k',
+    title: `Can a landlord refuse to rent to me because I am transgender?`,
+    topic: 'housing',
+    body: `A viewing went fine until they saw my documents. Suddenly the place was "no longer available". I do not know if I have a case or if I am just going to keep hearing excuses.`,
+    daysAgo: 5,
+    views: 165,
+    answers: [
+      {
+        author: 'noor_a',
+        best: true,
+        daysAgo: 4,
+        body: `In many places housing discrimination on the basis of gender identity is illegal — check your local tenant union or equality body, both usually have free advice lines. Keep the message thread and every date: what you have sounds like a refusal, and the paper trail is what makes it actionable.`
+      },
+      {
+        author: 'maya_r',
+        daysAgo: 3,
+        body: `Document everything from now on: names, times, what was said, and the exact wording of any "sorry, it's gone" message. One landlord can claim coincidence; a pattern across landlords builds a case even when each individual excuse looks innocent on its own.`
+      }
+    ],
+    votes: [
+      [0, 'priya_s', 1],
+      [0, 'sam_k', 1],
+      [1, 'alex_t', 1]
+    ]
+  },
+  {
+    author: 'priya_s',
+    title: `How do I handle a roommate who is uncomfortable with me being gay?`,
+    topic: 'housing',
+    body: `She was fine until her brother visited and made a comment. Now the flat feels tense. I share a lease and I am not leaving — but I do not want a cold war at home either.`,
+    daysAgo: 4,
+    views: 91,
+    answers: [
+      {
+        author: 'alex_t',
+        best: true,
+        daysAgo: 3,
+        body: `Name it once, calmly: "I noticed things changed after your visit — I want to understand." Tension grows in silence, and most people fold the moment the subtext is spoken aloud. If she cannot share space respectfully, that becomes a household-rules conversation instead of a personal one.`
+      },
+      {
+        author: 'devon_k',
+        daysAgo: 2,
+        body: `A short house meeting about general respect usually resets the tone without making it about one topic — quiet hours, shared spaces, being decent to each other. Frame it as "how we live together" and her brother's comment stops being the agenda item.`
+      }
+    ],
+    votes: [
+      [0, 'maya_r', 1],
+      [0, 'noor_a', 1],
+      [1, 'sam_k', 1]
+    ]
+  },
+
+  // ---------- legal (new topic) ----------
+  {
+    author: 'maya_r',
+    title: `How do I change my name legally after coming out?`,
+    topic: 'legal',
+    body: `I use my name everywhere now except on paper. The forms I found online are a maze and half the advice contradicts itself. What is the realistic first step?`,
+    daysAgo: 8,
+    views: 198,
+    answers: [
+      {
+        author: 'sam_k',
+        best: true,
+        daysAgo: 7,
+        body: `Start at your local court or registry website and look for the name-change packet — one jurisdiction, one checklist, stop reading everything else. Many areas run free legal clinics specifically for queer clients walking through exactly this paperwork; one session collapses a month of forum threads.`
+      },
+      {
+        author: 'noor_a',
+        daysAgo: 6,
+        body: `Order of operations saves headaches: legal name change first, then bank, then job, then ID — each place wants the previous document, so follow the chain and keep five certified copies. I ran out on copy three and had to order more.`
+      }
+    ],
+    votes: [
+      [0, 'priya_s', 1],
+      [0, 'devon_k', 1],
+      [1, 'alex_t', 1]
+    ]
+  },
+  {
+    author: 'sam_k',
+    title: `Do I need a lawyer to change my gender marker?`,
+    topic: 'legal',
+    body: `Some people say it is a form, others say hire a lawyer. My location makes it sound like both a medical exam and a court hearing. How do I find out what actually applies to me?`,
+    daysAgo: 7,
+    views: 157,
+    answers: [
+      {
+        author: 'devon_k',
+        best: true,
+        daysAgo: 6,
+        body: `Rules differ by country, state, and even by which document you are updating — passport, ID, and birth certificate often have three separate processes. Start with a queer legal-service clinic; they will tell you in ten minutes what applies to you, and that answer beats any general blog post.`
+      },
+      {
+        author: 'maya_r',
+        daysAgo: 5,
+        body: `I got mine with just a doctor letter and a registry form — less dramatic than the internet promised. The requirements are usually published on the official registry page for your region; find that page, not a forum thread from 2019.`
+      }
+    ],
+    votes: [
+      [0, 'priya_s', 1],
+      [0, 'alex_t', 1],
+      [1, 'noor_a', 1]
+    ]
   }
 ];
 
@@ -813,6 +1489,19 @@ async function main() {
     const existing = await prisma.question.findUnique({ where: { slug }, select: { id: true } });
     if (existing) {
       skipped.push(slug);
+      // Backfill an audit entry for questions seeded before logging existed.
+      const hasLog = await prisma.questionLog.findFirst({
+        where: { questionId: existing.id, action: 'created' },
+        select: { id: true }
+      });
+      if (!hasLog) {
+        await logQuestionAction({
+          questionId: existing.id,
+          action: 'created',
+          actor: { kind: 'seed', name: 'seed:qa' },
+          detail: 'created by seed:qa (initial)'
+        });
+      }
       continue;
     }
 
@@ -829,6 +1518,12 @@ async function main() {
       }
     });
     createdQ++;
+    await logQuestionAction({
+      questionId: question.id,
+      action: 'created',
+      actor: { kind: 'seed', name: 'seed:qa' },
+      detail: 'created by seed:qa'
+    });
 
     const answerIds: string[] = [];
     for (let i = 0; i < q.answers.length; i++) {

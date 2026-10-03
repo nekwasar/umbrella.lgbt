@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { prisma } from '../../db/prisma';
 import { requireAdmin } from '../../middleware/auth';
+import { logQuestionAction } from '../../lib/question-log';
 
 const router = Router();
 
@@ -237,7 +238,19 @@ router.post('/remove', requireAdmin, async (req, res) => {
     case 'question': {
       const t = await prisma.question.findUnique({ where: { id } });
       if (!t) return res.status(404).json({ error: 'Question not found' });
-      await prisma.question.update({ where: { id }, data: { status: 'REMOVED' } });
+      if (t.status !== 'REMOVED') {
+        await prisma.question.update({ where: { id }, data: { status: 'REMOVED' } });
+        await logQuestionAction({
+          questionId: t.id,
+          action: 'removed',
+          actor: {
+            id: req.authAdmin?.id ?? null,
+            name: req.authAdmin?.username ?? null,
+            kind: 'admin'
+          },
+          detail: 'removed via moderation'
+        });
+      }
       break;
     }
     case 'answer': {

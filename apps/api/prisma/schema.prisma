@@ -213,6 +213,7 @@ model Question {
   bestAnswerId String?       @unique
   bestAnswer   Answer?       @relation("bestAnswer", fields: [bestAnswerId], references: [id], onDelete: SetNull)
   answers      Answer[]      @relation("questionAnswers")
+  logs         QuestionLog[]
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
 
@@ -228,6 +229,27 @@ model Question {
   searchVec    Float[]       @default([])
 
   @@index([searchIndex], type: Gin)
+}
+
+// Audit trail for Q&A questions: created/edited/removed/restored events with
+// actor + human-readable detail. Written by admin edits, moderation removes,
+// public creates, and `npm run seed:qa`. Plain String action (not an enum) so
+// new action kinds never need a DB migration. Actor columns are denormalized
+// (no FK): admins are a separate table from users, and logs must survive
+// account deletion.
+model QuestionLog {
+  id         String    @id @default(cuid())
+  questionId String
+  question   Question  @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  action     String // created | edited | removed | restored
+  detail     String?
+  actorId    String? // User.id or Admin.id at time of action
+  actorName  String? // username at time of action (display)
+  actorKind  String? // user | admin | seed
+  createdAt  DateTime  @default(now())
+
+  @@index([questionId, createdAt])
+  @@index([createdAt])
 }
 
 model Answer {

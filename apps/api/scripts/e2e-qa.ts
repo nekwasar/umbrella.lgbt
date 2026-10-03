@@ -193,7 +193,13 @@ async function main() {
 
   r = await fetch(`${BASE}/api/qa/${slug1}`);
   body = await r.json();
-  ok('related includes same-topic question', Array.isArray(body?.related) && body.related.some((q: { slug: string }) => q.slug === slug2), body?.related);
+  ok(
+    'related = same-topic questions',
+    Array.isArray(body?.related) &&
+      body.related.length > 0 &&
+      body.related.every((q: { topic: string }) => q.topic === 'coming-out'),
+    body?.related?.map((q: { slug: string; topic: string }) => `${q.slug} [${q.topic}]`)
+  );
 
   r = await fetch(`${BASE}/api/qa/topics`);
   body = await r.json();

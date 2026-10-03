@@ -269,6 +269,52 @@ export interface BulletinDetailResponse {
   bulletin: BulletinSummary;
 }
 
+// ---------- Admin Q&A (editable questions + audit log) ----------
+
+export interface AdminQuestion {
+  id: string;
+  title: string;
+  slug: string;
+  bodyMd: string;
+  topic: string | null;
+  status: string;
+  viewCount: number;
+  bestAnswerId: string | null;
+  author: string;
+  answerCount: number;
+  logCount: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AdminQuestionsResponse {
+  total: number;
+  page: number;
+  pageSize: number;
+  items: AdminQuestion[];
+  topics: Array<{ topic: string; count: number }>;
+}
+
+export interface QuestionLogEntry {
+  id: string;
+  questionId: string;
+  questionTitle: string;
+  questionSlug: string;
+  action: string;
+  detail: string | null;
+  actorId: string | null;
+  actorName: string | null;
+  actorKind: string | null;
+  createdAt: string;
+}
+
+export interface QuestionLogsResponse {
+  total: number;
+  page: number;
+  pageSize: number;
+  items: QuestionLogEntry[];
+}
+
 // ---------- Admin moderation ----------
 
 export interface AdminStatsResponse {

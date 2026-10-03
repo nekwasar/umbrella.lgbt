@@ -21,6 +21,7 @@ type IconName =
   | 'plus'
   | 'tags'
   | 'chat'
+  | 'help'
   | 'megaphone'
   | 'users'
   | 'shield'
@@ -43,6 +44,13 @@ const ICON_PATHS: Record<IconName, ReactNode> = {
     </>
   ),
   chat: <path d="M21 12a8 8 0 01-8 8H5l-2 2V12a8 8 0 018-8h2a8 8 0 018 8z" />,
+  help: (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M9.4 9.3a2.7 2.7 0 015.2.9c0 1.8-2.6 2.1-2.6 3.8" />
+      <path d="M12 17.5h.01" />
+    </>
+  ),
   megaphone: <path d="M3 11l14-6v14l-14-6v-2zM17 8a4 4 0 010 6M3 11v4l4 1v-6l-4 1z" />,
   users: <path d="M17 20v-1a4 4 0 00-4-4H7a4 4 0 00-4 4v1M9 11a4 4 0 100-8 4 4 0 000 8zM21 20v-1a4 4 0 00-3-3.87M15 3.13A4 4 0 0119 7a4 4 0 01-4 4" />,
   shield: <path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6l8-3z" />,
@@ -81,6 +89,7 @@ const NAV_GROUPS: Array<{ label: string; items: Array<{ href: string; label: str
     label: 'Community',
     items: [
       { href: '/admin/forum', label: 'Forum', icon: 'chat' },
+      { href: '/admin/qa', label: 'Q&A', icon: 'help' },
       { href: '/admin/bulletins', label: 'Bulletins', icon: 'megaphone' }
     ]
   },

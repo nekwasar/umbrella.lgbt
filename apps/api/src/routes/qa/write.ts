@@ -6,6 +6,7 @@ import { answerSchema, askQuestionSchema } from '../../validation/qa';
 import { slugify, uniqueQuestionSlug } from '../../lib/slug';
 import { serializeAnswer, serializeQuestion } from '../../lib/qa';
 import { embedAnswer, embedQuestion } from '../../lib/search';
+import { logQuestionAction } from '../../lib/question-log';
 
 const router = Router();
 
@@ -39,6 +40,12 @@ router.post('/', writeLimiter, requireUser, async (req, res) => {
   });
 
   await embedQuestion(question.id);
+  await logQuestionAction({
+    questionId: question.id,
+    action: 'created',
+    actor: { id: req.authUser!.id, name: req.authUser!.username, kind: 'user' },
+    detail: 'asked via site'
+  });
   res.status(201).json({ question: serializeQuestion(question) });
 });
 

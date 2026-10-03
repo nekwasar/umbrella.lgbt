@@ -69,6 +69,8 @@ jobs:
         run: npm run build --workspace @umbrella/api
       - name: Migrate legacy content into DB
         run: npm run migrate:content --workspace @umbrella/api
+      - name: Seed community Q&A (idempotent)
+        run: npm run seed:qa --workspace @umbrella/api
       - name: E2E auth tests
         run: npm run test:e2e --workspace @umbrella/api
       - name: E2E content tests

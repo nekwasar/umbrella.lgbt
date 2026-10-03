@@ -188,7 +188,19 @@ Modern rounded console. Source of truth: `apps/web/tailwind.config.ts` +
   Forum Topics / Forum Posts with soft-Remove. Backend: `GET /api/admin/moderation/
   reports?status=`, `PATCH /api/admin/moderation/reports/:id` (PUBLISHED=resolved,
   REMOVED=dismissed), `GET /api/admin/moderation/qa?type=`, `POST /api/admin/moderation/
-  remove` ({kind,id}; questions/answers/topics/posts → REMOVED, comments → hard delete).
+   remove` ({kind,id}; questions/answers/topics/posts → REMOVED, comments → hard delete).
+- **Q&A** (`/admin/qa`, `QAManager`): two tabs — Questions (search/topic/status
+  filters; inline edit form for title/topic/body/status with Remove action) and
+  Log (audit trail). Backend: `GET /api/admin/qa/questions` (editable fields +
+  topic facets), `PATCH /api/admin/qa/questions/:id` (whitelisted fields; slug
+  regenerates ONLY if it still equals slugify(old title) — never breaks published
+  URLs; re-embeds `searchVec`; writes a QuestionLog row), `DELETE …/:id` (soft
+  REMOVED + log), `GET /api/admin/qa/logs?questionId=` (newest first, joined with
+  question title + denormalized actor). QuestionLog (`action` = created/edited/
+  removed/restored, plain String — no enum migrations) is written by admin edits,
+  moderation remove, public ask (`asked via site`), and `seed:qa`; actor columns
+  are denormalized (actorId/actorName/actorKind = user|admin|seed) because admins
+  are a separate table from Users and logs must survive account deletion.
 - Page CRUD schema: `slug` OPTIONAL — server auto-slugifies the title on create
   (fallback `"page"`), keeps existing on update. Content-only autosave via
   `PATCH /admin/pages/:id/content`.
@@ -215,8 +227,10 @@ Modern rounded console. Source of truth: `apps/web/tailwind.config.ts` +
   FTS (`Question.searchIndex` — GENERATED tsvector, GIN) with cosine over the stored
   hashing embedding `searchVec` (384-dim, `embedQuestion`/`embedAnswer` on create;
   TF-IDF in-process fallback until reindexed). Full backfill: `npm run reindex:search`.
-  Community content: `npm run seed:qa` (idempotent by slug — 25 questions / 50 answers
-  across 10 topics, with best answers, votes, and 6 member personas).
+  Community content: `npm run seed:qa` (idempotent by slug — 50 questions / 100 answers
+  across 13 topics, with best answers, votes, 6 member personas, and a QuestionLog
+  `created` row per question; backfills logs for pre-log questions). CI runs it after
+  `migrate:content`.
   The search migration is idempotent (IF NOT EXISTS) — the live DB has NO
   prisma_migrations table, apply migrations with `docker exec -i umbrella-db-1 psql -U
   umbrella -d umbrella < migration.sql`, never `migrate deploy` against prod.

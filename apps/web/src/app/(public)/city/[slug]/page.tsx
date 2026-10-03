@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { connection } from 'next/server';
 import { fetchPublicPage } from '@/lib/data';
 import { pageMetadata } from '@/lib/meta';
-import { absUrl, webpageJson } from '@/lib/seo';
+import { absUrl, webpageJson, jsonLd } from '@/lib/seo';
 import { ArticleView } from '@/components/public/ArticleView';
 import { Breadcrumbs } from '@/components/public/Breadcrumbs';
 
@@ -40,7 +40,7 @@ export default async function CityGuidePage({ params }: { params: Promise<{ slug
 
   return (
     <article>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webpageJson(p.title, url)) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(webpageJson(p.title, url)) }} />
       <Breadcrumbs parts={[{ name: 'City Guides', url: absUrl('/city') }, { name: p.title }]} />
       <ArticleView label="City Guides" page={p} related={data.related} crossLinks={data.crossLinks ?? []} />
     </article>

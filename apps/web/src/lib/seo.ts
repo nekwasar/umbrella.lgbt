@@ -13,6 +13,15 @@ export function absUrl(path: string): string {
   return `${SITE.url}${path.startsWith('/') ? path : `/${path}`}`;
 }
 
+/**
+ * JSON.stringify safe to embed inside <script> tags: escapes every `<` so a
+ * user-controlled `</script>` in a title/body can never terminate the element
+ * (stored-XSS vector via JSON-LD). Output stays valid JSON.
+ */
+export function jsonLd(value: unknown): string {
+  return JSON.stringify(value).replace(/</g, '\\u003c');
+}
+
 export function person(name: string | null | undefined) {
   return { '@type': 'Person', name: name || 'Anonymous' };
 }

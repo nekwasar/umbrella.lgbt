@@ -6,7 +6,7 @@ import { SERVER_API_URL } from '@/lib/server';
 import { fetchPublicPage } from '@/lib/data';
 import { mdToHtml, mdToText } from '@/lib/sanitize';
 import { pageMetadata } from '@/lib/meta';
-import { absUrl, faqJson } from '@/lib/seo';
+import { absUrl, faqJson, jsonLd } from '@/lib/seo';
 import { Page, QuestionDetail } from '@/lib/types';
 import { QuestionView } from '@/components/qa/QuestionView';
 import { Breadcrumbs } from '@/components/public/Breadcrumbs';
@@ -87,7 +87,7 @@ export default async function QuestionPage({ params }: { params: Promise<{ slug:
 
     return (
       <div>
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(qaJson) }} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(qaJson) }} />
         <Breadcrumbs parts={[{ name: 'Q&A', url: absUrl('/qa') }, { name: question.title }]} />
         <QuestionView initial={detail} />
         {related.length > 0 ? (
@@ -116,7 +116,7 @@ export default async function QuestionPage({ params }: { params: Promise<{ slug:
     <article style={{ maxWidth: 760, margin: '0 auto' }}>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJson(p.title, mdToText(p.contentMd, 5000), url)) }}
+        dangerouslySetInnerHTML={{ __html: jsonLd(faqJson(p.title, mdToText(p.contentMd, 5000), url)) }}
       />
       <Breadcrumbs parts={[{ name: 'Q&A', url: absUrl('/qa') }, { name: p.title }]} />
       <div className="band" style={{ marginBottom: 12 }}>

@@ -1,7 +1,11 @@
 import { z } from 'zod';
 
 export const askQuestionSchema = z.object({
-  title: z.string().min(5, 'Title must be at least 5 characters').max(300),
+  title: z
+    .string()
+    .min(5, 'Title must be at least 5 characters')
+    .max(300)
+    .refine((t) => !/[<>]/.test(t), 'Title cannot contain < or >'),
   bodyMd: z.string().max(100_000).optional().default(''),
   topic: z.string().max(60).optional()
 });

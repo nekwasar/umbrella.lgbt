@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { jsonLd } from '@/lib/seo';
 import Link from 'next/link';
 import { connection } from 'next/server';
 import { apiFetch, fetchPageList, fetchTypeCount } from '@/lib/data';
@@ -69,7 +70,7 @@ export default async function HomePage() {
 
   return (
     <div className="portal" id="top">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(homeJson) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(homeJson) }} />
 
       {/* ============ CENTER: main column ============ */}
       <div className="portal-main">

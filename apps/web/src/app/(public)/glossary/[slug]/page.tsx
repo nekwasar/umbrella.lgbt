@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { connection } from 'next/server';
 import { fetchPublicPage } from '@/lib/data';
 import { pageMetadata } from '@/lib/meta';
-import { absUrl, definedTermJson } from '@/lib/seo';
+import { absUrl, definedTermJson, jsonLd } from '@/lib/seo';
 import { mdToText } from '@/lib/sanitize';
 import { ArticleView } from '@/components/public/ArticleView';
 import { Breadcrumbs } from '@/components/public/Breadcrumbs';
@@ -34,7 +34,7 @@ export default async function GlossaryTermPage({ params }: { params: Promise<{ s
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(definedTermJson(p.title, url, mdToText(p.contentMd, 500)))
+          __html: jsonLd(definedTermJson(p.title, url, mdToText(p.contentMd, 500)))
         }}
       />
       <Breadcrumbs parts={[{ name: 'Glossary', url: absUrl('/glossary') }, { name: p.title }]} />

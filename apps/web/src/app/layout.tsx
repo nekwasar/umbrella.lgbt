@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
-import { SITE, organizationJson, websiteJson } from '@/lib/seo';
+import { SITE, organizationJson, websiteJson, jsonLd } from '@/lib/seo';
 
 export const viewport: Viewport = {
   themeColor: '#fabbd1'
@@ -44,11 +44,11 @@ export default function RootLayout({
       <head>
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJson()) }}
+          dangerouslySetInnerHTML={{ __html: jsonLd(organizationJson()) }}
         />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJson()) }}
+          dangerouslySetInnerHTML={{ __html: jsonLd(websiteJson()) }}
         />
       </head>
       <body>{children}</body>

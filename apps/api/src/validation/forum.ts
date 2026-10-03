@@ -1,7 +1,11 @@
 import { z } from 'zod';
 
 export const forumTopicSchema = z.object({
-  title: z.string().min(5, 'Title must be at least 5 characters').max(150),
+  title: z
+    .string()
+    .min(5, 'Title must be at least 5 characters')
+    .max(150)
+    .refine((t) => !/[<>]/.test(t), 'Title cannot contain < or >'),
   bodyMd: z.string().min(1, 'Opening post cannot be empty').max(100_000)
 });
 

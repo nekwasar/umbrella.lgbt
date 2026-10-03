@@ -4,7 +4,7 @@ import { connection } from 'next/server';
 import { fetchPublicPage } from '@/lib/data';
 import { mdToHtml } from '@/lib/sanitize';
 import { pageMetadata } from '@/lib/meta';
-import { absUrl, webpageJson } from '@/lib/seo';
+import { absUrl, webpageJson, jsonLd } from '@/lib/seo';
 import { Breadcrumbs } from '@/components/public/Breadcrumbs';
 
 export const revalidate = 300;
@@ -30,7 +30,7 @@ export default async function CorePage({ params }: { params: Promise<{ slug: str
 
   return (
     <div className="card-flat" style={{ maxWidth: 760, margin: '0 auto' }}>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webpageJson(p.title, url)) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(webpageJson(p.title, url)) }} />
       <Breadcrumbs parts={[{ name: p.title }]} />
       <div className="band">Umbrella.lgbt</div>
       <h1 style={{ padding: '10px 4px 0' }}>{p.title}</h1>

@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import { connection } from 'next/server';
 import { fetchPublicPage } from '@/lib/data';
 import { pageMetadata } from '@/lib/meta';
-import { absUrl, articleJson } from '@/lib/seo';
+import { absUrl, articleJson, jsonLd } from '@/lib/seo';
 import { ArticleView } from '@/components/public/ArticleView';
 import { Breadcrumbs } from '@/components/public/Breadcrumbs';
 import { CommentSection } from '@/components/comments/CommentSection';
@@ -40,7 +40,7 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
   return (
     <article>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(article) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(article) }} />
       <Breadcrumbs parts={[{ name: 'Blog', url: absUrl('/blog') }, { name: p.title }]} />
       <ArticleView
         label="Blog"

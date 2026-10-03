@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { SERVER_API_URL } from '@/lib/server';
 import { mdToText } from '@/lib/sanitize';
-import { absUrl, webpageJson } from '@/lib/seo';
+import { absUrl, webpageJson, jsonLd } from '@/lib/seo';
 import { QuestionListResponse, TopicsResponse } from '@/lib/types';
 import { Breadcrumbs } from '@/components/public/Breadcrumbs';
 
@@ -67,8 +67,8 @@ export default async function QAListPage({
 
   return (
     <div style={{ maxWidth: 760, margin: '0 auto' }}>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJson) }} />
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webpageJson('Q&A | Umbrella.lgbt', absUrl('/qa'))) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(itemListJson) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(webpageJson('Q&A | Umbrella.lgbt', absUrl('/qa'))) }} />
       <Breadcrumbs parts={[{ name: 'Q&A' }]} />
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: 10, flexWrap: 'wrap', marginBottom: 10 }}>

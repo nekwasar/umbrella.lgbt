@@ -1,4 +1,4 @@
-import { SITE, breadcrumbJson } from '@/lib/seo';
+import { SITE, breadcrumbJson, jsonLd } from '@/lib/seo';
 
 export interface Crumb {
   name: string;
@@ -11,7 +11,7 @@ export function Breadcrumbs({ parts }: { parts: Crumb[] }) {
     <nav aria-label="Breadcrumb" className="meta" style={{ marginBottom: 12 }}>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJson(full)) }}
+        dangerouslySetInnerHTML={{ __html: jsonLd(breadcrumbJson(full)) }}
       />
       <ol style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexWrap: 'wrap', gap: 5 }}>
         {full.map((p, i) => {

@@ -19,7 +19,6 @@ type IconName =
   | 'folder'
   | 'doc'
   | 'plus'
-  | 'tags'
   | 'chat'
   | 'help'
   | 'megaphone'
@@ -37,12 +36,6 @@ const ICON_PATHS: Record<IconName, ReactNode> = {
     </>
   ),
   plus: <path d="M12 5v14M5 12h14" />,
-  tags: (
-    <>
-      <path d="M3 5a2 2 0 012-2h6l10 10-8 8L3 11V5z" />
-      <path d="M7 7h.01" />
-    </>
-  ),
   chat: <path d="M21 12a8 8 0 01-8 8H5l-2 2V12a8 8 0 018-8h2a8 8 0 018 8z" />,
   help: (
     <>
@@ -81,8 +74,7 @@ const NAV_GROUPS: Array<{ label: string; items: Array<{ href: string; label: str
       { href: '/admin', label: 'Dashboard', icon: 'home', exact: true },
       { href: '/admin/files', label: 'Files', icon: 'folder' },
       { href: '/admin/pages', label: 'Pages', icon: 'doc' },
-      { href: '/admin/pages/new', label: 'New Page', icon: 'plus', exact: true },
-      { href: '/admin/meta', label: 'Meta Editor', icon: 'tags', exact: true }
+      { href: '/admin/pages/new', label: 'New Page', icon: 'plus', exact: true }
     ]
   },
   {

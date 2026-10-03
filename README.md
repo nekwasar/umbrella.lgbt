@@ -15,7 +15,7 @@ The everything queer app. This repository contains the pre-launch static site fo
 ├── content.json          # Page registry: type, slug, title, seeded status
 ├── build.js              # Build script: content.json + content/*.md → public/
 ├── content/
-│   ├── core/             # Core pages (about, features, waitlist, press, contact, privacy)
+│   ├── core/             # Core pages (about, features, press, contact, privacy)
 │   ├── qa/               # Q&A questions (50 planned)
 │   ├── glossary/         # LGBTQ+ glossary terms (50 planned)
 │   ├── city/             # Queer city guides (20 planned)

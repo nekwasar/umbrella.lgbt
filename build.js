@@ -469,7 +469,7 @@ function buildIndexPages() {
       listHTML += '</ul>';
     }
     if (typePages.filter(p => !p.seeded).length > 0) {
-      listHTML += `<p class="mt-6 text-sm text-faint italic">More coming soon &mdash; <a href="/waitlist" class="text-pink hover:underline">join the waitlist</a>.</p>`;
+      listHTML += `<p class="mt-6 text-sm text-faint italic">More coming soon.</p>`;
     }
 
     const idxUrl = `${site.url}/${type}`;

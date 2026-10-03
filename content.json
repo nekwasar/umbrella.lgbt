@@ -25,12 +25,6 @@
     },
     {
       "type": "core",
-      "slug": "waitlist",
-      "title": "Join the Waitlist",
-      "seeded": true
-    },
-    {
-      "type": "core",
       "slug": "press",
       "title": "Press Kit",
       "seeded": true

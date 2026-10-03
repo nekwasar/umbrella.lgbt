@@ -8,7 +8,7 @@ Umbrella.lgbt is built by and for the LGBTQ+ community. We welcome your question
 
 ## What to Contact Us About
 
-- **Launch updates**: Want to know when we go live? [Follow us on X](https://x.com/cocortech) or check the [waitlist page](/waitlist).
+- **Launch updates**: Want to know when we go live? [Follow us on X](https://x.com/cocortech).
 - **Press inquiries**: Visit the [press kit](/press) for brand assets and media information.
 - **Content contributions**: Interested in writing a Q&A answer, glossary entry, or city guide? We'd love to feature community voices.
 - **Partnerships**: Organizations, community groups, and queer-owned businesses — let's work together.

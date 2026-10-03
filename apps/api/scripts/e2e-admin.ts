@@ -55,7 +55,7 @@ async function main() {
   // ---- stats ----
   let r = await fetch(`${BASE}/api/admin/stats`, { headers: superAuth });
   let body = await r.json();
-  ok('stats -> 200 + pages.total >= 156', r.status === 200 && body?.pages?.total >= 156, body?.pages?.total);
+  ok('stats -> 200 + pages.total >= 155', r.status === 200 && body?.pages?.total >= 155, body?.pages?.total);
 
   // ---- create admin ----
   const ts = Date.now();

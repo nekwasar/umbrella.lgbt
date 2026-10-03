@@ -37,6 +37,6 @@ We are especially building for people who currently have nowhere:
 
 Umbrella.lgbt launches in 2026. This site is our pre-launch home. We're building in public. What you see here will grow into the full platform over the coming months.
 
-If you want to be part of building the everything queer app, [join the waitlist](/waitlist) or [follow us on X](https://x.com/cocortech).
+If you want to be part of building the everything queer app, [ask a question on the Q&A](/qa) or [follow us on X](https://x.com/cocortech).
 
 **This is just the beginning. There's room under the umbrella.**

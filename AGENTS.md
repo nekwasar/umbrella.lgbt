@@ -128,12 +128,12 @@ Authentic mid-2000s Web 2.0 / MySpace retro (SpaceHey-like). Source of truth:
   NEVER reintroduce hardcoded announcement arrays.
 - Hero: rainbow wordmark + warm tagline left ("a growing space built to bring us
   together"), "Get Involved" sidebox right (numbered step-links to
-  Q&A/Forum/Glossary/Waitlist). COPY RULE: hero is human-first — NEVER raw content
+  Q&A/Forum/Glossary). COPY RULE: hero is human-first — NEVER raw content
   metrics ("N pages live", "N terms") in hero/tagline/step-link copy; metrics live ONLY
   in the Community Stats sidebar table. Warm, belonging-focused phrasing over
   transactional counts. "Coming 2026" lives ONLY
   in the `.marquee` ticker under the subnav (softpink strip, wine text, CSS animation,
-  `prefers-reduced-motion` disables it, links to `/waitlist`).
+  `prefers-reduced-motion` disables it; plain text, no links).
 
 ### Desktop portal (homepage, ≥992px only)
 
@@ -155,6 +155,10 @@ Authentic mid-2000s Web 2.0 / MySpace retro (SpaceHey-like). Source of truth:
   site news; `.badge-bar` + `.badge88` (+ `-pink`/`-blue`/`-green`) for 88×31 buttons.
 - New homepage widgets fetch via the existing `@/lib/data` helpers with `revalidate = 300`;
   static editorial lists (directory, announcements) live as consts at the top of `page.tsx`.
+- Community Stats table = LIVE counts ONLY, from public `GET /api/stats`
+  (`glossaryTerms` = PUBLISHED GLOSSARY pages, `cityGuides` = CITY, `countryResources`
+  = RESOURCES, `qaAnswers` = PUBLISHED Answer rows). NEVER hardcode counts or
+  `?? '50+'`-style fallbacks — an unreachable API renders `—`.
 
 ### Admin pages (`apps/web/src/app/admin/`, `src/components/admin/`)
 
@@ -189,29 +193,39 @@ Modern rounded console. Source of truth: `apps/web/tailwind.config.ts` +
   reports?status=`, `PATCH /api/admin/moderation/reports/:id` (PUBLISHED=resolved,
   REMOVED=dismissed), `GET /api/admin/moderation/qa?type=`, `POST /api/admin/moderation/
    remove` ({kind,id}; questions/answers/topics/posts → REMOVED, comments → hard delete).
-- **Q&A** (`/admin/qa`, `QAManager`): two tabs — Questions (search/topic/status
-  filters; inline edit form for title/topic/body/status with Remove action) and
-  Log (audit trail). Backend: `GET /api/admin/qa/questions` (editable fields +
+- **Q&A** (`/admin/qa`, `QAManager`): three tabs — Questions (search/topic/status
+  filters; inline edit form for title/topic/body/status with Remove action),
+  Log (audit trail), and Searches (what people searched for, zero-result
+  "unanswered gap" counter + CSV export — the training/content signal).
+  Backend: `GET /api/admin/qa/questions` (editable fields +
   topic facets), `PATCH /api/admin/qa/questions/:id` (whitelisted fields; slug
   regenerates ONLY if it still equals slugify(old title) — never breaks published
   URLs; re-embeds `searchVec`; writes a QuestionLog row), `DELETE …/:id` (soft
   REMOVED + log), `GET /api/admin/qa/logs?questionId=` (newest first, joined with
-  question title + denormalized actor). QuestionLog (`action` = created/edited/
-  removed/restored, plain String — no enum migrations) is written by admin edits,
-  moderation remove, public ask (`asked via site`), and `seed:qa`; actor columns
-  are denormalized (actorId/actorName/actorKind = user|admin|seed) because admins
-  are a separate table from Users and logs must survive account deletion.
+  question title + denormalized actor), `GET /api/admin/qa/searches?onlyZeros=1`.
+  QuestionLog (`action` = created/edited/removed/restored, plain String — no enum
+  migrations) is written by admin edits, moderation remove, public ask
+  (`asked via site`), and `seed:qa`; actor columns are denormalized
+  (actorId/actorName/actorKind = user|admin|seed) because admins are a separate
+  table from Users and logs must survive account deletion.
+  `SearchQueryLog` (lib/search-log.ts) records EVERY Q&A search, deduped by
+  normalized query: `hits` + `zeros` (no-result count) + `lastResults`. Written
+  from both search paths in `routes/qa/read.ts` (hybrid + keyword), never throws.
 - Page CRUD schema: `slug` OPTIONAL — server auto-slugifies the title on create
   (fallback `"page"`), keeps existing on update. Content-only autosave via
   `PATCH /admin/pages/:id/content`.
-- All 156 seeded pages (blog/glossary/city/resources/QA/core) are ordinary `Page`
+- All 155 seeded pages (blog/glossary/city/resources/QA/core) are ordinary `Page`
   rows — editable at `/admin/pages` (filter by type/status/seeded). NEVER special-case
-  seeded content; one editor for everything.
+  seeded content; one editor for everything. (`migrate:content` only UPSERTS: pages
+  created outside content.json survive — e.g. the extra live post /blog/u-manifesto.)
 - **Files** (`/admin/files`, PRIMARY content UI — file manager metaphor):
   folders = page types (`core/ blog/ qa/ glossary/ city/ resources/`) →
   file list (`slug.md` rows + title + seeded/status badges) →
   **FileEditor** (`/admin/files/[type]/[slug]`): edits ONLY `contentMd`
-  (title/slug/meta stay read-only there; full editing remains at Pages + Meta Editor).
+  (title/slug/meta stay read-only there; full editing — INCLUDING all meta/OG/
+  Twitter fields — remains at Pages, whose add/edit form saves meta via
+  `PUT /api/admin/pages`. The standalone Meta Editor tab was removed; bulk meta
+  sweeps still use `POST /api/admin/pages/meta/bulk`).
   - AUTOSAVE: debounced `PATCH /api/admin/pages/:id/content` ({contentMd}) fires
     1.5s after last keystroke; Save button forces immediate save; `beforeunload`
     guard while dirty; live status label (Saving… / Unsaved / Saved N ago).

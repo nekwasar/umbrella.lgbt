@@ -205,6 +205,42 @@ async function main() {
   body = await r.json();
   ok('topics includes coming-out', Array.isArray(body?.topics) && body.topics.some((t: { topic: string }) => t.topic === 'coming-out'), body?.topics);
 
+  // ---- search-gap log (what people searched for, zero-result counter) ----
+  const missTerm = `zzz-no-such-topic-${ts}`;
+  r = await fetch(`${BASE}/api/qa?q=${encodeURIComponent(missTerm)}`);
+  body = await r.json();
+  ok('miss search -> 200 with total 0', r.status === 200 && body?.total === 0, body?.total);
+  await fetch(`${BASE}/api/qa?q=${encodeURIComponent(missTerm)}`); // second identical search
+  const gap = await prisma.searchQueryLog.findUnique({ where: { query: missTerm } });
+  ok('miss recorded in search log', !!gap, missTerm);
+  ok('miss deduped with hits=2 zeros=2', gap?.hits === 2 && gap?.zeros === 2, {
+    hits: gap?.hits,
+    zeros: gap?.zeros
+  });
+
+  await fetch(`${BASE}/api/qa?q=${encodeURIComponent('coming out')}&engine=hybrid`);
+  const answered = await prisma.searchQueryLog.findUnique({ where: { query: 'coming out' } });
+  ok('found search logged with zeros=0', !!answered && answered.zeros === 0, answered?.zeros);
+
+  r = await fetch(`${BASE}/api/admin/qa/searches?onlyZeros=1`, { headers: adminAuth });
+  body = await r.json();
+  ok('admin searches?onlyZeros -> includes the miss', r.status === 200 && body?.items?.some((g: { query: string }) => g.query === missTerm), body?.total);
+  r = await fetch(`${BASE}/api/admin/qa/searches?onlyZeros=1`);
+  ok('admin searches requires auth -> 401', r.status === 401, r.status);
+
+  // ---- public community stats (live counts) ----
+  r = await fetch(`${BASE}/api/stats`);
+  body = await r.json();
+  ok(
+    'public stats -> real counts',
+    r.status === 200 &&
+      typeof body?.glossaryTerms === 'number' &&
+      typeof body?.qaAnswers === 'number' &&
+      typeof body?.cityGuides === 'number' &&
+      typeof body?.countryResources === 'number',
+    body
+  );
+
   // ---- admin moderation ----
   r = await fetch(`${BASE}/api/admin/qa/questions/${slug2 === undefined ? '' : (await (await fetch(`${BASE}/api/qa/${slug2}`)).json()).question.id}`, { method: 'DELETE', headers: adminAuth });
   ok('admin removes question -> 200', r.status === 200);

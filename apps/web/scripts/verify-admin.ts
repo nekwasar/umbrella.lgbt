@@ -84,7 +84,7 @@ async function main() {
   const loginHtml = await (await fetch(`${WEB_URL}/admin/login`)).text();
   ok('login form has Username + Password fields', loginHtml.includes('Username') && loginHtml.includes('Password'));
 
-  for (const path of ['/admin', '/admin/pages', '/admin/pages/new', '/admin/meta', '/admin/admins', '/admin/users']) {
+  for (const path of ['/admin', '/admin/pages', '/admin/pages/new', '/admin/admins', '/admin/users']) {
     const res = await fetch(`${WEB_URL}${path}`);
     ok(`GET ${path} -> ${res.status}`, res.status === 200, res.status);
   }

@@ -2,12 +2,13 @@
 
 import { FormEvent, useCallback, useEffect, useState } from 'react';
 import { api, toApiError, ApiError } from '@/lib/api';
-import type { AdminQuestion, QuestionLogEntry } from '@/lib/types';
+import type { AdminQuestion, QuestionLogEntry, SearchGapEntry } from '@/lib/types';
 import {
   Badge,
   Banner,
   Button,
   Card,
+  Checkbox,
   EmptyState,
   Field,
   Input,
@@ -18,7 +19,7 @@ import {
 } from '@/components/admin/ui';
 import { timeAgo } from '@/lib/time';
 
-type Tab = 'questions' | 'logs';
+type Tab = 'questions' | 'logs' | 'searches';
 
 const emptyFilters = { q: '', topic: '', status: '' };
 const emptyForm = { title: '', topic: '', bodyMd: '', status: 'PUBLISHED' };
@@ -54,6 +55,13 @@ export function QAManager() {
   const [logsLoading, setLogsLoading] = useState(false);
   const [logsError, setLogsError] = useState<ApiError | null>(null);
 
+  // search-gap state
+  const [gaps, setGaps] = useState<SearchGapEntry[]>([]);
+  const [gapsTotal, setGapsTotal] = useState(0);
+  const [gapsLoading, setGapsLoading] = useState(false);
+  const [gapsError, setGapsError] = useState<ApiError | null>(null);
+  const [onlyZeros, setOnlyZeros] = useState(true);
+
   const refresh = useCallback(async () => {
     try {
       const params = new URLSearchParams({ pageSize: '100' });
@@ -88,6 +96,22 @@ export function QAManager() {
     }
   }, []);
 
+  const refreshGaps = useCallback(async () => {
+    setGapsLoading(true);
+    try {
+      const res = await api<{ total: number; items: SearchGapEntry[] }>(
+        `/api/admin/qa/searches?pageSize=500${onlyZeros ? '&onlyZeros=1' : ''}`
+      );
+      setGaps(res.items);
+      setGapsTotal(res.total);
+      setGapsError(null);
+    } catch (err) {
+      setGapsError(toApiError(err, 'GET', '/api/admin/qa/searches'));
+    } finally {
+      setGapsLoading(false);
+    }
+  }, [onlyZeros]);
+
   useEffect(() => {
     refresh();
   }, [refresh]);
@@ -97,6 +121,27 @@ export function QAManager() {
       refreshLogs();
     }
   }, [tab, logs.length, logsError, refreshLogs]);
+
+  useEffect(() => {
+    if (tab === 'searches') {
+      refreshGaps();
+    }
+  }, [tab, refreshGaps]);
+
+  function downloadCsv() {
+    const header = 'query,hits,zero_result_searches,last_results,first_searched,last_searched';
+    const esc = (v: string) => `"${v.replace(/"/g, '""')}"`;
+    const rows = gaps.map((g) =>
+      [esc(g.query), g.hits, g.zeros, g.lastResults, g.firstSearchedAt, g.lastSearchedAt].join(',')
+    );
+    const blob = new Blob([[header, ...rows].join('\n')], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `umbrella-search-gaps-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
 
   function applyFilters(e: FormEvent) {
     e.preventDefault();
@@ -176,6 +221,9 @@ export function QAManager() {
         </Button>
         <Button variant={tab === 'logs' ? 'primary' : 'secondary'} onClick={() => setTab('logs')}>
           Log ({logsTotal})
+        </Button>
+        <Button variant={tab === 'searches' ? 'primary' : 'secondary'} onClick={() => setTab('searches')}>
+          Searches ({gapsTotal})
         </Button>
       </div>
 
@@ -329,6 +377,62 @@ export function QAManager() {
                       Remove
                     </Button>
                   ) : null}
+                </div>
+              ))}
+            </Card>
+          )}
+        </>
+      ) : tab === 'searches' ? (
+        <>
+          <div className="mb-3 flex flex-wrap items-center gap-3">
+            <p className="text-sm text-muted">
+              What people searched for — <strong>{gapsTotal}</strong>{' '}
+              {onlyZeros ? 'searches that found nothing' : 'searches'} (last 500 shown).
+            </p>
+            <Checkbox
+              label="Only searches that found nothing"
+              checked={onlyZeros}
+              onChange={(v) => setOnlyZeros(v)}
+            />
+            <Button variant="secondary" onClick={refreshGaps} loading={gapsLoading}>
+              Refresh
+            </Button>
+            {gaps.length > 0 ? (
+              <Button variant="secondary" onClick={downloadCsv}>
+                Download CSV
+              </Button>
+            ) : null}
+          </div>
+
+          {gapsError ? (
+            <Banner kind="error" className="mb-4">
+              {gapsError.summary}
+            </Banner>
+          ) : null}
+
+          {gapsLoading && gaps.length === 0 ? (
+            <p className="muted flex items-center gap-2">
+              <Spinner /> Loading searches…
+            </p>
+          ) : gaps.length === 0 ? (
+            <EmptyState>
+              No searches recorded yet. They appear automatically as people search the Q&amp;A.
+            </EmptyState>
+          ) : (
+            <Card className="p-0">
+              {gaps.map((g) => (
+                <div
+                  key={g.id}
+                  className="flex flex-wrap items-center gap-3 border-b border-line px-4 py-3 last:border-0"
+                >
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-semibold text-ink">{g.query}</p>
+                    <p className="text-xs text-faint">
+                      searched {g.hits}× · {g.zeros}× with no results · last returned {g.lastResults} · last
+                      searched {timeAgo(g.lastSearchedAt)}
+                    </p>
+                  </div>
+                  {g.zeros > 0 ? <Badge tone="warn">unanswered</Badge> : <Badge tone="good">answered</Badge>}
                 </div>
               ))}
             </Card>

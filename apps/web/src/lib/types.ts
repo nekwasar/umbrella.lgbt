@@ -315,6 +315,34 @@ export interface QuestionLogsResponse {
   items: QuestionLogEntry[];
 }
 
+// ---------- Public community stats (homepage sidebar) ----------
+
+export interface CommunityStatsResponse {
+  glossaryTerms: number;
+  cityGuides: number;
+  countryResources: number;
+  qaAnswers: number;
+}
+
+// ---------- Admin: search-gap log (training signal) ----------
+
+export interface SearchGapEntry {
+  id: string;
+  query: string;
+  hits: number;
+  zeros: number;
+  lastResults: number;
+  firstSearchedAt: string;
+  lastSearchedAt: string;
+}
+
+export interface SearchGapsResponse {
+  total: number;
+  page: number;
+  pageSize: number;
+  items: SearchGapEntry[];
+}
+
 // ---------- Admin moderation ----------
 
 export interface AdminStatsResponse {

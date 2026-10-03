@@ -12,6 +12,7 @@ import publicPagesRouter from './routes/public/pages';
 import adminsRouter from './routes/admin/admins';
 import usersRouter from './routes/admin/users';
 import statsRouter from './routes/admin/stats';
+import publicStatsRouter from './routes/stats';
 import qaReadRouter from './routes/qa/read';
 import qaWriteRouter from './routes/qa/write';
 import qaAnswersRouter from './routes/qa/answers';
@@ -92,6 +93,7 @@ export function createApp() {
   api.use('/admin/boards', adminBoardsRouter);
   api.use('/admin/moderation', adminModerationRouter);
   api.use('/bulletins', bulletinsRouter);
+  api.use('/stats', publicStatsRouter);
   api.use('/admin/bulletins', adminBulletinsRouter);
   api.use('/qa', qaReadRouter);
   api.use('/qa', qaWriteRouter);

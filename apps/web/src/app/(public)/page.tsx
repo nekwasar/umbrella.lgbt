@@ -2,9 +2,9 @@ import type { Metadata } from 'next';
 import { jsonLd } from '@/lib/seo';
 import Link from 'next/link';
 import { connection } from 'next/server';
-import { apiFetch, fetchPageList, fetchTypeCount } from '@/lib/data';
+import { apiFetch, fetchPageList } from '@/lib/data';
 import { mdToText } from '@/lib/sanitize';
-import { QuestionListResponse, BulletinListResponse } from '@/lib/types';
+import { QuestionListResponse, BulletinListResponse, CommunityStatsResponse } from '@/lib/types';
 import { Wordmark } from '@/components/public/PublicHeader';
 import { timeAgo } from '@/lib/time';
 
@@ -43,29 +43,28 @@ const QUICK_JUMP = [
 
 export default async function HomePage() {
   await connection();
-  const [blog, qaRes, latestRes, cities, glossaryCount, qaCount, cityCount, resourcesCount, bulletinRes] =
-    await Promise.all([
-      fetchPageList('BLOG', { pageSize: 2 }),
-      apiFetch<QuestionListResponse>('/api/qa?pageSize=2&sort=popular'),
-      apiFetch<QuestionListResponse>('/api/qa?pageSize=5&sort=newest'),
-      fetchPageList('CITY', { pageSize: 6 }),
-      fetchTypeCount('GLOSSARY'),
-      fetchTypeCount('QA'),
-      fetchTypeCount('CITY'),
-      fetchTypeCount('RESOURCES'),
-      apiFetch<BulletinListResponse>('/api/bulletins?pageSize=3', 300, ['bulletins'])
-    ]);
+  const [blog, qaRes, latestRes, cities, communityStats, bulletinRes] = await Promise.all([
+    fetchPageList('BLOG', { pageSize: 2 }),
+    apiFetch<QuestionListResponse>('/api/qa?pageSize=2&sort=popular'),
+    apiFetch<QuestionListResponse>('/api/qa?pageSize=5&sort=newest'),
+    fetchPageList('CITY', { pageSize: 6 }),
+    apiFetch<CommunityStatsResponse>('/api/stats', 300, ['stats']),
+    apiFetch<BulletinListResponse>('/api/bulletins?pageSize=3', 300, ['bulletins'])
+  ]);
 
   const qaItems = qaRes?.items ?? [];
   const latestItems = latestRes?.items ?? [];
   const cityItems = cities?.items ?? [];
   const bulletinItems = bulletinRes?.items ?? [];
 
+  // Live counts from GET /api/stats — never hardcoded numbers. "—" if the API
+  // is unreachable (a missing number beats a fake one).
+  const n = (value: number | undefined) => (value === undefined ? '—' : value.toLocaleString('en-US'));
   const stats: Array<[string, string]> = [
-    ['Glossary Terms', String(glossaryCount ?? '50+')],
-    ['Q&A Answers', String(qaCount ?? '50+')],
-    ['City Guides', String(cityCount ?? '20')],
-    ['Country Resources', String(resourcesCount ?? '10')]
+    ['Glossary Terms', n(communityStats?.glossaryTerms)],
+    ['Q&A Answers', n(communityStats?.qaAnswers)],
+    ['City Guides', n(communityStats?.cityGuides)],
+    ['Country Resources', n(communityStats?.countryResources)]
   ];
 
   return (

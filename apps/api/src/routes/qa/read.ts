@@ -4,6 +4,7 @@ import { prisma } from '../../db/prisma';
 import { optionalUser } from '../../middleware/auth';
 import { buildCommentTree, serializeAnswer, serializeQuestion } from '../../lib/qa';
 import { hybridSearch } from '../../lib/search';
+import { recordSearchQuery } from '../../lib/search-log';
 
 const router = Router();
 
@@ -48,6 +49,7 @@ router.get('/', async (req, res) => {
               ? 'votes'
               : 'score';
       const result = await hybridSearch({ q, topic, sort: hybridSort, page, pageSize });
+      await recordSearchQuery(q, result.total, req.authUser?.id);
       return res.json({
         total: result.total,
         page,
@@ -79,6 +81,8 @@ router.get('/', async (req, res) => {
       }
     })
   ]);
+
+  if (q) await recordSearchQuery(q, total, req.authUser?.id);
 
   res.json({
     total,

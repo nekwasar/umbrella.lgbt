@@ -231,6 +231,23 @@ model Question {
   @@index([searchIndex], type: Gin)
 }
 
+// Deduplicated log of what people searched for in Q&A, so unanswered gaps
+// ("was asked, found nothing") are visible and exportable for content/AI
+// training. `zeros` counts searches that returned nothing — the training
+// signal. No FK on userId (denormalized, survives account deletion).
+model SearchQueryLog {
+  id          String   @id @default(cuid())
+  query       String   @unique // normalized: lowercased, whitespace-collapsed, <=200 chars
+  hits        Int      @default(1) // times searched
+  zeros       Int      @default(0) // times it returned zero results
+  lastResults Int      @default(0)
+  userId      String?
+  createdAt   DateTime @default(now()) // first seen
+  updatedAt   DateTime @updatedAt // last seen
+
+  @@index([zeros, hits])
+}
+
 // Audit trail for Q&A questions: created/edited/removed/restored events with
 // actor + human-readable detail. Written by admin edits, moderation removes,
 // public creates, and `npm run seed:qa`. Plain String action (not an enum) so

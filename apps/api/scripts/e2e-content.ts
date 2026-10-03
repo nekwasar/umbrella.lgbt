@@ -51,7 +51,7 @@ async function main() {
   const totalRes = await fetch(`${BASE}/api/admin/pages?pageSize=1`, { headers: auth });
   const totalBody = await totalRes.json();
   ok('admin list pages -> 200', totalRes.status === 200);
-  ok(`migration imported >= 156 pages (got ${totalBody.total})`, totalBody.total >= 156, totalBody.total);
+  ok(`migration imported >= 155 pages (got ${totalBody.total})`, totalBody.total >= 155, totalBody.total);
 
   // ---- create ----
   const ts = Date.now();

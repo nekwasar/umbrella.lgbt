@@ -204,6 +204,38 @@ router.get('/logs', requireAdmin, async (req, res) => {
   });
 });
 
+// --- what people searched for (unanswered gaps for content/AI training) ---
+router.get('/searches', requireAdmin, async (req, res) => {
+  const { page, pageSize, skip, take } = parsePaging(req, 100, 500);
+  const onlyZeros = req.query.onlyZeros === '1';
+  const where = onlyZeros ? { zeros: { gt: 0 } } : {};
+
+  const [total, items] = await Promise.all([
+    prisma.searchQueryLog.count({ where }),
+    prisma.searchQueryLog.findMany({
+      where,
+      orderBy: [{ zeros: 'desc' }, { hits: 'desc' }, { updatedAt: 'desc' }],
+      skip,
+      take
+    })
+  ]);
+
+  res.json({
+    total,
+    page,
+    pageSize,
+    items: items.map((item) => ({
+      id: item.id,
+      query: item.query,
+      hits: item.hits,
+      zeros: item.zeros,
+      lastResults: item.lastResults,
+      firstSearchedAt: item.createdAt.toISOString(),
+      lastSearchedAt: item.updatedAt.toISOString()
+    }))
+  });
+});
+
 router.delete('/questions/:id', requireAdmin, async (req, res) => {
   const q = await prisma.question.findUnique({ where: { id: req.params.id } });
   if (!q) return res.status(404).json({ error: 'Question not found' });

@@ -8,9 +8,10 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE.url),
+  // Pages provide FULL titles already suffixed with " | Umbrella.lgbt" —
+  // do NOT add a template here or every title renders doubled.
   title: {
-    default: `${SITE.name} — The everything queer app`,
-    template: `%s | ${SITE.name}`
+    default: `${SITE.name} — The everything queer app`
   },
   description: `${SITE.tagline}. ${SITE.subtagline}. A platform built by and for the LGBTQ+ community. Find queer community, answers, events, and resources — all under one umbrella.`,
   icons: {

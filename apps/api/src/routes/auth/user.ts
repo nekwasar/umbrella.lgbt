@@ -109,6 +109,44 @@ router.post('/logout', (_req, res) => {
   res.json({ ok: true });
 });
 
+const changeUsernameSchema = z.object({
+  username: z
+    .string()
+    .min(2)
+    .max(30)
+    .regex(/^[a-zA-Z0-9_]+$/, 'Username may only contain letters, numbers and underscores')
+});
+
+/** PATCH /api/auth/me — change own username. */
+router.patch('/me', requireUser, authLimiter, async (req, res) => {
+  const parsed = changeUsernameSchema.safeParse(req.body);
+  if (!parsed.success) {
+    return res.status(400).json({ error: parsed.error.issues[0]?.message || 'Invalid username' });
+  }
+  const { username } = parsed.data;
+  const current = await prisma.user.findUnique({ where: { id: req.authUser!.id } });
+  if (!current) return res.status(404).json({ error: 'User not found' });
+  if (username === current.username) {
+    return res.status(400).json({ error: 'Choose a username different from your current one' });
+  }
+  const taken = await prisma.user.findUnique({ where: { username } });
+  if (taken) return res.status(409).json({ error: 'Username already taken' });
+
+  let updated;
+  try {
+    updated = await prisma.user.update({ where: { id: current.id }, data: { username } });
+  } catch (err: unknown) {
+    if (err && typeof err === 'object' && 'code' in err && (err as { code: string }).code === 'P2002') {
+      return res.status(409).json({ error: 'Username already taken' });
+    }
+    throw err;
+  }
+
+  // Re-issue the session cookie so the embedded username claim stays current.
+  setAuthCookie(res, USER_COOKIE, signToken({ sub: updated.id, kind: 'user', username: updated.username }));
+  res.json({ user: publicUser(updated) });
+});
+
 router.get('/me', requireUser, (req, res) => {
   res.json({ user: req.authUser });
 });

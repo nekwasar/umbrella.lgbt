@@ -50,7 +50,9 @@ export function PublicHeader() {
           <div className="banner-side">
             {user ? (
               <>
-                <span className="banner-user">@{user.username}</span>
+                <Link href="/account" className="banner-user">
+                  @{user.username}
+                </Link>
                 <span className="banner-sep" aria-hidden="true">
                   |
                 </span>

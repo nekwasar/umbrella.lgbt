@@ -15,6 +15,14 @@ export const changePasswordSchema = z.object({
   newPassword: z.string().min(10).max(200)
 });
 
+export const changeUsernameSchema = z.object({
+  username: z
+    .string()
+    .min(2)
+    .max(100)
+    .regex(/^[a-zA-Z0-9_]+$/, 'Username may only contain letters, numbers and underscores')
+});
+
 export const changeRoleSchema = z.object({
   role: z.enum(['SUPER_ADMIN', 'ADMIN'])
 });

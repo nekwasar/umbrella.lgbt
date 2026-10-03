@@ -3,7 +3,14 @@ import rateLimit from 'express-rate-limit';
 import { prisma } from '../../db/prisma';
 import { requireAdmin, requireSuperAdmin } from '../../middleware/auth';
 import { hashPassword, verifyPassword } from '../../lib/password';
-import { changePasswordSchema, changeRoleSchema, createAdminSchema } from '../../validation/admin';
+import { signToken } from '../../lib/jwt';
+import { setAuthCookie, ADMIN_COOKIE } from '../../lib/cookies';
+import {
+  changePasswordSchema,
+  changeRoleSchema,
+  changeUsernameSchema,
+  createAdminSchema
+} from '../../validation/admin';
 
 const router = Router();
 
@@ -95,6 +102,48 @@ router.patch('/:id/password', requireAdmin, async (req, res) => {
     data: { passwordHash: await hashPassword(parsed.data.newPassword) }
   });
   res.json({ ok: true });
+});
+
+router.patch('/:id/username', requireAdmin, async (req, res) => {
+  const parsed = changeUsernameSchema.safeParse(req.body);
+  if (!parsed.success) {
+    return res.status(400).json({ error: parsed.error.issues[0]?.message || 'Invalid input' });
+  }
+  const target = await prisma.admin.findUnique({ where: { id: req.params.id } });
+  if (!target) return res.status(404).json({ error: 'Admin not found' });
+
+  const isSelf = target.id === req.authAdmin!.id;
+  const isSuper = req.authAdmin!.role === 'SUPER_ADMIN';
+  if (!isSelf && !isSuper) {
+    return res.status(403).json({ error: 'Not allowed' });
+  }
+  if (parsed.data.username === target.username) {
+    return res.status(400).json({ error: 'Choose a username different from the current one' });
+  }
+  const taken = await prisma.admin.findUnique({ where: { username: parsed.data.username } });
+  if (taken) return res.status(409).json({ error: 'An admin with that username already exists' });
+
+  let updated;
+  try {
+    updated = await prisma.admin.update({
+      where: { id: target.id },
+      data: { username: parsed.data.username }
+    });
+  } catch (err: unknown) {
+    if (err && typeof err === 'object' && 'code' in err && (err as { code: string }).code === 'P2002') {
+      return res.status(409).json({ error: 'An admin with that username already exists' });
+    }
+    throw err;
+  }
+
+  if (isSelf) {
+    setAuthCookie(
+      res,
+      ADMIN_COOKIE,
+      signToken({ sub: updated.id, kind: 'admin', username: updated.username })
+    );
+  }
+  res.json({ ok: true, admin: serialize(updated) });
 });
 
 router.patch('/:id/role', requireAdmin, requireSuperAdmin, async (req, res) => {

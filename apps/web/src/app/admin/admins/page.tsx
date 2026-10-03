@@ -33,6 +33,9 @@ export default function AdminsPage() {
   const [curPass, setCurPass] = useState('');
   const [newPass, setNewPass] = useState('');
 
+  // own username form
+  const [newUsername, setNewUsername] = useState('');
+
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
 
@@ -115,6 +118,41 @@ export default function AdminsPage() {
     }
   }
 
+  async function onChangeUsername(e: FormEvent) {
+    e.preventDefault();
+    setBusy(true);
+    setError(null);
+    setNotice(null);
+    try {
+      await api(`/api/admin/admins/${admin?.id}/username`, {
+        method: 'PATCH',
+        body: JSON.stringify({ username: newUsername.trim() })
+      });
+      setNewUsername('');
+      setNotice('Username updated — use the new one next time you sign in.');
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : 'Username change failed');
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function onRename(a: Admin) {
+    const next = window.prompt(`New username for @${a.username}:`, a.username);
+    if (!next || next.trim() === a.username) return;
+    setError(null);
+    try {
+      await api(`/api/admin/admins/${a.id}/username`, {
+        method: 'PATCH',
+        body: JSON.stringify({ username: next.trim() })
+      });
+      setNotice(`Renamed @${a.username} → @${next.trim()}.`);
+      await load();
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : 'Rename failed');
+    }
+  }
+
   return (
     <div>
       <PageHeader title="Admins" subtitle="Manage who can access this console." />
@@ -160,6 +198,13 @@ export default function AdminsPage() {
                           <Button
                             variant="secondary"
                             className="px-3 py-1.5 text-xs"
+                            onClick={() => onRename(a)}
+                          >
+                            Rename
+                          </Button>
+                          <Button
+                            variant="secondary"
+                            className="px-3 py-1.5 text-xs"
                             onClick={() => onRole(a, a.role === 'SUPER_ADMIN' ? 'ADMIN' : 'SUPER_ADMIN')}
                           >
                             {a.role === 'SUPER_ADMIN' ? 'Demote' : 'Promote'}
@@ -201,6 +246,23 @@ export default function AdminsPage() {
             </form>
           </Card>
         ) : null}
+
+        <Card className="p-5">
+          <h2 className="mb-4 text-sm font-bold uppercase tracking-wide text-muted">Change my username</h2>
+          <form onSubmit={onChangeUsername} className="space-y-4">
+            <Field label="New username" hint="Letters, numbers, underscores (2–100 chars).">
+              <Input
+                value={newUsername}
+                onChange={(e) => setNewUsername(e.target.value)}
+                required
+                autoComplete="off"
+                pattern="[a-zA-Z0-9_]+"
+                placeholder="new_username"
+              />
+            </Field>
+            <Button type="submit" loading={busy}>Update username</Button>
+          </form>
+        </Card>
 
         <Card className="p-5">
           <h2 className="mb-4 text-sm font-bold uppercase tracking-wide text-muted">Change my password</h2>

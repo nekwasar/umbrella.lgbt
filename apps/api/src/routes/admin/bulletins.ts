@@ -3,8 +3,13 @@ import { prisma } from '../../db/prisma';
 import { requireAdmin } from '../../middleware/auth';
 import { bulletinSchema } from '../../validation/forum';
 import { serializeBulletin } from '../../lib/bulletin';
+import { ADMIN_COOKIE } from '../../lib/cookies';
+import { notifyWeb } from '../../lib/notify-web';
 
 const router = Router();
+
+// Public surfaces showing bulletins: homepage sidebar panel + /bulletin list + detail.
+const BULLETIN_REVAL = { paths: ['/', '/bulletin', '/bulletin/[id]'], tags: ['bulletins'] };
 
 /** GET /api/admin/bulletins — all bulletins incl. drafts. */
 router.get('/', requireAdmin, async (_req, res) => {
@@ -30,6 +35,7 @@ router.post('/', requireAdmin, async (req, res) => {
     },
     include: { _count: { select: { comments: { where: { status: 'PUBLISHED' } } } } }
   });
+  await notifyWeb(req.cookies?.[ADMIN_COOKIE], BULLETIN_REVAL);
   res.status(201).json({ bulletin: serializeBulletin(b) });
 });
 
@@ -52,6 +58,7 @@ router.put('/:id', requireAdmin, async (req, res) => {
     },
     include: { _count: { select: { comments: { where: { status: 'PUBLISHED' } } } } }
   });
+  await notifyWeb(req.cookies?.[ADMIN_COOKIE], BULLETIN_REVAL);
   res.json({ bulletin: serializeBulletin(b) });
 });
 
@@ -60,6 +67,7 @@ router.delete('/:id', requireAdmin, async (req, res) => {
   const existing = await prisma.bulletin.findUnique({ where: { id: req.params.id } });
   if (!existing) return res.status(404).json({ error: 'Bulletin not found' });
   await prisma.bulletin.delete({ where: { id: existing.id } });
+  await notifyWeb(req.cookies?.[ADMIN_COOKIE], BULLETIN_REVAL);
   res.json({ ok: true });
 });
 

@@ -52,7 +52,7 @@ export default async function HomePage() {
       fetchTypeCount('QA'),
       fetchTypeCount('CITY'),
       fetchTypeCount('RESOURCES'),
-      apiFetch<BulletinListResponse>('/api/bulletins?pageSize=3')
+      apiFetch<BulletinListResponse>('/api/bulletins?pageSize=3', 300, ['bulletins'])
     ]);
 
   const qaItems = qaRes?.items ?? [];

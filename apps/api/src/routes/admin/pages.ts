@@ -1,10 +1,34 @@
 import { Router } from 'express';
 import { prisma } from '../../db/prisma';
 import { requireAdmin } from '../../middleware/auth';
-import { bulkMetaSchema, pageMetaSchema, pageUpsertSchema } from '../../validation/page';
+import { bulkMetaSchema, pageMetaSchema, pageUpsertSchema, PageType } from '../../validation/page';
 import { pageTypeLabel, readingTime, serializePage, slugify } from '../../lib/pages';
+import { ADMIN_COOKIE } from '../../lib/cookies';
+import { notifyWeb } from '../../lib/notify-web';
 
 const router = Router();
+
+// Public routes affected by a page mutation — used for on-demand revalidation.
+const LIST_PATH: Record<PageType, string> = {
+  CORE: '/',
+  BLOG: '/blog',
+  QA: '/qa',
+  GLOSSARY: '/glossary',
+  CITY: '/city',
+  RESOURCES: '/resources'
+};
+const DETAIL_PATTERN: Record<PageType, string> = {
+  CORE: '/[slug]',
+  BLOG: '/blog/[slug]',
+  QA: '/qa/[slug]',
+  GLOSSARY: '/glossary/[slug]',
+  CITY: '/city/[slug]',
+  RESOURCES: '/resources/[slug]'
+};
+
+function revalPaths(types: PageType[]): string[] {
+  return [...new Set(['/', ...types.map((t) => LIST_PATH[t]), ...types.map((t) => DETAIL_PATTERN[t])])];
+}
 
 /** Use `data[key]` when explicitly present (allows clearing nullable fields), else fallback. */
 function field<T>(data: Record<string, unknown>, key: string, fallback: T): T {
@@ -66,6 +90,15 @@ router.post('/meta/bulk', requireAdmin, async (req, res) => {
     if (result) updated++;
   }
 
+  const affected = await prisma.page.findMany({
+    where: { id: { in: parsed.data.items.map((i) => i.id) } },
+    select: { type: true }
+  });
+  await notifyWeb(req.cookies?.[ADMIN_COOKIE], {
+    paths: revalPaths(affected.map((p) => p.type)),
+    tags: ['pages']
+  });
+
   res.json({ ok: true, updated });
 });
 
@@ -114,6 +147,7 @@ router.post('/', requireAdmin, async (req, res) => {
     include: { meta: true }
   });
 
+  await notifyWeb(req.cookies?.[ADMIN_COOKIE], { paths: revalPaths([page.type]), tags: ['pages'] });
   res.status(201).json({ page: serializePage(page) });
 });
 
@@ -167,6 +201,10 @@ router.put('/:id', requireAdmin, async (req, res) => {
     include: { meta: true }
   });
 
+  await notifyWeb(req.cookies?.[ADMIN_COOKIE], {
+    paths: revalPaths([existing.type, page.type]),
+    tags: ['pages']
+  });
   res.json({ page: serializePage(page) });
 });
 
@@ -184,6 +222,7 @@ router.patch('/:id/content', requireAdmin, async (req, res) => {
     data: { contentMd, readingTime: readingTime(contentMd) },
     include: { meta: true }
   });
+  await notifyWeb(req.cookies?.[ADMIN_COOKIE], { paths: revalPaths([existing.type]), tags: ['pages'] });
   res.json({ ok: true, updatedAt: page.updatedAt.toISOString(), readingTime: page.readingTime });
 });
 
@@ -204,6 +243,7 @@ router.patch('/:id/meta', requireAdmin, async (req, res) => {
     update: meta
   });
 
+  await notifyWeb(req.cookies?.[ADMIN_COOKIE], { paths: revalPaths([existing.type]), tags: ['pages'] });
   res.json({ ok: true, meta: pageMeta });
 });
 
@@ -213,6 +253,7 @@ router.delete('/:id', requireAdmin, async (req, res) => {
   if (!existing) return res.status(404).json({ error: 'Page not found' });
 
   await prisma.page.delete({ where: { id: existing.id } });
+  await notifyWeb(req.cookies?.[ADMIN_COOKIE], { paths: revalPaths([existing.type]), tags: ['pages'] });
   res.json({ ok: true });
 });
 

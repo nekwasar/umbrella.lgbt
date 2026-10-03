@@ -16,7 +16,7 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const data = await apiFetch<BulletinDetailResponse>(`/api/bulletins/${id}`);
+  const data = await apiFetch<BulletinDetailResponse>(`/api/bulletins/${id}`, 300, ['bulletins']);
   if (!data) return { title: 'Bulletin | Umbrella.lgbt' };
   return {
     title: `${data.bulletin.title} | Bulletin | Umbrella.lgbt`,
@@ -31,7 +31,7 @@ export default async function BulletinDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const data = await apiFetch<BulletinDetailResponse>(`/api/bulletins/${id}`);
+  const data = await apiFetch<BulletinDetailResponse>(`/api/bulletins/${id}`, 300, ['bulletins']);
   if (!data) notFound();
   const b = data.bulletin;
 

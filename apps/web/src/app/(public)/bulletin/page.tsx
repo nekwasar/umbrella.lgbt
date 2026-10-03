@@ -23,7 +23,9 @@ export default async function BulletinIndex({
 }) {
   const sp = await searchParams;
   const page = Math.max(1, parseInt(sp.page || '1', 10) || 1);
-  const data = await apiFetch<BulletinListResponse>(`/api/bulletins?page=${page}&pageSize=20`);
+  const data = await apiFetch<BulletinListResponse>(`/api/bulletins?page=${page}&pageSize=20`, 300, [
+    'bulletins'
+  ]);
   const { items = [], total = 0, pageSize = 20 } = data ?? {};
   const pages = Math.max(1, Math.ceil(total / pageSize));
 

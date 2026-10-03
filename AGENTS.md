@@ -215,6 +215,8 @@ Modern rounded console. Source of truth: `apps/web/tailwind.config.ts` +
   FTS (`Question.searchIndex` — GENERATED tsvector, GIN) with cosine over the stored
   hashing embedding `searchVec` (384-dim, `embedQuestion`/`embedAnswer` on create;
   TF-IDF in-process fallback until reindexed). Full backfill: `npm run reindex:search`.
+  Community content: `npm run seed:qa` (idempotent by slug — 25 questions / 50 answers
+  across 10 topics, with best answers, votes, and 6 member personas).
   The search migration is idempotent (IF NOT EXISTS) — the live DB has NO
   prisma_migrations table, apply migrations with `docker exec -i umbrella-db-1 psql -U
   umbrella -d umbrella < migration.sql`, never `migrate deploy` against prod.

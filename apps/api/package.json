@@ -16,6 +16,7 @@
     "migrate:content": "tsx src/seed/migrate-content.ts",
     "seed:forum": "tsx src/seed/seed-forum.ts",
     "seed:bulletins": "tsx src/seed/seed-bulletins.ts",
+    "seed:qa": "tsx src/seed/seed-qa.ts",
     "reindex:search": "tsx scripts/reindex-search.ts",
     "test:e2e": "tsx scripts/e2e-auth.ts",
     "test:e2e:content": "tsx scripts/e2e-content.ts",

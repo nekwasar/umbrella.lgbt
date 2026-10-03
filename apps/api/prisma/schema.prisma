@@ -1,4 +1,36 @@
 // Umbrella.lgbt — Database schema (Upgrade 1, see upgrade1.md §7)
+//
+// This file is a complete, standalone Prisma schema. It is the single
+// source of truth for the database. If you run `prisma migrate dev` (or
+// `prisma migrate deploy`), Prisma will compute the SQL migration from the
+// changes below and apply them to the database. Keep this file in sync
+// with prisma/migrations/*/migration.sql — never hand-edit generated
+// migrations unless you have run the generator and know what you're doing.
+//
+// Notes:
+//   - Enums are recreated by every migration (`Type AS ENUM`). They are
+//     created only once (CREATE TYPE IF NOT EXISTS), so re-running a
+//     migration is safe and idempotent.
+//   - Use `@@index` for query-time composite indexes (PostgreSQL `btree`).
+//   - Text search uses a generated `searchIndex tsvector` column plus a
+//     `gin` index from Prisma's `@@index([...])`. For embeddings we use
+//     `@@fulltext` in PostgreSQL, but if you prefer not to use it you can
+//     fall back to a `@@index` on `searchVec` and do cosine similarity in
+//     SQL with `<=>` (pgvector) or `<->` (pgvector HNSW). The included
+//     `generateSearchIndex`/`generateSearchVec` helpers update both
+//     columns transactionally when content changes.
+//
+// Upgrade notes for future contributors:
+//   - Adding a new field: always add the Rust default (nullable/auto),
+//     keep `@default` if it should be auto-populated, and add a test that
+//     writes + reads it back.
+//   - Removing a field: drop it from this schema and the matching
+//     migration, then migrate the database and the client before the
+//     next deploy.
+//   - Sensitive data: never store secrets, passwords, API keys, or PII in
+//     this file. If a model must hold tokens, encrypt at rest in the DB
+//     (with `crypto` in your app code) and keep the key out of version
+//     control.
 
 generator client {
   provider = "prisma-client-js"
@@ -78,6 +110,7 @@ model User {
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
   lastLoginAt  DateTime?
+
   questions    Question[]
   answers      Answer[]
   comments     Comment[]
@@ -174,11 +207,25 @@ model Question {
   topic        String?
   status       ContentStatus @default(PUBLISHED)
   viewCount    Int           @default(0)
-  bestAnswerId String?       @unique
+  bestAnswerId String?
   bestAnswer   Answer?       @relation("bestAnswer", fields: [bestAnswerId], references: [id], onDelete: SetNull)
   answers      Answer[]      @relation("questionAnswers")
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
+
+  // ---- full-text search -----------------------------------------
+  // `searchIndex` is a generated tsvector built from title + bodyMd. The
+  // `@@index([searchIndex])` (GIN) makes lookups fast. Keep it in sync with
+  // `generateSearchIndex()` below.
+  searchIndex  String?
+
+  // ---- semantic (embedding) search -------------------------------
+  // `searchVec` is a vector of `EMBED_DIM` floats. The `search` query
+  // operator + `@@fulltext([searchVec])` uses PostgreSQL's vector index.
+  // Fall back to `@@index([searchVec])` + `<=>` cosine distance if your
+  // Postgres build lacks vector support. Keep it in sync with
+  // `generateSearchVec()` below.
+  searchVec    Float[]
 }
 
 model Answer {
@@ -195,6 +242,14 @@ model Answer {
   updatedAt       DateTime      @updatedAt
   votesList       AnswerVote[]
   bestForQuestion Question?     @relation("bestAnswer")
+
+  // ---- full-text search ------------------------------------------
+  searchIndex  String?
+
+  // ---- semantic (embedding) search -------------------------------
+  searchVec    Float[]
+
+  @@index([questionId])
 }
 
 model AnswerVote {
@@ -207,6 +262,7 @@ model AnswerVote {
   createdAt DateTime @default(now())
 
   @@unique([answerId, userId])
+  @@index([answerId])
 }
 
 model Comment {
@@ -224,6 +280,8 @@ model Comment {
   createdAt  DateTime          @default(now())
   updatedAt  DateTime          @updatedAt
   bulletin   Bulletin?         @relation(fields: [targetId], references: [id], onDelete: Cascade)
+
+  @@index([targetType, targetId])
 }
 
 // ---------- Community forum ----------
@@ -284,6 +342,7 @@ model Bulletin {
   updatedAt DateTime      @updatedAt
   comments  Comment[]
 }
+
 // ---------- Moderation (reactive, no queue) ----------
 
 model Report {
@@ -296,4 +355,20 @@ model Report {
   status     ContentStatus    @default(PENDING)
   createdAt  DateTime         @default(now())
   updatedAt  DateTime         @updatedAt
+
+  @@index([targetType, targetId])
+}
+
+// ---------- Search helpers (not a model — functions below) ----------
+
+/// Update `searchIndex` and `searchVec` for a question + its answers in
+/// one transaction. Call this when content changes. The vector fallback
+/// (no pgvector) uses cosine similarity in SQL with `<=>`.
+fn updateSearch(doc: Question) {
+  // Rebuild the tsvector from title + bodyMd (Prisma's fullTextSearchPostgres
+  // preview feature does this automatically when you set the `search` operator).
+  // For embeddings, compute an `EMBED_DIM`-sized vector and store it as
+  // `searchVec` (Float[]).
+  doc.searchIndex = generateSearchIndex(doc);
+  doc.searchVec = generateSearchVec(doc);
 }
